@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, rm, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { planRelease, requireReleaseContext, checkPublishedCommit } from '../scripts/release.mjs';
+import { planRelease, requireReleaseContext, checkPublishedCommit, prepareVersion } from '../scripts/release.mjs';
 
 async function repository(t) {
   const cwd = await mkdtemp(join(tmpdir(), 'indra-release-'));
@@ -88,3 +88,22 @@ test('a retry can reuse a published version only from the same commit', () => {
   assert.throws(() => checkPublishedCommit('old', 'new', '0.1.1'), /refusing to retag/);
   assert.throws(() => checkPublishedCommit(null, 'new', '0.1.1'), /refusing to retag/);
 });
+
+for (const currentVersion of ['0.2.0', '0.2.1']) {
+  test(`release preparation updates package and lock files from ${currentVersion} to 0.2.1`, async t => {
+    const repo = await repository(t);
+    await writeFile(join(repo.cwd, 'package.json'), JSON.stringify({ name: 'indra-release-test', version: currentVersion }));
+    await writeFile(join(repo.cwd, 'package-lock.json'), JSON.stringify({
+      name: 'indra-release-test', version: currentVersion, lockfileVersion: 3,
+      packages: { '': { name: 'indra-release-test', version: currentVersion } },
+    }));
+    prepareVersion(repo.cwd, '0.2.1');
+    const pkg = JSON.parse(await readFile(join(repo.cwd, 'package.json'), 'utf8'));
+    const lock = JSON.parse(await readFile(join(repo.cwd, 'package-lock.json'), 'utf8'));
+    assert.equal(pkg.version, '0.2.1');
+    assert.equal(lock.version, '0.2.1');
+    assert.equal(lock.packages[''].version, '0.2.1');
+    assert.equal(repo.git('tag', '--list'), '');
+    assert.equal(repo.git('rev-parse', 'HEAD'), repo.initial.ref);
+  });
+}

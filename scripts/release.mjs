@@ -48,6 +48,10 @@ export function checkPublishedCommit(publishedHead, head, version) {
   }
 }
 
+export function prepareVersion(cwd, version) {
+  return command(cwd, 'npm', ['version', version, '--allow-same-version', '--no-git-tag-version', '--ignore-scripts']);
+}
+
 async function release(dryRun) {
   if (!dryRun) requireReleaseContext(process.env);
   const plan = await planRelease();
@@ -75,7 +79,7 @@ async function release(dryRun) {
     if (versions.some(version => semver.valid(version) && !semver.prerelease(version) && semver.gte(version, plan.version))) {
       throw new Error('npm is ahead of the release tags. Reconcile existing releases before publishing.');
     }
-    command(root, 'npm', ['version', plan.version, '--no-git-tag-version', '--ignore-scripts'], true);
+    prepareVersion(root, plan.version);
     // Keep retry verification independent of npm's automatic gitHead detection.
     pkg.version = plan.version;
     pkg.gitHead = plan.head;

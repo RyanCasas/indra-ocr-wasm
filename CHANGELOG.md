@@ -16,6 +16,11 @@ the upstream Indra OCR version. Release dates use UTC.
   API example using the installed asset paths, current CI results, and the
   automatic release rules.
 
+### Fixed
+
+- Release preparation accepts a package version already updated in the
+  repository, keeping `package.json` and `package-lock.json` at 0.2.1.
+
 ## [0.2.0] - 2026-10-16
 
 ### Added
