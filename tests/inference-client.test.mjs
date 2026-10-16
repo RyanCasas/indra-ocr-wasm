@@ -58,3 +58,16 @@ test('a postMessage failure cleans up without poisoning later requests',async()=
   worker.reply({kind:'result',id:worker.messages[0].id,tensors:[]});
   assert.deepEqual(await next,[]);client.dispose();
 });
+
+test('backend progress is forwarded without settling inference', async () => {
+  const worker = new WorkerStub();
+  const messages = [];
+  const client = new InferenceClient(worker, 1000, 2048, message => messages.push(message));
+  try {
+    const pending = client.run('model', {}, null);
+    worker.reply({ kind: 'progress', message: 'Retrying with WASM' });
+    assert.deepEqual(messages, ['Retrying with WASM']);
+    worker.reply({ kind: 'result', id: worker.messages[0].id, tensors: [] });
+    assert.deepEqual(await pending, []);
+  } finally { client.dispose(); }
+});

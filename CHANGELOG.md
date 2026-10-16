@@ -3,6 +3,24 @@
 Versions refer to the `@ryancasas/indra-ocr-wasm` npm package, independently of
 the upstream Indra OCR version. Release dates use UTC.
 
+## [0.3.0] - 2026-10-16
+
+### Added
+
+- Automatic WebGPU inference with per-model WASM fallback during initialization
+  and execution, plus `backend: 'wasm'` to force CPU inference.
+- Backend selection and recovery messages through `onProgress`.
+- Math classification, encoding, and decoding always use CPU/WASM while the
+  remaining OCR models can use WebGPU.
+- A reproducible browser benchmark comparing WASM, WebGPU, and automatic CPU
+  fallback, with startup costs, conversion timings, and native-output checks.
+- Measured performance comparisons and reproduction instructions in the README.
+
+### Fixed
+
+- Detect an actual WebGPU adapter instead of treating the presence of the API as
+  proof that acceleration is available.
+
 ## [0.2.1] - 2026-10-16
 
 ### Added
@@ -68,6 +86,7 @@ the upstream Indra OCR version. Release dates use UTC.
   for its synchronous shared-memory inference bridge. Upgrade to 0.2.0 or later
   to remove that requirement.
 
+[0.3.0]: https://github.com/RyanCasas/indra-ocr-wasm/releases/tag/v0.3.0
 [0.2.1]: https://github.com/RyanCasas/indra-ocr-wasm/releases/tag/v0.2.1
 [0.2.0]: https://github.com/RyanCasas/indra-ocr-wasm/releases/tag/v0.2.0
 [0.1.0]: https://github.com/RyanCasas/indra-ocr-wasm/tree/536123cd749d54d47bb043603c0b9cc22bc421cb

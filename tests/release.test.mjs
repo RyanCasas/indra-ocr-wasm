@@ -89,20 +89,20 @@ test('a retry can reuse a published version only from the same commit', () => {
   assert.throws(() => checkPublishedCommit(null, 'new', '0.1.1'), /refusing to retag/);
 });
 
-for (const currentVersion of ['0.2.0', '0.2.1']) {
-  test(`release preparation updates package and lock files from ${currentVersion} to 0.2.1`, async t => {
+for (const currentVersion of ['0.2.1', '0.3.0']) {
+  test(`release preparation updates package and lock files from ${currentVersion} to 0.3.0`, async t => {
     const repo = await repository(t);
     await writeFile(join(repo.cwd, 'package.json'), JSON.stringify({ name: 'indra-release-test', version: currentVersion }));
     await writeFile(join(repo.cwd, 'package-lock.json'), JSON.stringify({
       name: 'indra-release-test', version: currentVersion, lockfileVersion: 3,
       packages: { '': { name: 'indra-release-test', version: currentVersion } },
     }));
-    prepareVersion(repo.cwd, '0.2.1');
+    prepareVersion(repo.cwd, '0.3.0');
     const pkg = JSON.parse(await readFile(join(repo.cwd, 'package.json'), 'utf8'));
     const lock = JSON.parse(await readFile(join(repo.cwd, 'package-lock.json'), 'utf8'));
-    assert.equal(pkg.version, '0.2.1');
-    assert.equal(lock.version, '0.2.1');
-    assert.equal(lock.packages[''].version, '0.2.1');
+    assert.equal(pkg.version, '0.3.0');
+    assert.equal(lock.version, '0.3.0');
+    assert.equal(lock.packages[''].version, '0.3.0');
     assert.equal(repo.git('tag', '--list'), '');
     assert.equal(repo.git('rev-parse', 'HEAD'), repo.initial.ref);
   });

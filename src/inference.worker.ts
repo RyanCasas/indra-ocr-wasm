@@ -1,13 +1,22 @@
-import * as ort from 'onnxruntime-web/wasm';
+import * as ort from 'onnxruntime-web/webgpu';
+import { InferenceBackend } from './inference-backend';
 import { copyTensors, type TensorWire } from './protocol';
 
-const sessions = new Map<string, ort.InferenceSession>();
+const sessions = new Map<string, InferenceBackend<ort.InferenceSession>>();
 self.onmessage = async ({ data }) => {
   if (data.kind === 'init') {
     try {
       ort.env.wasm.wasmPaths = data.runtimeURL;
       ort.env.wasm.numThreads = 1;
       ort.env.wasm.proxy = false;
+      let preferGpu = false;
+      if (data.backend !== 'wasm') {
+        try {
+          const gpu = (navigator as Navigator & { gpu?: { requestAdapter(): Promise<unknown> } }).gpu;
+          preferGpu = !!(await gpu?.requestAdapter());
+        } catch { /* Adapter requests can fail even when the API is exposed. */ }
+        if (!preferGpu) self.postMessage({ kind: 'progress', message: 'WebGPU adapter unavailable; using WASM' });
+      }
       for (const name of data.models as string[]) {
         const url = new URL(name, data.modelURL).href;
         const res = await fetch(url);
@@ -16,17 +25,22 @@ self.onmessage = async ({ data }) => {
         const hash = [...new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))]
           .map(n => n.toString(16).padStart(2, '0')).join('');
         if (data.sha256[name] !== hash) throw new Error(`Model checksum mismatch: ${name}`);
-        const session = await ort.InferenceSession.create(bytes,
-          { executionProviders: ['wasm'], enableCpuMemArena: false });
-        sessions.set(name, session);
+        const mathModel = name.startsWith('math');
+        if (mathModel) self.postMessage({ kind: 'progress', message: `${name}: using CPU/WASM for math` });
+        const backend = new InferenceBackend(
+          gpu => ort.InferenceSession.create(bytes, {
+            executionProviders: gpu ? ['webgpu', 'wasm'] : ['wasm'], enableCpuMemArena: false,
+          }), preferGpu && !mathModel, message => self.postMessage({ kind: 'progress', message: `${name}: ${message}` }));
+        await backend.load();
+        sessions.set(name, backend);
       }
       self.postMessage({ kind: 'ready', inputs: Object.fromEntries(
-        [...sessions].map(([name, s]) => [name, s.inputNames])) });
+        await Promise.all([...sessions].map(async ([name, s]) => [name, (await s.load()).inputNames]))) });
     } catch (e) { self.postMessage({ kind: 'error', error: String(e) }); }
   } else if (data.kind === 'run') {
     try {
-      const session = sessions.get(data.model);
-      if (!session) throw new Error(`Model not loaded: ${data.model}`);
+      const backend = sessions.get(data.model);
+      if (!backend) throw new Error(`Model not loaded: ${data.model}`);
       const feed: Record<string, ort.Tensor> = {};
       const arrays = { float32: Float32Array, float64: Float64Array, int64: BigInt64Array,
         int32: Int32Array, uint8: Uint8Array, bool: Uint8Array };
@@ -38,8 +52,8 @@ self.onmessage = async ({ data }) => {
       }
       let result: ort.InferenceSession.ReturnType | undefined;
       try {
-        result = await session.run(feed);
-        const names = data.outputs ?? session.outputNames;
+        result = await backend.run(session => session.run(feed));
+        const names = data.outputs ?? (await backend.load()).outputNames;
         const tensors = copyTensors(names.map((key: string) => ({ type: result![key].type,
           dims: [...result![key].dims], data: result![key].data as ArrayBufferView })), data.responseBytes);
         self.postMessage({ kind: 'result', id: data.id, tensors },
