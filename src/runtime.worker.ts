@@ -40,11 +40,15 @@ async function init(options: any) {
   inferenceWorker = new Worker(new URL('./inference.worker.js', import.meta.url), { type: 'module' });
   const inputs = await new Promise<Record<string, string[]>>((resolve, reject) => {
     inferenceWorker.onerror = e => reject(new Error(e.message));
-    inferenceWorker.onmessage = ({ data }) => data.kind === 'ready' ? resolve(data.inputs) : reject(new Error(data.error));
-    inferenceWorker.postMessage({ kind: 'init', runtimeURL: new URL('ort/', runtimeURL).href,
+    inferenceWorker.onmessage = ({ data }) => {
+      if (data.kind === 'progress') { progress(data.message); return; }
+      if (data.kind === 'ready') resolve(data.inputs);
+      else reject(new Error(data.error));
+    };
+    inferenceWorker.postMessage({ kind: 'init', backend: options.backend, runtimeURL: new URL('ort/', runtimeURL).href,
       modelURL: options.modelURL, sha256: modelManifest.sha256, models: files.filter(f => f.endsWith('.onnx')) });
   });
-  inference = new InferenceClient(inferenceWorker, options.inferenceTimeoutMs, options.responseBytes);
+  inference = new InferenceClient(inferenceWorker, options.inferenceTimeoutMs, options.responseBytes, progress);
   // Python yields at inference calls, allowing ordinary worker messages to
   // resolve the promise. No shared memory or synchronous waits are needed.
   py.registerJsModule('indra_bridge', {

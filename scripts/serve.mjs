@@ -5,7 +5,7 @@ import { pathToFileURL } from 'node:url';
 const root = resolve(import.meta.dirname, '..');
 const mime = {'.html':'text/html; charset=utf-8','.js':'text/javascript','.mjs':'text/javascript',
   '.wasm':'application/wasm','.json':'application/json','.png':'image/png','.svg':'image/svg+xml'};
-export function serve(port=5173) {
+export function serve(port=5173, { transform } = {}) {
   const server=createServer(async(req,res)=>{
     res.setHeader('Cache-Control','no-store');
     try {
@@ -16,7 +16,8 @@ export function serve(port=5173) {
       const allowed=['dist','tests','vendor/indra/tests', 'public/runtime','public/models','assets']
         .some(prefix=>file.startsWith(resolve(root,prefix)+'/'));
       if (!file.startsWith(dir+'/')||!allowed) {res.writeHead(403).end();return;}
-      const data=await readFile(file);
+      let data=await readFile(file);
+      if (transform) data=await transform(path, data);
       res.setHeader('Content-Type',mime[extname(file)]??'application/octet-stream');
       res.setHeader('Content-Length',data.length);
       res.end(req.method==='HEAD'?undefined:data);

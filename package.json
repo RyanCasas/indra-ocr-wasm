@@ -1,6 +1,6 @@
 {
   "name": "@ryancasas/indra-ocr-wasm",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Indra OCR running locally in browser WebAssembly workers",
   "type": "module",
   "license": "Apache-2.0",
@@ -37,6 +37,7 @@
     "assets": "node scripts/assets.mjs",
     "fixtures": "python3 scripts/fixtures.py",
     "test:browser": "node scripts/browser-tests.mjs",
+    "benchmark": "node scripts/benchmark.mjs",
     "release": "node scripts/release.mjs",
     "prepack": "npm run build"
   },

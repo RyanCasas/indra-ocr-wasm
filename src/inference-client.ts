@@ -13,8 +13,9 @@ export class InferenceClient {
   private failure?: Error;
 
   constructor(private worker: Worker, private timeoutMs = 120_000,
-    private responseBytes = RESPONSE_BYTES) {
+    private responseBytes = RESPONSE_BYTES, onProgress?: (message: string) => void) {
     worker.onmessage = ({ data }) => {
+      if (data.kind === 'progress') { onProgress?.(data.message); return; }
       const request = this.pending.get(data.id);
       if (!request) return;
       this.pending.delete(data.id);
