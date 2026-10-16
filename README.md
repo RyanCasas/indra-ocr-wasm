@@ -140,7 +140,8 @@ conversions; `dispose()` cancels pending work and releases the workers.
   with unsupported operators handled by WASM. If a model fails to initialize or
   execute on WebGPU, it switches to WASM and retries there; subsequent calls for
   that model stay on CPU. Use `wasm` for CPU-only execution and comparisons.
-  Math models always use CPU/WASM, including with `backend: 'auto'`.
+  Math models always use CPU/WASM, including with `backend: 'auto'`; see
+  [why math models use CPU](#why-math-models-use-cpu).
   Backend selection and recovery are reported through `onProgress`.
 - `mode: 'auto' | 'ocr' | 'text'` (default: `auto`).
 - `dpi: 200`, `pdfOrder: true`, `imageOcr: true`, `furniture: false`.
@@ -271,6 +272,42 @@ mathematics. The math rows above used `--suite math` with the same repetition
 counts and Vulkan flags, saved to `test-results/benchmark-math-cpu.json`. The
 benchmark fails if GPU execution or CPU fallback cannot be confirmed, a math model
 uses the GPU, or any output comparison fails.
+
+### Why math models use CPU
+
+The policy follows the measured latency of this browser pipeline. Before math
+was pinned to CPU, the formula fixture took **503.3 ms with WebGPU enabled for
+all models versus 421.4 ms with forced WASM**: about 19% longer. These were
+whole-document medians from the original five-run comparison, excluding engine
+initialization. They do not measure the four math models independently. The
+table above contains the later measurements with CPU math enforced.
+
+Math recognition also has a different execution pattern from a single OCR
+inference. In [the math reader](python/web_math.py), the decoder generates tokens
+sequentially: each step needs the previous token and its attention state (the
+key/value caches). The current [Python/ONNX bridge](python/onnxruntime.py) returns
+logits and updated caches to CPU memory after every step; Python selects the next
+token, then sends the state into the next inference call. The decoding loop and
+its caches do not stay resident on the GPU across calls.
+
+With GPU execution, that design introduces repeated CPU/GPU transfers and
+synchronization. For short formulas and small batches, those costs can outweigh
+faster arithmetic. This is an explanation suggested by the implementation and
+the end-to-end results; no per-operator profiling was collected to attribute the
+slowdown to a specific transfer or kernel. Both backends passed the checked
+native-output comparisons.
+
+Consequently, `mathcls.onnx` (classification), `math_enc.onnx` (encoding),
+`math_dec_init.onnx`, and `math_dec_step.onnx` (decoder initialization and token
+generation) always use CPU/WASM. Keeping all four together avoids GPU transfers
+between stages of the math subpipeline. Orientation, detection, script
+identification, ordinary text recognition, and reading order can still use
+WebGPU, even on a document containing formulas. Set `backend: 'wasm'` to run the
+entire OCR pipeline on CPU.
+
+This is a conservative default based on the tested device and workloads.
+Different hardware, larger batches, or a future decoder that keeps its state on
+the GPU could change the tradeoff; the current API always enforces CPU math.
 
 ## Parity verification
 
