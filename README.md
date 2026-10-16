@@ -27,6 +27,24 @@ port's original code; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 Node.js 22 or later is required to prepare the static assets.
 
+Install the npm package and prepare assets in your app's static directory:
+
+```bash
+npm install @ryancasas/indra-ocr-wasm
+npx indra-ocr-assets --out-dir public
+mkdir -p public/indra
+cp -R node_modules/@ryancasas/indra-ocr-wasm/dist/. public/indra/
+```
+
+Serve `public/` with the headers listed under [Hosting and distribution](#hosting-and-distribution),
+then import `createIndra` from `/indra/index.js` in a browser module. Keep
+`index.js`, `runtime.worker.js`, and `inference.worker.js` together in that
+directory. TypeScript projects can import types from `@ryancasas/indra-ocr-wasm`.
+Runtime archives and model weights are downloaded separately by the asset command;
+they are not bundled in the npm tarball.
+
+To run the repository's demo and tests, clone the repository and run:
+
 ```bash
 npm ci
 npm run build
@@ -86,7 +104,7 @@ conversions; `dispose()` cancels pending work and releases the workers.
 - `inferenceTimeoutMs`: timeout per inference; default: 120,000 ms.
 
 `convert` options: `maxPages` (0 = all pages) and `password` for encrypted PDFs.
-Exported interfaces are defined in [src/index.ts](src/index.ts).
+Exported interfaces are defined in [src/index.ts](https://github.com/RyanCasas/indra-ocr-wasm/blob/main/src/index.ts).
 
 ## Hosting and distribution
 

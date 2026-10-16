@@ -1,15 +1,47 @@
+#!/usr/bin/env node
 import { mkdir, cp, readdir, readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
-import { join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { parseArgs } from 'node:util';
 
-const runtime = 'public/runtime';
-const modelLock = JSON.parse(await readFile('models.lock.json', 'utf8'));
+const { values } = parseArgs({ options: {
+  'out-dir': { type: 'string', default: 'public' },
+  help: { type: 'boolean', short: 'h' },
+} });
+if (values.help) {
+  console.log('Usage: indra-ocr-assets [--out-dir <directory>]\n\nPrepares runtime/ and models/ in the output directory (default: ./public).\nDownloads pinned runtime archives and model weights; see the model license\nbefore downloading or hosting: https://github.com/RyanCasas/indra-ocr-wasm/blob/main/licenses/INDRA-MODEL-LICENSE');
+  process.exit(0);
+}
+const root = resolve(import.meta.dirname, '..');
+const output = resolve(values['out-dir']);
+const runtime = join(output, 'runtime');
+const models = join(output, 'models');
+// Resolve from this package, including when npm hoists its dependencies.
+async function packageDirectory(name) {
+  let directory = dirname(fileURLToPath(import.meta.resolve(name)));
+  while (true) {
+    try {
+      const pkg = JSON.parse(await readFile(join(directory, 'package.json'), 'utf8'));
+      if (pkg.name === name) return directory;
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error;
+    }
+    const parent = dirname(directory);
+    if (parent === directory) throw new Error(`Cannot find package directory for ${name}`);
+    directory = parent;
+  }
+}
+const pyodide = await packageDirectory('pyodide');
+const pdfium = await packageDirectory('@embedpdf/pdfium');
+const ort = await packageDirectory('onnxruntime-web');
+const modelLock = JSON.parse(await readFile(join(root, 'models.lock.json'), 'utf8'));
 const revision = modelLock.revision;
 await mkdir(`${runtime}/pyodide`, { recursive: true });
 for (const name of ['pyodide.mjs', 'pyodide.asm.js', 'pyodide.asm.wasm', 'python_stdlib.zip', 'pyodide-lock.json']) {
-  await cp(`node_modules/pyodide/${name}`, `${runtime}/pyodide/${name}`);
+  await cp(join(pyodide, name), `${runtime}/pyodide/${name}`);
 }
-const lock = JSON.parse(await readFile('node_modules/pyodide/pyodide-lock.json', 'utf8'));
+const lock = JSON.parse(await readFile(join(pyodide, 'pyodide-lock.json'), 'utf8'));
 const needed = new Set();
 function add(name) {
   if (needed.has(name)) return;
@@ -35,11 +67,11 @@ for (const name of needed) {
   await download(`https://cdn.jsdelivr.net/pyodide/v0.29.3/full/${pkg.file_name}`,
     `${runtime}/pyodide/${pkg.file_name}`, pkg.sha256);
 }
-await cp('node_modules/@embedpdf/pdfium/dist/pdfium.wasm', `${runtime}/pdfium.wasm`);
+await cp(join(pdfium, 'dist/pdfium.wasm'), `${runtime}/pdfium.wasm`);
 await mkdir(`${runtime}/ort`, { recursive: true });
-for (const name of await readdir('node_modules/onnxruntime-web/dist')) {
+for (const name of await readdir(join(ort, 'dist'))) {
   if (name.startsWith('ort-wasm-simd-threaded') && /\.(wasm|mjs)$/.test(name)) {
-    await cp(`node_modules/onnxruntime-web/dist/${name}`, `${runtime}/ort/${name}`);
+    await cp(join(ort, 'dist', name), `${runtime}/ort/${name}`);
   }
 }
 const sources = [];
@@ -54,23 +86,23 @@ async function copyPython(from, to) {
     }
   }
 }
-await copyPython('vendor/indra/indra_ocr', 'indra_ocr');
-await copyPython('python', '');
+await copyPython(join(root, 'vendor/indra/indra_ocr'), 'indra_ocr');
+await copyPython(join(root, 'python'), '');
 await writeFile(`${runtime}/python/manifest.json`, JSON.stringify({
-  upstream: (await readFile('vendor/indra/REVISION', 'utf8')).trim(), files: sources,
+  upstream: (await readFile(join(root, 'vendor/indra/REVISION'), 'utf8')).trim(), files: sources,
 }, null, 2));
-await cp('vendor/indra/LICENSE', `${runtime}/python/INDRA-LICENSE`);
-await cp('node_modules/@embedpdf/pdfium/LICENSE.pdfium', `${runtime}/PDFIUM-LICENSE`);
-await cp('node_modules/@embedpdf/pdfium/LICENSE', `${runtime}/EMBEDPDF-LICENSE`);
-await mkdir('public/models', { recursive: true });
+await cp(join(root, 'vendor/indra/LICENSE'), `${runtime}/python/INDRA-LICENSE`);
+await cp(join(pdfium, 'LICENSE.pdfium'), `${runtime}/PDFIUM-LICENSE`);
+await cp(join(pdfium, 'LICENSE'), `${runtime}/EMBEDPDF-LICENSE`);
+await mkdir(models, { recursive: true });
 const files = modelLock.files;
 // Weights are pinned to an immutable Hugging Face commit, never a moving tag.
-for (const name of files) await download(`https://huggingface.co/datalab-to/indra-ocr/resolve/${revision}/${name}`, `public/models/${name}`, modelLock.sha256[name]);
+for (const name of files) await download(`https://huggingface.co/datalab-to/indra-ocr/resolve/${revision}/${name}`, join(models, name), modelLock.sha256[name]);
 const hashes = Object.fromEntries(await Promise.all(files.map(async name => [name,
-  createHash('sha256').update(await readFile(`public/models/${name}`)).digest('hex')])));
-await writeFile('public/models/manifest.json', JSON.stringify({ revision, files, sha256: hashes }, null, 2));
+  createHash('sha256').update(await readFile(join(models, name))).digest('hex')])));
+await writeFile(join(models, 'manifest.json'), JSON.stringify({ revision, files, sha256: hashes }, null, 2));
 for (const file of ['LICENSE', 'NOTICE', 'THIRD_PARTY_NOTICES.md']) {
-  await cp(file, `${runtime}/${file}`);
+  await cp(join(root, file), `${runtime}/${file}`);
 }
-await cp('licenses', `${runtime}/licenses`, { recursive: true });
+await cp(join(root, 'licenses'), `${runtime}/licenses`, { recursive: true });
 console.log('Self-hosted runtime and versioned model assets ready.');

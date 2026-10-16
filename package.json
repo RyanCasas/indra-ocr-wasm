@@ -1,12 +1,23 @@
 {
-  "name": "indra-ocr-wasm",
+  "name": "@ryancasas/indra-ocr-wasm",
   "version": "0.1.0",
   "description": "Indra OCR running locally in browser WebAssembly workers",
   "type": "module",
   "license": "Apache-2.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "indra-ocr-assets": "./scripts/assets.mjs"
+  },
   "files": [
     "dist",
+    "scripts/assets.mjs",
+    "models.lock.json",
+    "python/**/*.py",
+    "vendor/indra/indra_ocr/**/*.py",
+    "vendor/indra/REVISION",
     "vendor/indra/LICENSE",
+    "assets/icon.svg",
     "NOTICE",
     "THIRD_PARTY_NOTICES.md",
     "licenses"
@@ -38,6 +49,11 @@
     "typescript": "5.9.3"
   },
   "author": "Ryan Casas",
+  "keywords": ["ocr", "wasm", "webassembly", "browser", "pdf", "indra"],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "engines": {
     "node": ">=22"
   },
