@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>Indra WASM — parity tests</title>
+<style>body{font:16px system-ui;margin:32px;max-width:1000px;background:#fafafa;color:#222}pre{white-space:pre-wrap;font:13px/1.5 monospace}button{font:inherit;padding:10px 16px}textarea{width:100%;height:200px}label{display:block;margin-top:24px}</style>
+<h1>Indra OCR · WebAssembly</h1>
+<p>Documents are processed in this browser. No files are sent to a server.</p>
+<button id="tests">Run upstream and parity tests</button>
+<label>Convert a PDF or image <input id="file" type="file" accept="application/pdf,image/*"></label>
+<pre id="log" role="status">Ready.</pre><textarea id="output" aria-label="OCR output" readonly></textarea>
+<script type="module">
+import { createIndra } from '/dist/index.js';
+const log = document.querySelector('#log');
+const write = s => { log.textContent += '\n' + s; console.log(s); };
+let engine;
+window.testState = { status: 'idle', logs: [] };
+const makeEngine = async options => createIndra({ ...options, onProgress: write, onLog: (s, stream) => {
+  write(s); window.testState.logs.push({ stream, message:s });
+}});
+window.runTests = async () => {
+  window.testState = { status: 'running', logs: [] };
+  try {
+    engine?.dispose(); engine = await makeEngine();
+    const files = ['test_inputs.py', 'test_textlayer.py'].map(name => ({ path:'/upstream/tests/'+name,
+      url: location.origin+'/vendor/indra/tests/'+name }));
+    files.push({path:'/browser-tests/test_pdfium.py',url:location.origin+'/tests/test_pdfium.py'});
+    for (const name of ['digital.pdf','locked.pdf','rotated.pdf','cropped.pdf','invisible.pdf','pdfium.json']) {
+      files.push({path:'/fixtures/'+name,url:location.origin+'/tests/fixtures/'+name});
+    }
+    const code = await engine.runTests(files);
+    window.testState.pytest = code;
+    if (code) throw new Error('pytest exit code: '+code);
+    const golden = await (await fetch('/tests/fixtures/golden.json')).json();
+    const results = [];
+    for (const suite of golden.suites) {
+      engine.dispose(); engine = await makeEngine(suite.options);
+      for (const test of suite.cases) {
+        const input = await (await fetch('/tests/fixtures/'+test.file)).arrayBuffer();
+        const actual = await engine.convert(input,test.options);
+        for(const page of actual) {
+          if(page.source==='error')throw new Error(`${suite.name}/${test.file}: ${page.note}`);
+          if(!Number.isFinite(page.timings.total_ms)||page.timings.total_ms<0)throw new Error('Invalid timings');
+        }
+        const {differences, metrics} = compare(actual,test.pages);
+        results.push({suite:suite.name,file:test.file,pages:actual.length,differences,metrics});
+        write(`${suite.name}/${test.file}: ${differences.length ? JSON.stringify(differences).slice(0,2000) : 'PASS'}`);
+      }
+    }
+    window.testState.parity = results;
+    if (results.some(r=>r.differences.length)) throw new Error('Native/WASM parity differences');
+    // A bad input rejects, then a valid input on the same engine still succeeds.
+    try { await engine.convert(new TextEncoder().encode('broken')); throw new Error('Expected InputError'); }
+    catch(e) { if (!e.message.includes('readable image')) throw e; }
+    const good = await (await fetch('/tests/fixtures/scan.png')).arrayBuffer();
+    const original = new Uint8Array(good); const copy = original.slice();
+    await Promise.all([engine.convert(original),engine.convert(original)]);
+    if (original.some((v,i)=>v!==copy[i])) throw new Error('Input buffer changed');
+    try { await engine.convert(original,{maxPages:-1}); throw new Error('Expected validation error'); }
+    catch(e) { if (!e.message.includes('maxPages')) throw e; }
+    engine.dispose();
+    try { await engine.convert(original); throw new Error('Expected disposed error'); }
+    catch(e) { if (!e.message.includes('disposed')) throw e; }
+    window.testState.status='passed'; write('ALL TESTS PASSED');
+  } catch(e) { window.testState.status='failed'; window.testState.error=String(e); write(e.stack||String(e)); engine?.dispose(); }
+  return window.testState;
+};
+function compare(actual, expected) {
+  const diffs=[];
+  const metrics={ maxCoordinateDelta:0, maxConfidenceDelta:0, exact:true };
+  function walk(a,b,path) {
+    if (path.endsWith('.timings')) return;
+    // Backend accumulation order can affect last bits; public confidences and
+    // geometry have explicit tolerances, all text/labels/order must match exactly.
+    if (typeof a==='number'&&typeof b==='number') {
+      const coordinate=/\.(box|bbox)\.\d+$/.test(path);
+      const confidence=path.endsWith('.conf');
+      const delta=Math.abs(a-b);
+      if(delta)metrics.exact=false;
+      if(coordinate)metrics.maxCoordinateDelta=Math.max(metrics.maxCoordinateDelta,delta);
+      if(confidence)metrics.maxConfidenceDelta=Math.max(metrics.maxConfidenceDelta,delta);
+      const tolerance=confidence?0.0002:coordinate?0.11:0.00001;
+      if (Math.abs(a-b)>tolerance) diffs.push({path,actual:a,expected:b});
+    } else if (a===null||b===null||typeof a!=='object'||typeof b!=='object') {
+      if (a!==b) diffs.push({path,actual:a,expected:b});
+    } else {
+      if (Array.isArray(a)&&a.length!==b.length) diffs.push({path:path+'.length',actual:a.length,expected:b.length});
+      for(const k of new Set([...Object.keys(a),...Object.keys(b)])) walk(a[k],b[k],path+'.'+k);
+    }
+  }
+  walk(actual,expected,'pages'); return {differences:diffs,metrics};
+}
+document.querySelector('#tests').onclick=window.runTests;
+document.querySelector('#file').onchange=async e=>{
+  try { engine?.dispose(); engine=await makeEngine(); const pages=await engine.convert(e.target.files[0]);
+    document.querySelector('#output').value=pages.map(p=>p.markdown??p.text).join('\n\n'); write(`Read ${pages.length} pages.`);
+  } catch(e) { write(String(e)); }
+};
+if(new URLSearchParams(location.search).has('run')) window.runTests();
+</script></html>

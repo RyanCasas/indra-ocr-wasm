@@ -1,0 +1,52 @@
+{
+  "name": "indra-ocr-wasm",
+  "version": "0.1.0",
+  "description": "Indra OCR running locally in browser WebAssembly workers",
+  "type": "module",
+  "license": "Apache-2.0",
+  "files": [
+    "dist",
+    "vendor/indra/LICENSE",
+    "NOTICE",
+    "THIRD_PARTY_NOTICES.md",
+    "licenses"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs && tsc --emitDeclarationOnly",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/*.test.mjs",
+    "assets": "node scripts/assets.mjs",
+    "fixtures": "python3 scripts/fixtures.py",
+    "test:browser": "node scripts/browser-tests.mjs",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "@embedpdf/pdfium": "2.15.1",
+    "onnxruntime-web": "1.30.0",
+    "pyodide": "0.29.3"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12",
+    "playwright": "1.64.1",
+    "typescript": "5.9.3"
+  },
+  "author": "Ryan Casas",
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RyanCasas/indra-ocr-wasm.git"
+  },
+  "homepage": "https://github.com/RyanCasas/indra-ocr-wasm#readme",
+  "bugs": {
+    "url": "https://github.com/RyanCasas/indra-ocr-wasm/issues"
+  }
+}

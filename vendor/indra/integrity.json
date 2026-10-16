@@ -1,0 +1,20 @@
+{
+  "indra_ocr/parallel.py": "8bd716415ce126e9b6bf9de537f7a551b7a5274f6ffbcba572a3454320416ea2",
+  "indra_ocr/layout_post.py": "81d876bb3ad96079eb1c7b775b35150722ed3b44cd7ff963ced56ac07e7a034e",
+  "indra_ocr/__main__.py": "376e089316494302f6ee3b0c0816a33e7254fb819a63571ee07ba8b8a73bf3b8",
+  "indra_ocr/rec_preproc.py": "3027c3509290e01b2ec781a3a1b2a59c529cb1b1060cc337081f61663fb4ba4c",
+  "indra_ocr/line_mask.py": "e0efeab7149678b7a752283de855ff56a199204fc6732c785c0c623e757a6643",
+  "indra_ocr/math.py": "6d0087e5e557a2bcbe4f2caf7f464d50c703dfcfec3397ff4f97b3cceaea73f5",
+  "indra_ocr/order_post.py": "362a2b50b3db52df7d9593f1753c1931c76c21fa2650b221d781d788a385087c",
+  "indra_ocr/cli.py": "7c9a342bb4573197cd736f9d42de978558e06753bf24f10083091cb79fcd27c2",
+  "indra_ocr/textlayer.py": "34e7ab4cbe231f495f9df3abbd9880c22ceb1c0eff84d88648307d4666d63327",
+  "indra_ocr/vocab.py": "7660d70fb6384094958578452ee86fed813377a63ee1a58c5203cad607219929",
+  "indra_ocr/det_post.py": "682312ad60942b7a57f82041fbdabbc9cfd727738b9e6f53f20ffd52e42b6035",
+  "indra_ocr/pipeline.py": "fa98f1e36da0884085084bc1d8ac004381e2394ce4811e04aae269517401fc48",
+  "indra_ocr/viewer.py": "5ce7f66574580c903348c2c8e94d9d882540d7c6939858202f3f89ff61f295d0",
+  "indra_ocr/models.py": "992bbba47ce18e14fd5fabb4acc1b62a9682470905ce6fb748a1dd388dba5ba9",
+  "indra_ocr/__init__.py": "927dedd7f05b3d94ca50888b17d3172ea6093382b828071e614f9b3d31f92596",
+  "indra_ocr/document.py": "d0579b1528d8297cc97142a78f22f0ff225b6e6302d8e667b916ff280e5a1709",
+  "tests/test_inputs.py": "fe8b1c1471b5c9a2433d054e2e828c53dca794d4286054438f65f20c945538b4",
+  "tests/test_textlayer.py": "2a1d62ff9cceb94f7b7596fb736e485867072dc933c64541597eaeeceb44c690"
+}

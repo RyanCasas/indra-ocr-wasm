@@ -1,0 +1,239 @@
+{
+  "browser": "firefox",
+  "status": "passed",
+  "pytestExitCode": 0,
+  "originalTests": {
+    "passed": 26,
+    "skipped": 1,
+    "skipReason": "pikepdf is unavailable in Pyodide; encrypted PDF behavior is covered by the additional test"
+  },
+  "additionalPdfiumTests": 5,
+  "parity": [
+    {
+      "suite": "auto",
+      "file": "scan.png",
+      "pages": 1,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "auto",
+      "file": "chinese.png",
+      "pages": 1,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "auto",
+      "file": "pages.tiff",
+      "pages": 3,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "auto",
+      "file": "digital.pdf",
+      "pages": 2,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "auto",
+      "file": "hybrid.pdf",
+      "pages": 1,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "auto",
+      "file": "table.pdf",
+      "pages": 1,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "auto",
+      "file": "rotated.pdf",
+      "pages": 2,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "auto",
+      "file": "cropped.pdf",
+      "pages": 2,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "auto",
+      "file": "invisible.pdf",
+      "pages": 1,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "auto",
+      "file": "locked.pdf",
+      "pages": 2,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "auto",
+      "file": "digital.pdf",
+      "pages": 1,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "ocr",
+      "file": "scan.png",
+      "pages": 1,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "ocr",
+      "file": "turned.png",
+      "pages": 1,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "ocr",
+      "file": "skew.png",
+      "pages": 1,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "ocr",
+      "file": "digital.pdf",
+      "pages": 2,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "text",
+      "file": "digital.pdf",
+      "pages": 2,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "text",
+      "file": "table.pdf",
+      "pages": 1,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "math",
+      "file": "scan.png",
+      "pages": 1,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "math",
+      "file": "formula.png",
+      "pages": 1,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    },
+    {
+      "suite": "math",
+      "file": "digital.pdf",
+      "pages": 2,
+      "differences": [],
+      "metrics": {
+        "maxCoordinateDelta": 0,
+        "maxConfidenceDelta": 0,
+        "exact": true
+      }
+    }
+  ],
+  "executedAt": "2026-10-16T15:54:25.495Z",
+  "production": {
+    "pages": 1,
+    "source": "ocr",
+    "testOnlyPackagesLoaded": false
+  }
+}

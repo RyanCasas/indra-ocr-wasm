@@ -1,0 +1,20 @@
+Indra OCR WASM
+Copyright 2026 Ryan Casas
+
+The browser adapters, TypeScript API, build scripts, and documentation in this
+project are licensed under the Apache License, Version 2.0. See LICENSE.
+
+This project includes unmodified source code and tests from datalab-to/indra:
+https://github.com/datalab-to/indra
+Revision: 3d773aeedc5d79d1d0a2a04007a9075cd71a59f4
+The upstream license is preserved in vendor/indra/LICENSE.
+The Ryan Casas copyright notice does not replace upstream authorship or notices.
+
+Indra model weights are downloaded separately and are not licensed under
+Apache-2.0. Their Modified OpenRAIL-M license is preserved in
+licenses/INDRA-MODEL-LICENSE and accompanies prepared model assets.
+Model-generated reference outputs in tests/fixtures/golden.json are distributed
+under that same model license, including its use and redistribution conditions.
+
+See THIRD_PARTY_NOTICES.md for dependency and fixture attributions.
+This project is independent of Datalab and does not imply its endorsement.

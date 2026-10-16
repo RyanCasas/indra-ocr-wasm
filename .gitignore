@@ -1,0 +1,24 @@
+node_modules/
+dist/
+public/runtime/
+public/models/
+.venv/
+__pycache__/
+.pytest_cache/
+test-results/
+
+# Local secrets and credentials
+.env
+.env.*
+!.env.example
+.npmrc
+*.key
+*.pem
+
+# Local tooling and package artifacts
+.DS_Store
+Thumbs.db
+*.log
+*.tgz
+coverage/
+playwright-report/
