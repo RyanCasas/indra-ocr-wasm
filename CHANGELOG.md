@@ -1,0 +1,68 @@
+# Changelog
+
+Versions refer to the `@ryancasas/indra-ocr-wasm` npm package, independently of
+the upstream Indra OCR version. Release dates use UTC.
+
+## [0.2.1] - 2026-10-16
+
+### Added
+
+- A changelog covering the stable npm releases, included in the npm package and
+  linked from the README.
+
+### Changed
+
+- Updated the README with npm installation and upgrade instructions, a browser
+  API example using the installed asset paths, current CI results, and the
+  automatic release rules.
+
+## [0.2.0] - 2026-10-16
+
+### Added
+
+- Automatic npm publishing after Chromium, Firefox, WebKit, and native CI checks
+  pass on `main`, with Conventional Commit messages determining SemVer bumps.
+- npm trusted publishing with provenance, GitHub releases, and version tags.
+- Tests for inference failures, timeouts, late responses, worker disposal,
+  transferable tensor data, and release version decisions.
+- Browser checks that verify conversion and native-output parity without
+  cross-origin isolation or a controlling service worker.
+
+### Changed
+
+- Adapted the browser OCR, document, math, and ONNX inference paths to use
+  asynchronous calls while retaining the pinned upstream algorithms and helpers.
+- Replaced the shared-memory inference bridge with ordinary worker messages and
+  transferable output buffers. ONNX inference continues to use one WASM thread.
+- `responseBytes` now limits the total tensor bytes in an inference response
+  instead of allocating a fixed shared response buffer.
+
+### Removed
+
+- The requirement for `SharedArrayBuffer`, cross-origin isolation, and COOP/COEP
+  hosting headers. A service worker is not needed as a hosting workaround.
+
+## [0.1.0] - 2026-10-16
+
+### Added
+
+- Initial stable npm package with a TypeScript API for converting PDFs and
+  images entirely in browser WebAssembly workers.
+- OCR and PDF text-layer extraction, reading order, layout blocks, Markdown,
+  Chinese recognition, and optional LaTeX recognition.
+- Pyodide, NumPy, OpenCV, PDFium, and ONNX Runtime Web adapters for Indra OCR 0.3.2.
+- The `indra-ocr-assets` command to prepare self-hosted runtime files and pinned,
+  checksum-verified model weights.
+- An interactive conversion and test page, upstream tests running in WASM, and
+  native-output parity fixtures covering 20 cases / 29 pages.
+- Dependency, upstream, model, and fixture license notices.
+
+### Requirements
+
+- This version requires cross-origin isolation and COOP/COEP hosting headers
+  for its synchronous shared-memory inference bridge. Upgrade to 0.2.0 or later
+  to remove that requirement.
+
+[0.2.1]: https://github.com/RyanCasas/indra-ocr-wasm/releases/tag/v0.2.1
+[0.2.0]: https://github.com/RyanCasas/indra-ocr-wasm/releases/tag/v0.2.0
+[0.1.0]: https://github.com/RyanCasas/indra-ocr-wasm/tree/536123cd749d54d47bb043603c0b9cc22bc421cb

@@ -2,9 +2,14 @@
 
 # Indra OCR WASM
 
-Indra OCR 0.3.2 running entirely in the browser, with no OCR server.
+Browser WebAssembly port of Indra OCR 0.3.2, with no OCR server.
 A TypeScript API converts PDFs and images into text, Markdown, and JSON with lines,
 bounding boxes, blocks, reading order, orientation, and timings.
+
+Install [@ryancasas/indra-ocr-wasm from npm](https://www.npmjs.com/package/@ryancasas/indra-ocr-wasm).
+Starting with package **0.2.0**, cross-origin isolation, COOP/COEP headers,
+SharedArrayBuffer, and service workers are **not required**. Documents stay in
+the browser; inference runs on the CPU using WebAssembly.
 
 This is a **WebAssembly port**: it adapts the Python pipeline to asynchronous
 inference and runs it with CPython/Pyodide, NumPy, and OpenCV compiled to WASM.
@@ -30,7 +35,7 @@ Node.js 22 or later is required to prepare the static assets.
 Install the npm package and prepare assets in your app's static directory:
 
 ```bash
-npm install @ryancasas/indra-ocr-wasm
+npm install @ryancasas/indra-ocr-wasm@latest
 npx indra-ocr-assets --out-dir public
 mkdir -p public/indra
 cp -R node_modules/@ryancasas/indra-ocr-wasm/dist/. public/indra/
@@ -43,9 +48,25 @@ directory. TypeScript projects can import types from `@ryancasas/indra-ocr-wasm`
 Runtime archives and model weights are downloaded separately by the asset command;
 they are not bundled in the npm tarball.
 
-To run the repository's demo and tests, clone the repository and run:
+Your static directory will contain:
+
+```text
+public/
+  indra/       # Browser modules, workers, type declarations, and licenses
+  runtime/     # Pyodide, NumPy, OpenCV, PDFium, ONNX Runtime, and Python sources
+  models/      # Pinned model weights, metadata, manifest, and model license
+```
+
+When upgrading the npm package, rerun the asset command and copy the new `dist/`
+files so the browser modules and prepared runtime stay in sync.
+
+### Run the repository demo
+
+To run the demo and tests from source:
 
 ```bash
+git clone https://github.com/RyanCasas/indra-ocr-wasm.git
+cd indra-ocr-wasm
 npm ci
 npm run build
 npm run assets
@@ -59,25 +80,43 @@ the network.
 
 ## Browser API
 
-Serve `dist/` and the `public/runtime/` and `public/models/` directories. The latter
-two are exposed as `/runtime/` and `/models/` by the example server.
+This example uses the npm installation layout above: `/indra/` for the browser
+modules, `/runtime/` for the runtime, and `/models/` for the weights. The repository
+demo serves the browser modules at `/dist/` instead.
 
 ```html
+<input id="document" type="file" accept="application/pdf,image/*" disabled>
+<pre id="output">Loading OCR runtime…</pre>
+
 <script type="module">
-  import { createIndra } from '/dist/index.js';
+  import { createIndra } from '/indra/index.js';
+
+  const input = document.querySelector('#document');
+  const output = document.querySelector('#output');
 
   const indra = await createIndra({
     runtimeURL: '/runtime/',
     modelURL: '/models/',
     mode: 'auto',
-    onProgress: message => console.log(message),
+    onProgress: message => { output.textContent = message; },
   });
+  input.disabled = false;
+  output.textContent = 'Choose a PDF or image.';
 
-  document.querySelector('input[type=file]').onchange = async event => {
-    const pages = await indra.convert(event.target.files[0], { maxPages: 10 });
-    for (const page of pages) {
-      console.log(page.page, page.source, page.markdown ?? page.text);
-      console.log(page.lines, page.blocks, page.rotation, page.skew, page.timings);
+  input.onchange = async () => {
+    const file = input.files[0];
+    if (!file) return;
+    input.disabled = true;
+    try {
+      const pages = await indra.convert(file, { maxPages: 10 });
+      output.textContent = pages.map(page =>
+        page.source === 'error' ? page.note : (page.markdown ?? page.text)
+      ).join('\n\n');
+      console.log(pages); // Includes lines, blocks, coordinates, and timings.
+    } catch (error) {
+      output.textContent = String(error);
+    } finally {
+      input.disabled = false;
     }
   };
 
@@ -98,7 +137,9 @@ conversions; `dispose()` cancels pending work and releases the workers.
 - `mode: 'auto' | 'ocr' | 'text'` (default: `auto`).
 - `dpi: 200`, `pdfOrder: true`, `imageOcr: true`, `furniture: false`.
 - `math: true` enables the classifier and LaTeX recognition; default: `false`.
-- `runtimeURL`, `modelURL`: relative or absolute static asset directories.
+- `runtimeURL`, `modelURL`: relative or absolute static asset directories;
+  defaults: `/runtime/` and `/models/`. Set these explicitly for apps hosted under
+  a subpath.
 - `onProgress(message)` and `onLog(message, stream)`.
 - `responseBytes`: limit on total tensor bytes per ONNX response; default: 64 MiB.
 - `inferenceTimeoutMs`: timeout per inference; default: 120,000 ms.
@@ -112,12 +153,15 @@ Requires HTTPS or localhost, WebAssembly SIMD, and module workers. Cross-origin
 isolation, COOP/COEP headers, SharedArrayBuffer, and service workers are not required.
 The browser pipeline awaits inference results sent through ordinary worker
 messages with transferable output buffers; ONNX inference uses one WASM thread.
+Existing sites do not need to enable cross-origin isolation to use the library.
 
 Serve `.wasm` files with `Content-Type: application/wasm`. The included server
 already applies this setting and serves without COOP/COEP headers. Static hosting
 can be used. Assets are served from the same origin; configure CORS if you use a
-different origin for runtime archives or model weights. Experimental JSPI APIs
-and WebGPU are not required.
+different origin for runtime archives or model weights. Keep the browser modules
+and worker scripts together on the application's origin. Experimental JSPI APIs
+and WebGPU are not required. Opening the HTML directly through `file://` is not
+a supported deployment.
 
 The prepared runtime and dependencies occupy approximately 116 MB uncompressed;
 the models, including math models, occupy 37 MB. Math models are loaded only when
@@ -133,7 +177,8 @@ custom persistent cache; HTTP caching can be applied to versioned assets.
 The **27 original tests** are copied without modifications into
 [vendor/indra/tests](vendor/indra/tests). `npm test` checks their hashes and those
 of the upstream code, as well as tensor transport, including 64-bit integers,
-scalars, errors, and memory limits.
+scalars, response size limits, inference errors, and timeouts. It also tests
+automatic SemVer decisions and release guards using temporary Git repositories.
 
 The test button runs `pytest` **inside the production WASM worker**:
 
@@ -166,6 +211,8 @@ browser cache.
 
 ### Automated testing
 
+After preparing the repository with `npm ci`, `npm run build`, and `npm run assets`:
+
 ```bash
 npm test
 npm run typecheck
@@ -179,10 +226,11 @@ no COOP/COEP headers, cross-origin isolation, or controlling service worker, blo
 requests to external servers, and writes `test-results/browser.json`.
 It also checks concurrent conversion, recovery after invalid inputs, buffer
 ownership, and engine disposal.
-CI includes Chromium, Firefox, and WebKit, as well as the native tests. The local
-validation reports in [tests/validation](tests/validation) cover Chromium and
-Firefox. WebKit could not start in this environment because native dependencies
-were missing; CI is configured to install them with `--with-deps`.
+CI runs Chromium, Firefox, WebKit, and the original native tests. All four jobs
+passed for the [0.2.0 release](https://github.com/RyanCasas/indra-ocr-wasm/actions/runs/38939405940).
+Each browser job uploads its report as a workflow artifact. The older reports in
+[tests/validation](tests/validation) are historical snapshots; current CI artifacts
+include the page's isolation state and the latest parity results.
 
 To run the original tests natively or regenerate the reference outputs:
 
@@ -197,10 +245,44 @@ Regeneration requires DejaVu Sans/Serif and Noto Sans CJK fonts at the Linux pat
 specified in `scripts/fixtures.py`. Fixtures are already included; neither Python
 nor these fonts are needed to run the browser tests.
 
+## Releases
+
+See [CHANGELOG.md](CHANGELOG.md) for release history and changes in each version.
+
+The [GitHub Actions workflow](.github/workflows/test.yml) publishes to npm after
+all browser and native checks pass on a push to `main`. Version bumps follow
+Conventional Commit messages:
+
+- `fix: ...` or `perf: ...` → patch release.
+- `feat: ...` → minor release.
+- A `!` before the colon, such as `feat(api)!: ...`, or a `BREAKING CHANGE: ...`
+  footer → major release.
+
+The largest change since the last stable release tag determines the bump.
+Documentation and maintenance commits alone do not publish. Commit messages
+without a recognized Conventional Commit prefix do not trigger a release either;
+when squash merging, use the prefix in the PR title.
+
+Publishing uses npm trusted publishing with provenance and creates a GitHub
+release and `vX.Y.Z` tag. CI updates the package version in its checkout without
+committing a version bump back to `main`, so the repository's `package.json`
+version can differ from the latest version on npm. npm may take a few minutes to
+make a successfully submitted version available.
+
+Preview the version calculated from committed history:
+
+```bash
+git fetch origin --tags
+npm run release -- --dry-run
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md#automated-npm-releases) for the full release
+rules and trusted publisher setup.
+
 ## Project structure and licenses
 
 - `vendor/indra/`: original code and tests, revision, hashes, and license.
-- `python/`: dependency adapters and browser entry point.
+- `python/`: asynchronous browser pipeline, dependency adapters, and entry point.
 - `src/`: TypeScript API, workers, binary transport, and PDFium bridge.
 - `scripts/`: build, asset preparation, fixture generation, and test scripts.
 - `tests/`: browser harness, native fixtures, and transport tests.

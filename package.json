@@ -1,6 +1,6 @@
 {
   "name": "@ryancasas/indra-ocr-wasm",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "description": "Indra OCR running locally in browser WebAssembly workers",
   "type": "module",
   "license": "Apache-2.0",
@@ -18,6 +18,7 @@
     "vendor/indra/REVISION",
     "vendor/indra/LICENSE",
     "assets/icon.svg",
+    "CHANGELOG.md",
     "NOTICE",
     "THIRD_PARTY_NOTICES.md",
     "licenses"
