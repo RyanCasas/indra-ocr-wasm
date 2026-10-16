@@ -190,9 +190,22 @@ applied to versioned assets.
 
 ## Performance comparison (0.3.0)
 
-Measured on 2026-10-16 with an **AMD Ryzen 7 8845HS / Radeon 780M (RDNA 3)**,
-Linux 7.0.0-38, Chromium 156.0.8078.4 headless, ONNX Runtime Web 1.30.0,
-Pyodide 0.29.3, and the pinned models above. The GPU adapter reported
+Measured on **2026-10-16** using the pinned models above and this machine:
+
+| Component | Benchmark machine / configuration |
+| --- | --- |
+| CPU | AMD Ryzen 7 8845HS, 8 cores / 16 threads, x86-64 |
+| GPU | Integrated AMD Radeon 780M, RDNA 3; 8 GiB reported by `amdgpu` as VRAM |
+| System memory | 64 GB (2 × 32 GB) DDR5-5600 |
+| OS | Ubuntu 26.04.1 LTS, Linux 7.0.0-38-generic |
+| Graphics stack | `amdgpu`, Mesa Vulkan drivers 26.0.8-1ubuntu0.3, Vulkan loader 1.4.341.0-1 |
+| Browser | Playwright Chromium 156.0.8078.4, headless, with the Vulkan flags below |
+| ONNX Runtime Web | 1.30.0; one WASM thread, with WebGPU enabled for non-math models in automatic mode |
+| Python runtime | Pyodide 0.29.3 |
+| PDFium package | `@embedpdf/pdfium` 2.15.1 |
+| Node.js | 24.21.0, serving the local assets and running the benchmark harness |
+
+The GPU adapter reported
 `isFallbackAdapter: false`; the benchmark observed actual WebGPU compute dispatches
 from every exercised non-math model. The four math models were created with
 WASM and produced no GPU compute dispatches. All three variants used the same
