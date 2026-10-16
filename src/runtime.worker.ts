@@ -1,11 +1,10 @@
 import { loadPyodide, type PyodideInterface } from 'pyodide';
 import { createPdfium } from './pdfium';
-import { receive, RESPONSE_BYTES } from './protocol';
+import { InferenceClient } from './inference-client';
 
 let py: PyodideInterface;
 let inferenceWorker: Worker;
-let response: SharedArrayBuffer;
-let timeoutMs = 120_000;
+let inference: InferenceClient;
 let sequence = Promise.resolve();
 
 function progress(message: string) { self.postMessage({ kind: 'progress', message }); }
@@ -15,8 +14,6 @@ async function get(url: string): Promise<Uint8Array> {
   return new Uint8Array(await res.arrayBuffer());
 }
 async function init(options: any) {
-  response = new SharedArrayBuffer(options.responseBytes ?? RESPONSE_BYTES);
-  timeoutMs = options.inferenceTimeoutMs ?? timeoutMs;
   const runtimeURL = options.runtimeURL;
   progress('Loading Python, NumPy and OpenCV WebAssembly');
   py = await loadPyodide({ indexURL: new URL('pyodide/', runtimeURL).href,
@@ -47,21 +44,13 @@ async function init(options: any) {
     inferenceWorker.postMessage({ kind: 'init', runtimeURL: new URL('ort/', runtimeURL).href,
       modelURL: options.modelURL, sha256: modelManifest.sha256, models: files.filter(f => f.endsWith('.onnx')) });
   });
-  // The runtime worker blocks, while the independent inference worker resolves
-  // ORT's promises. No blocking Atomics.wait ever runs on the browser UI thread.
+  inference = new InferenceClient(inferenceWorker, options.inferenceTimeoutMs, options.responseBytes);
+  // Python yields at inference calls, allowing ordinary worker messages to
+  // resolve the promise. No shared memory or synchronous waits are needed.
   py.registerJsModule('indra_bridge', {
     pdfium, input_names: new Map(Object.entries(inputs)),
     inference(model: string, feed: unknown, outputs: unknown) {
-      const state = new Int32Array(response, 0, 4);
-      Atomics.store(state, 0, 0);
-      inferenceWorker.postMessage({ kind: 'run', model, feed, outputs, buffer: response });
-      if (Atomics.wait(state, 0, 0, timeoutMs) === 'timed-out') {
-        // A late response must never be mistaken for the next request's output.
-        response = new SharedArrayBuffer(response.byteLength);
-        throw new Error(`ONNX inference timed out after ${timeoutMs} ms`);
-      }
-      try { return receive(response); }
-      catch (e) { self.postMessage({kind: 'stderr', message: e instanceof Error ? e.stack : String(e)}); throw e; }
+      return inference.run(model, feed, outputs);
     },
   });
   py.runPython("import sys; sys.path.insert(0, '/app')");
@@ -82,7 +71,7 @@ async function handle(data: any) {
       const path = `/input-${data.id}`; // content sniffing, never trust a file extension
       py.FS.writeFile(path, new Uint8Array(data.bytes));
       const entry = py.pyimport('browser_entry');
-      try { result = JSON.parse(entry.convert(path, JSON.stringify(data.options))); }
+      try { result = JSON.parse(await entry.convert(path, JSON.stringify(data.options))); }
       finally { entry.destroy(); py.FS.unlink(path); }
     } else if (data.kind === 'test') {
       // Test-only dependencies never load while converting user documents.
@@ -94,6 +83,7 @@ async function handle(data: any) {
       const entry = py.pyimport('browser_entry');
       try { result = entry.run_tests(); } finally { entry.destroy(); }
     } else if (data.kind === 'dispose') {
+      inference?.dispose();
       inferenceWorker?.terminate();
       self.close();
       return;

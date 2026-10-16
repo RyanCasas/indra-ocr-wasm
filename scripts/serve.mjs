@@ -7,8 +7,6 @@ const mime = {'.html':'text/html; charset=utf-8','.js':'text/javascript','.mjs':
   '.wasm':'application/wasm','.json':'application/json','.png':'image/png','.svg':'image/svg+xml'};
 export function serve(port=5173) {
   const server=createServer(async(req,res)=>{
-    res.setHeader('Cross-Origin-Opener-Policy','same-origin');
-    res.setHeader('Cross-Origin-Embedder-Policy','require-corp');
     res.setHeader('Cache-Control','no-store');
     try {
       const url=new URL(req.url,'http://localhost');

@@ -9,6 +9,7 @@ export interface IndraOptions {
   imageOcr?: boolean;
   furniture?: boolean;
   math?: boolean;
+  /** Maximum total tensor bytes per ONNX response (default: 64 MiB). */
   responseBytes?: number;
   inferenceTimeoutMs?: number;
   onProgress?: (message: string) => void;
@@ -56,9 +57,6 @@ export class Indra {
   }
 
   static async create(options: IndraOptions = {}): Promise<Indra> {
-    if (!globalThis.crossOriginIsolated || typeof SharedArrayBuffer === 'undefined') {
-      throw new Error('Indra requires cross-origin isolation. Serve with Cross-Origin-Opener-Policy: same-origin and Cross-Origin-Embedder-Policy: require-corp over HTTPS or localhost.');
-    }
     if (options.mode !== undefined && !['auto', 'ocr', 'text'].includes(options.mode)) throw new TypeError('Invalid mode');
     if (options.dpi !== undefined && (!Number.isFinite(options.dpi) || options.dpi <= 0)) throw new TypeError('dpi must be positive');
     if (options.responseBytes !== undefined && (!Number.isSafeInteger(options.responseBytes) || options.responseBytes < 1024)) throw new TypeError('responseBytes must be an integer >= 1024');

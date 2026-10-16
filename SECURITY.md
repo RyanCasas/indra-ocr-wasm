@@ -23,7 +23,7 @@ Workers isolate scheduling, but they do not eliminate memory-exhaustion risks
 from very large or malformed files.
 
 The included HTTP server is a development and test server. Use a maintained
-static server for production and configure the headers documented in README.md.
+static server for production and follow the hosting requirements in README.md.
 
 ## Dependency audit scope
 

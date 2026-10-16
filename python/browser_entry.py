@@ -1,22 +1,25 @@
-"""Browser entry point; all OCR and document logic lives in vendor/indra."""
+"""Browser entry point for the asynchronous WASM pipeline."""
 import json
 from dataclasses import asdict
-from pathlib import Path
-import indra_ocr
+from web_document import WebConverter
+from web_pipeline import WebOCR
 
 _converter = None
 
 
 def configure(options):
     global _converter
-    _converter = indra_ocr.load(path="/models", threads=1, **json.loads(options))
+    config = json.loads(options)
+    ocr = WebOCR("/models", threads=1, furniture=config.pop("furniture", False),
+                 math=config.pop("math", False))
+    _converter = WebConverter(ocr, **config)
 
 
-def convert(path, options):
+async def convert(path, options):
     if _converter is None:
         raise RuntimeError("Indra is not initialized")
     return json.dumps([{"page": i, **asdict(page), "text": page.text}
-                       for i, page in _converter.convert(path, **json.loads(options))],
+                       async for i, page in _converter.convert(path, **json.loads(options))],
                       ensure_ascii=False, allow_nan=False)
 
 

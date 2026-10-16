@@ -9,6 +9,8 @@ Retain these notices when redistributing the project or its prepared assets.
 - Project: [datalab-to/indra](https://github.com/datalab-to/indra).
 - Revision: `3d773aeedc5d79d1d0a2a04007a9075cd71a59f4` (Indra OCR 0.3.2).
 - Location: `vendor/indra/indra_ocr/` and `vendor/indra/tests/`, copied unchanged.
+- Browser adaptations: `python/web_document.py`, `python/web_pipeline.py`, and
+  `python/web_math.py` change inference calls to await asynchronous results.
 - License: [Apache-2.0](vendor/indra/LICENSE).
 
 ## Indra models and reference outputs

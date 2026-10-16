@@ -1,5 +1,5 @@
 import * as ort from 'onnxruntime-web/wasm';
-import { publish, type TensorWire } from './protocol';
+import { copyTensors, type TensorWire } from './protocol';
 
 const sessions = new Map<string, ort.InferenceSession>();
 self.onmessage = async ({ data }) => {
@@ -40,12 +40,16 @@ self.onmessage = async ({ data }) => {
       try {
         result = await session.run(feed);
         const names = data.outputs ?? session.outputNames;
-        publish(data.buffer, names.map((key: string) => ({ type: result![key].type,
-          dims: [...result![key].dims], data: result![key].data as ArrayBufferView })));
+        const tensors = copyTensors(names.map((key: string) => ({ type: result![key].type,
+          dims: [...result![key].dims], data: result![key].data as ArrayBufferView })), data.responseBytes);
+        self.postMessage({ kind: 'result', id: data.id, tensors },
+          { transfer: tensors.map(tensor => tensor.data.buffer as ArrayBuffer) });
       } finally {
         Object.values(feed).forEach(t => t.dispose());
         if (result) Object.values(result).forEach(t => t.dispose());
       }
-    } catch (e) { publish(data.buffer, new Error(e instanceof Error ? e.stack : String(e))); }
+    } catch (e) {
+      self.postMessage({ kind: 'error', id: data.id, error: e instanceof Error ? e.stack : String(e) });
+    }
   }
 };

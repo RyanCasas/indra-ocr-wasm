@@ -9,6 +9,8 @@ https://github.com/datalab-to/indra
 Revision: 3d773aeedc5d79d1d0a2a04007a9075cd71a59f4
 The upstream license is preserved in vendor/indra/LICENSE.
 The Ryan Casas copyright notice does not replace upstream authorship or notices.
+The python/web_document.py, python/web_pipeline.py, and python/web_math.py files
+adapt upstream algorithms to asynchronous inference for the browser.
 
 Indra model weights are downloaded separately and are not licensed under
 Apache-2.0. Their Modified OpenRAIL-M license is preserved in

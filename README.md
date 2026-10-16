@@ -6,9 +6,9 @@ Indra OCR 0.3.2 running entirely in the browser, with no OCR server.
 A TypeScript API converts PDFs and images into text, Markdown, and JSON with lines,
 bounding boxes, blocks, reading order, orientation, and timings.
 
-This is a **WebAssembly compatibility port**: it preserves the original Python
-pipeline without modifications and runs it with CPython/Pyodide, NumPy, and OpenCV
-compiled to WASM. It adapts ONNX Runtime to the `onnxruntime-web` WASM backend and
+This is a **WebAssembly port**: it adapts the Python pipeline to asynchronous
+inference and runs it with CPython/Pyodide, NumPy, and OpenCV compiled to WASM.
+It adapts ONNX Runtime to the `onnxruntime-web` WASM backend and
 pypdfium2 to actual PDFium WASM. Users do not need Python installed on their devices.
 
 Upstream code is pinned to
@@ -36,7 +36,7 @@ mkdir -p public/indra
 cp -R node_modules/@ryancasas/indra-ocr-wasm/dist/. public/indra/
 ```
 
-Serve `public/` with the headers listed under [Hosting and distribution](#hosting-and-distribution),
+Serve `public/` over HTTPS or localhost as described under [Hosting and distribution](#hosting-and-distribution),
 then import `createIndra` from `/indra/index.js` in a browser module. Keep
 `index.js`, `runtime.worker.js`, and `inference.worker.js` together in that
 directory. TypeScript projects can import types from `@ryancasas/indra-ocr-wasm`.
@@ -100,7 +100,7 @@ conversions; `dispose()` cancels pending work and releases the workers.
 - `math: true` enables the classifier and LaTeX recognition; default: `false`.
 - `runtimeURL`, `modelURL`: relative or absolute static asset directories.
 - `onProgress(message)` and `onLog(message, stream)`.
-- `responseBytes`: ONNX response buffer limit; default: 64 MiB.
+- `responseBytes`: limit on total tensor bytes per ONNX response; default: 64 MiB.
 - `inferenceTimeoutMs`: timeout per inference; default: 120,000 ms.
 
 `convert` options: `maxPages` (0 = all pages) and `password` for encrypted PDFs.
@@ -108,24 +108,23 @@ Exported interfaces are defined in [src/index.ts](https://github.com/RyanCasas/i
 
 ## Hosting and distribution
 
-Requires HTTPS or localhost, WebAssembly SIMD, module workers, and cross-origin
-isolation for `SharedArrayBuffer`. Send these headers with the main page:
-
-```http
-Cross-Origin-Opener-Policy: same-origin
-Cross-Origin-Embedder-Policy: require-corp
-```
+Requires HTTPS or localhost, WebAssembly SIMD, and module workers. Cross-origin
+isolation, COOP/COEP headers, SharedArrayBuffer, and service workers are not required.
+The browser pipeline awaits inference results sent through ordinary worker
+messages with transferable output buffers; ONNX inference uses one WASM thread.
 
 Serve `.wasm` files with `Content-Type: application/wasm`. The included server
-already applies these settings. Any static hosting service that supports these
-settings can be used. Assets are served from the same origin; configure CORS and
-COEP if you use a different origin. Experimental JSPI APIs and WebGPU are not
-required.
+already applies this setting and serves without COOP/COEP headers. Static hosting
+can be used. Assets are served from the same origin; configure CORS if you use a
+different origin for runtime archives or model weights. Experimental JSPI APIs
+and WebGPU are not required.
 
 The prepared runtime and dependencies occupy approximately 116 MB uncompressed;
 the models, including math models, occupy 37 MB. Math models are loaded only when
 `math` is enabled. The initial download is larger than for a manual Rust/C++ port;
-this design preserves the algorithms and allows direct reuse of the Python tests.
+this design reuses the algorithms and their synchronous helpers. The browser's
+asynchronous OCR, document, and math adaptations live in `python/web_*.py`; the
+pinned upstream files remain unchanged for reference and upstream unit tests.
 Performance and memory usage depend on the browser and document. There is no
 custom persistent cache; HTTP caching can be applied to versioned assets.
 
@@ -175,9 +174,11 @@ npm run test:browser
 # Optional: install the corresponding engine and set BROWSER=firefox or webkit.
 ```
 
-The runner uses the same HTML as the interactive test, blocks requests to external
-servers, and writes `test-results/browser.json`. It also checks concurrent
-conversion, recovery after invalid inputs, buffer ownership, and engine disposal.
+The runner uses the same HTML as the interactive test, verifies that the page has
+no COOP/COEP headers, cross-origin isolation, or controlling service worker, blocks
+requests to external servers, and writes `test-results/browser.json`.
+It also checks concurrent conversion, recovery after invalid inputs, buffer
+ownership, and engine disposal.
 CI includes Chromium, Firefox, and WebKit, as well as the native tests. The local
 validation reports in [tests/validation](tests/validation) cover Chromium and
 Firefox. WebKit could not start in this environment because native dependencies

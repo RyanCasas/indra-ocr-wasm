@@ -22,7 +22,18 @@ try {
   const productionRequests=[];
   const collect=request=>productionRequests.push(request.url());
   page.on('request',collect);
-  await page.goto(origin+'/tests/browser.html');
+  const response=await page.goto(origin+'/tests/browser.html');
+  const headers=response.headers();
+  if(headers['cross-origin-opener-policy']||headers['cross-origin-embedder-policy']) {
+    throw new Error('Browser tests must run without COOP/COEP headers');
+  }
+  const isolation=await page.evaluate(()=>({crossOriginIsolated,
+    sharedArrayBufferAvailable:typeof SharedArrayBuffer!=='undefined',
+    serviceWorkerControlled:!!navigator.serviceWorker?.controller}));
+  if(isolation.crossOriginIsolated||isolation.serviceWorkerControlled) {
+    throw new Error('Browser tests must run without cross-origin isolation or a service worker');
+  }
+  console.log('Browser environment: '+JSON.stringify(isolation));
   const production=await page.evaluate(async()=>{
     const {createIndra}=await import('/dist/index.js');
     const engine=await createIndra();
@@ -41,7 +52,7 @@ try {
   await page.waitForFunction(()=>['passed','failed'].includes(window.testState?.status),null,{timeout:180_000});
   const result=await page.evaluate(()=>window.testState);
   await mkdir('test-results',{recursive:true});
-  await writeFile('test-results/browser.json',JSON.stringify({browser:browserType.name(),production,errors,...result},null,2));
+  await writeFile('test-results/browser.json',JSON.stringify({browser:browserType.name(),isolation,production,errors,...result},null,2));
   console.log(result.logs.map(l=>l.message).filter(s=>s.includes('passed')||s.includes('skipped')).join('\n'));
   for(const r of result.parity??[])console.log(`${r.suite}/${r.file}: ${r.pages} pages, ${r.differences.length} differences`);
   if(result.status!=='passed'||errors.length)throw new Error(result.error??errors.join('\n'));
