@@ -1,50 +1,11 @@
 import numpy as np
 
-from indra_ocr.textlayer import (
-    bad_char_count,
-    order_backtracks,
-    pdf_order_coherent,
-)
+from indra_ocr.textlayer import bad_char_count
 
 
 def test_bad_chars_count_replacement_and_private_use():
     assert bad_char_count("ok") == 0
     assert bad_char_count("a�") == 2
-
-
-def _box(x0, y0, x1, y1):
-    return [x0, y0, x1, y1]
-
-
-def test_two_columns_in_reading_order_are_coherent():
-    left = [_box(50, 100 + 15 * i, 290, 110 + 15 * i) for i in range(20)]
-    right = [_box(310, 100 + 15 * i, 550, 110 + 15 * i) for i in range(20)]
-    boxes = np.array(left + right, np.float32)
-    assert order_backtracks(boxes) == 0 and pdf_order_coherent(boxes)
-
-
-def test_interleaved_columns_are_not_coherent():
-    left = [_box(50, 100 + 15 * i, 290, 110 + 15 * i) for i in range(20)]
-    right = [_box(310, 100 + 15 * i, 550, 110 + 15 * i) for i in range(20)]
-    # line by line across the gutter: every move back to the left column goes up-left
-    boxes = np.array([b for pair in zip(left, right) for b in pair], np.float32)
-    # Geometry alone cannot see it (a table is read the same way) ...
-    assert order_backtracks(boxes) == 0
-    # ... the order model can: it puts the left column first.
-    col = np.array([0, 1] * 20)
-    row = np.repeat(np.arange(20), 2)
-    key = col * 100 + row  # true reading position
-    logits = np.sign(key[None, :] - key[:, None]).astype(np.float32) * 4.0
-    assert not pdf_order_coherent(boxes, logits)
-    good = np.argsort(key)
-    assert pdf_order_coherent(boxes[good], logits[np.ix_(good, good)])
-
-
-def test_lines_written_bottom_up_are_not_coherent():
-    boxes = np.array(
-        [_box(50, 400 - 15 * i, 500, 410 - 15 * i) for i in range(20)], np.float32
-    )
-    assert not pdf_order_coherent(boxes)
 
 
 def _chars(text, x0=0.0, w=5.0, gaps=None):
@@ -65,12 +26,11 @@ def test_cli_source_flags():
     add_source_args(ap)
     assert source_options(ap.parse_args([])) == {
         "mode": "auto",
-        "pdf_order": True,
         "image_ocr": True,
     }
     assert source_options(ap.parse_args(["--mode", "ocr"]))["mode"] == "ocr"
-    o = source_options(ap.parse_args(["--model-order", "--no-image-ocr"]))
-    assert o["pdf_order"] is False and o["image_ocr"] is False
+    o = source_options(ap.parse_args(["--no-image-ocr"]))
+    assert o["image_ocr"] is False
 
 
 def test_runs_go_to_the_smallest_containing_line_in_x_order():
@@ -135,14 +95,14 @@ def test_ocr_only_reads_scripts_in_its_vocab():
 
     ocr = SimpleNamespace(
         vocab=SimpleNamespace(index={c: 1 for c in "abcdefghijklmnopqrstuvwxyz"}),
-        vocab_cjk=None,
+        groups={},
     )
     line = lambda t: SimpleNamespace(text=t)  # noqa: E731
     assert readable(ocr, [line("hello world 123")])
     assert not readable(ocr, [line("مرحبا بالعالم"), line("ok")])
     assert readable(ocr, [line("1234 ...")])  # no letters: nothing to rule out
     assert not readable(ocr, [line("中文文本")])
-    ocr.vocab_cjk = SimpleNamespace(index={c: 1 for c in "中文文本"})
+    ocr.groups = {"cjk": (None, SimpleNamespace(index={c: 1 for c in "中文文本"}))}
     assert readable(ocr, [line("中文文本")])
 
 
@@ -165,14 +125,8 @@ def test_lines_with_hanzi_go_to_the_cjk_recognizer():
             return [(feed["widths"] > 300).astype(np.float32)]
 
     ocr = OrtOCR.__new__(OrtOCR)
-    ocr.vocab, ocr.vocab_cjk = Vocab(list("ab")), Vocab(list("中b"))
-    ocr.rec, ocr.rec_cjk, ocr.script, ocr.mask, ocr.height = (
-        Rec(1),
-        Rec(1),
-        Script(),
-        None,
-        32,
-    )
+    ocr.vocab, ocr.groups = Vocab(list("ab")), {"cjk": (Rec(1), Vocab(list("中b")))}
+    ocr.rec, ocr.script, ocr.mask, ocr.height = Rec(1), Script(), None, 32
     gray = np.full((200, 800), 255, np.uint8)
     boxes = np.array([[10, 10, 100, 42, 1], [10, 100, 700, 132, 1]], np.float32)
     (t0, _, k0), (t1, _, k1) = ocr.recognize(gray, boxes)
@@ -195,10 +149,10 @@ def test_a_turned_page_is_turned_upright_before_detection():
     ocr.detect = lambda g: (
         seen.setdefault("shape", g.shape) and np.zeros((0, 5), np.float32)
     )
-    ocr.recognize = lambda g, b: []
-    ocr.assemble = lambda wh, b, r, t: __import__("indra_ocr.pipeline").pipeline.Page(
-        [], t
-    )
+    ocr.recognize = lambda g, b, **kw: []
+    ocr.assemble = lambda wh, b, r, t, **kw: __import__(
+        "indra_ocr.pipeline"
+    ).pipeline.Page([], t)
     page = ocr(np.full((300, 500), 255, np.uint8))  # wide: a turned portrait page
     assert seen["shape"] == (500, 300) and page.rotation == 90
     ocr.orient = None
@@ -305,3 +259,34 @@ def test_math_models_are_optional(tmp_path):
 
     (tmp_path / "math_enc.onnx").write_bytes(b"")  # only some of the files
     assert MathReader.load(tmp_path, None, None) is None
+
+
+def test_a_vertical_page_reads_columns_as_lines_and_maps_boxes_back():
+    from indra_ocr.pipeline import Line, OrtOCR, Page
+
+    class Orient:  # five classes: the page is set in vertical columns
+        def run(self, _, feed):
+            return [np.array([[0.01, 0.0, 0.0, 0.01, 0.98]], np.float32)]
+
+    seen = {}
+    ocr = OrtOCR.__new__(OrtOCR)
+    ocr.orient = Orient()
+
+    def detect(g):
+        seen["shape"] = g.shape
+        # One column, as a line of the turned page (500 wide, 300 high).
+        return np.array([[100, 20, 400, 40, 1.0]], np.float32)
+
+    def recognize(g, b, **kw):
+        seen["vertical"] = kw.get("vertical")
+        return [("縦書き", 0.9, [])]
+
+    ocr.detect, ocr.recognize = detect, recognize
+    ocr.assemble = lambda wh, b, r, t, **kw: Page(
+        [Line([float(v) for v in b[0, :4]], r[0][0], 0.9)], t
+    )
+    page = ocr(np.full((500, 300), 255, np.uint8))  # a tall page, 300 wide
+    assert seen["shape"] == (300, 500) and seen["vertical"]  # turned counter-clockwise
+    assert page.vertical and page.rotation == 0
+    # (x, y) -> (W - y, x) with W = 300: the column runs down x 260-280, y 100-400.
+    assert page.lines[0].box == [260.0, 100.0, 280.0, 400.0]

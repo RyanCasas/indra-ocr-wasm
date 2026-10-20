@@ -7,12 +7,21 @@ order_model.py (the PyTorch OrderNet) re-exports all of these.
 from __future__ import annotations
 
 import math
+import unicodedata
 
 import numpy as np
 
 N_GEOM = 10
 N_TEXT = 6
 N_FEATS = N_GEOM + N_TEXT
+
+
+SENTENCE_END = ".!?:;。！？：；．"
+
+
+def display_len(t: str) -> int:
+    """Length with East Asian wide characters counted twice."""
+    return sum(2 if unicodedata.east_asian_width(c) in "WF" else 1 for c in t)
 
 
 def line_features(
@@ -48,13 +57,15 @@ def line_features(
             t = t.strip()
             if not t:
                 continue
-            txt[i, 0] = math.log1p(len(t)) / 5.0
+            # length in Latin-letter widths: a CJK character is about two wide, so
+            # a full CJK line does not read as a short table cell
+            txt[i, 0] = math.log1p(display_len(t)) / 5.0
             txt[i, 1] = sum(c.isdigit() for c in t) / len(t)
             txt[i, 2] = float(
                 t[0] in "•-–▪◦*·→" or (t[:3].rstrip(".)").isdigit() and len(t) > 3)
             )
             txt[i, 3] = float(t.endswith("-"))
-            txt[i, 4] = float(t[-1] in ".!?:;")
+            txt[i, 4] = float(t[-1] in SENTENCE_END)
             txt[i, 5] = float(t[0].isupper())
     return np.concatenate([geom, txt], 1).astype(np.float32)
 
@@ -139,6 +150,40 @@ def order_xycut(boxes: np.ndarray) -> list[int]:
             return [ids[i] for i in order_top_down(b)]
         k, o = (ky, oy) if gy >= gx else (kx, ox)
         return rec([ids[i] for i in o[:k]]) + rec([ids[i] for i in o[k:]])
+
+    return rec(list(range(len(boxes))))
+
+
+def xycut_blocks(boxes: np.ndarray, min_gap: float = 1.0) -> list[list[int]]:
+    """Blocks in reading order by recursive XY-cut, for pages the order model
+    does not know (vertical pages, read turned).  A cut needs a whitespace gap of
+    at least ``min_gap`` median line heights; the widest gap cuts first, the upper
+    or left part first.  Lines inside a block go by ``order_xycut``."""
+    if len(boxes) == 0:
+        return []
+    h = float(np.median(boxes[:, 3] - boxes[:, 1]))
+
+    def best_cut(b, axis):
+        lo, hi = (b[:, 1], b[:, 3]) if axis == 1 else (b[:, 0], b[:, 2])
+        o = np.argsort(lo)
+        end = hi[o[0]]
+        best_gap, best_k = 0.0, -1
+        for k in range(1, len(o)):
+            gap = lo[o[k]] - end
+            if gap > best_gap:
+                best_gap, best_k = gap, k
+            end = max(end, hi[o[k]])
+        return best_gap, best_k, o
+
+    def rec(ids):
+        b = boxes[ids]
+        if len(ids) > 1:
+            gy, ky, oy = best_cut(b, 1)
+            gx, kx, ox = best_cut(b, 0)
+            gap, k, o = (gy, ky, oy) if gy >= gx else (gx, kx, ox)
+            if k >= 0 and gap >= min_gap * h:
+                return rec([ids[i] for i in o[:k]]) + rec([ids[i] for i in o[k:]])
+        return [[ids[i] for i in order_xycut(b)]]
 
     return rec(list(range(len(boxes))))
 

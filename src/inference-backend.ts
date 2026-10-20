@@ -3,7 +3,7 @@ export class InferenceBackend<S extends { release(): Promise<void> }> {
   private session?: S;
   private accelerated = false;
   constructor(private create: (gpu: boolean) => Promise<S>, private preferGpu: boolean,
-    private report: (message: string) => void) {}
+    private report: (message: string) => void, private allowCpuFallback = true) {}
 
   async load(): Promise<S> {
     if (this.session) return this.session;
@@ -14,6 +14,7 @@ export class InferenceBackend<S extends { release(): Promise<void> }> {
         this.report('WebGPU enabled (unsupported operations use WASM)');
         return this.session;
       } catch (error) {
+        if (!this.allowCpuFallback) throw error;
         this.report(`WebGPU initialization failed; using WASM: ${String(error)}`);
         this.preferGpu = false;
       }
@@ -26,7 +27,7 @@ export class InferenceBackend<S extends { release(): Promise<void> }> {
     const session = await this.load();
     try { return await operation(session); }
     catch (error) {
-      if (!this.accelerated) throw error;
+      if (!this.accelerated || !this.allowCpuFallback) throw error;
       this.accelerated = false;
       this.preferGpu = false;
       this.session = undefined;

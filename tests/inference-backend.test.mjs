@@ -59,3 +59,25 @@ test('failure in the CPU retry propagates without looping', async () => {
   assert.deepEqual(created, [true, false]);
   assert.deepEqual(executed, [true, false]);
 });
+
+test('explicit GPU initialization failure never creates a CPU session', async () => {
+  const calls = [], reports = [];
+  const backend = new InferenceBackend(async gpu => {
+    calls.push(gpu);
+    throw new Error('unsupported GPU graph');
+  }, true, message => reports.push(message), false);
+  await assert.rejects(backend.load(), /unsupported GPU graph/);
+  assert.deepEqual(calls, [true]);
+  assert.deepEqual(reports, []);
+});
+
+test('explicit GPU inference failure propagates without retrying on CPU', async () => {
+  const calls = [];
+  const backend = new InferenceBackend(async gpu => {
+    calls.push(gpu); return { release: async () => {} };
+  }, true, () => {}, false);
+  let runs = 0;
+  await assert.rejects(backend.run(async () => { runs++; throw new Error('device lost'); }), /device lost/);
+  assert.deepEqual(calls, [true]);
+  assert.equal(runs, 1);
+});

@@ -33,40 +33,6 @@ _WHOLE_MATH = re.compile(r"^\$[^$]+\$$")  # a line that is one formula
 _ITEM = re.compile(r"^\s*([•\-–▪◦*·→]|\(?\d{1,3}[.)]|\(?[a-zA-Z][.)])(\s|$)")
 
 
-_PLAIN_WORD = re.compile(r" [A-Za-z]{3,}\b(?![_^{(])")
-
-
-def balance_math(text: str) -> str:
-    """Close $ math spans the recognizer left open.
-
-    Left to right: a $ opens math only when LaTeX (\\ _ ^ {) or a closing $
-    follows within 15 characters, so prices ("$5 per item") stay text.  Inside
-    math, a following plain word of 3+ letters closes the span; an open span
-    closes at the end of the line."""
-    if "$" not in text:
-        return text
-    out, in_math, i = [], False, 0
-    while i < len(text):
-        c = text[i]
-        if c == "$":
-            if in_math:
-                in_math = False
-            else:
-                ahead = text[i + 1 : i + 16]
-                in_math = bool(re.search(r"[\\_^{]", ahead)) or "$" in ahead
-            out.append(c)
-            i += 1
-            continue
-        if in_math and c == " " and _PLAIN_WORD.match(text, i):
-            out.append("$")
-            in_math = False
-        out.append(c)
-        i += 1
-    if in_math:
-        out.append("$")
-    return "".join(out)
-
-
 def _cjk(c: str) -> bool:
     """Han, kana, CJK punctuation and fullwidth forms: written without spaces
     (Korean Hangul is not: Korean separates words with spaces)."""
@@ -338,48 +304,78 @@ def page_markdown(
     keep_furniture: bool = False,
     cells: dict | None = None,
     tab: np.ndarray | None = None,
+    pictures: np.ndarray | None = None,
 ) -> str:
     """Markdown for one page.  boxes [N, 4], texts [N], order = reading order,
     cls_logits [N, C], same [N, N] (logit "same block").  ``cells`` maps a line
     to its table cells [(box, text)] when the line holds several.  ``tab``
-    [3, N, N] (same row / column / cell logits) builds tables from the heads."""
-    parts = []
+    [3, N, N] (same row / column / cell logits) builds tables from the heads.
+    ``pictures`` [P, 4]: picture regions, each written as ``![](picture-<k>)``
+    before the first block below it that it overlaps horizontally."""
+    parts: list[str] = []
+    part_boxes: list = []
     for blk in split_blocks(order, same):
-        cls = int(cls_logits[blk].sum(0).argmax())
-        texts_b = [
-            texts[i] for i in blk
-        ]  # balance_math measured worse on olmOCR arxiv_math
-        if cls in (HEADER, FOOTER) and not keep_furniture:
-            continue
-        if all(_WHOLE_MATH.match(t.strip()) for t in texts_b):  # display equations
-            parts.append("\n".join("$$" + t.strip()[1:-1] + "$$" for t in texts_b))
-            continue
-        if cls == SECTION:
-            parts.append("## " + join_lines(texts_b))
-        elif (
-            cls == TABLE
-            and len(blk) > 1
-            and tab is not None
-            and heads_plausible(boxes[blk, :4], tab[:, blk][:, :, blk])
-        ):
-            parts.append(
-                table_html_heads(boxes[blk, :4], texts_b, tab[:, blk][:, :, blk])
+        n_parts = len(parts)
+        _block_part(parts, blk, boxes, texts, cls_logits, keep_furniture, cells, tab)
+        if len(parts) > n_parts:
+            b = boxes[blk, :4]
+            part_boxes.append(
+                (b[:, 0].min(), b[:, 1].min(), b[:, 2].max(), b[:, 3].max())
             )
-        elif cls == TABLE and len(blk) > 1:
-            cb, ct = [], []
-            for i in blk:
-                for bx, tx in (cells or {}).get(i) or [(boxes[i, :4], texts[i])]:
-                    cb.append(bx)
-                    ct.append(tx)
-            parts.append(table_html(np.array(cb, np.float32).reshape(-1, 4), ct))
-        elif cls == LIST:
-            items: list[list[str]] = []
-            for t in texts_b:
-                if not items or _ITEM.match(t):
-                    items.append([t])
-                else:
-                    items[-1].append(t)
-            parts.append("\n".join(join_lines(it) for it in items))
-        else:
-            parts.append(join_lines(texts_b))
+    if pictures is not None and len(pictures):
+        slots: dict[int, list[str]] = {}
+        for k, (x0, y0, x1, y1) in enumerate(np.asarray(pictures)[:, :4]):
+            cy = (y0 + y1) / 2
+            at = next(
+                (
+                    j
+                    for j, (bx0, by0, bx1, by1) in enumerate(part_boxes)
+                    if (by0 + by1) / 2 > cy and min(x1, bx1) > max(x0, bx0)
+                ),
+                len(parts),
+            )
+            slots.setdefault(at, []).append(f"![](picture-{k})")
+        merged = []
+        for j in range(len(parts) + 1):
+            merged.extend(slots.get(j, []))
+            if j < len(parts):
+                merged.append(parts[j])
+        parts = merged
     return "\n\n".join(p for p in parts if p)
+
+
+def _block_part(parts, blk, boxes, texts, cls_logits, keep_furniture, cells, tab):
+    """Append one block's markdown to ``parts`` (nothing for dropped furniture)."""
+    cls = int(cls_logits[blk].sum(0).argmax())
+    texts_b = [texts[i] for i in blk]
+    if cls in (HEADER, FOOTER) and not keep_furniture:
+        return
+    if all(_WHOLE_MATH.match(t.strip()) for t in texts_b):  # display equations
+        parts.append("\n".join("$$" + t.strip()[1:-1] + "$$" for t in texts_b))
+        return
+    if cls == SECTION:
+        parts.append("## " + join_lines(texts_b))
+    elif (
+        cls == TABLE
+        and len(blk) > 1
+        and tab is not None
+        and heads_plausible(boxes[blk, :4], tab[:, blk][:, :, blk])
+    ):
+        parts.append(table_html_heads(boxes[blk, :4], texts_b, tab[:, blk][:, :, blk]))
+    elif cls == TABLE and len(blk) > 1:
+        cb, ct = [], []
+        for i in blk:
+            for bx, tx in (cells or {}).get(i) or [(boxes[i, :4], texts[i])]:
+                cb.append(bx)
+                ct.append(tx)
+        parts.append(table_html(np.array(cb, np.float32).reshape(-1, 4), ct))
+    elif cls == LIST:
+        items: list[list[str]] = []
+        for t in texts_b:
+            if not items or _ITEM.match(t):
+                items.append([t])
+            else:
+                items[-1].append(t)
+        parts.append("\n".join(join_lines(it) for it in items))
+    else:
+        parts.append(join_lines(texts_b))

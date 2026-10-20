@@ -107,14 +107,38 @@ def masked_window(gray: np.ndarray, box, sess) -> tuple[np.ndarray, list[float]]
     return masked_windows(gray, [box], sess)[0]
 
 
-def crop_lines(gray: np.ndarray, boxes, height: int, sess=None) -> list[np.ndarray]:
+def crop_lines(
+    gray: np.ndarray,
+    boxes,
+    height: int,
+    sess=None,
+    window: int = 1,
+    pool=None,
+    dark: list | None = None,
+) -> list[np.ndarray]:
     """Recognizer inputs for the line boxes of one page: ``crop_line`` of each
-    line, after CenterMask when ``sess`` is given (one batched call per page)."""
+    line, after CenterMask when ``sess`` is given (one batched call per page).
+    A tall window reads the page around the line, so it is never masked.
+    pool: a thread pool for the crops; dark: ``line_darkness`` of the boxes,
+    when already known (not used with CenterMask)."""
     from .rec_preproc import crop_line
 
-    if sess is None:
-        return [crop_line(gray, b, height) for b in boxes]
+    run = pool.map if pool is not None else map
+    if sess is None or window > 1:
+        d = dark if dark is not None else [None] * len(boxes)
+        return list(
+            run(lambda bd: crop_line(gray, bd[0], height, window=window, dark=bd[1]),
+                list(zip(boxes, d)))
+        )
     return [crop_line(w, b, height) for w, b in masked_windows(gray, list(boxes), sess)]
+
+
+def line_darkness(gray: np.ndarray, boxes, pool=None) -> list[bool]:
+    """``is_dark_line`` of each line box (light text on a dark ground)."""
+    from .rec_preproc import is_dark_line
+
+    run = pool.map if pool is not None else map
+    return list(run(lambda b: is_dark_line(gray, b), list(boxes)))
 
 
 _SESSIONS: dict = {}

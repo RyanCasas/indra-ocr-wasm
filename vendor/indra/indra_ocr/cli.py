@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from dataclasses import asdict
 from pathlib import Path
@@ -31,11 +32,6 @@ def add_source_args(ap: argparse.ArgumentParser) -> None:
         "checks fail",
     )
     g.add_argument(
-        "--model-order",
-        action="store_true",
-        help="order text-layer lines with the order model, not the PDF content order",
-    )
-    g.add_argument(
         "--no-image-ocr",
         action="store_true",
         help="on text-layer pages, do not OCR text inside images",
@@ -45,9 +41,16 @@ def add_source_args(ap: argparse.ArgumentParser) -> None:
 def source_options(a) -> dict:
     return {
         "mode": a.mode,
-        "pdf_order": not a.model_order,
         "image_ocr": not a.no_image_ocr,
     }
+
+
+def _page_count(v: str) -> int:
+    """argparse type for --max-pages: 0 (all pages) or a positive number."""
+    n = int(v)
+    if n < 0:
+        raise argparse.ArgumentTypeError(f"must be 0 (all pages) or more, not {n}")
+    return n
 
 
 def main(argv=None):
@@ -58,6 +61,11 @@ def main(argv=None):
         return _main(argv)
     except ModelError as e:
         print(f"indra-ocr: {e}", file=sys.stderr)
+        return 1
+    except BrokenPipeError:
+        # The reader stopped early (indra-ocr x.pdf | head): no traceback, and
+        # no second error when Python flushes stdout at exit.
+        os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
         return 1
 
 
@@ -86,7 +94,12 @@ def _main(argv=None):
         help=f"cores to use (default: all this process may run on, here {usable_cores()})",
     )
     ap.add_argument("--dpi", type=float, default=200.0)
-    ap.add_argument("--max-pages", type=int, default=0)
+    ap.add_argument(
+        "--max-pages",
+        type=_page_count,
+        default=0,
+        help="read at most this many pages of each file (0, the default: all)",
+    )
     ap.add_argument("--password", default=None, help="password of encrypted PDFs")
     ap.add_argument(
         "--math",
@@ -136,6 +149,7 @@ def _main(argv=None):
                             "source": page.source,
                             "rotation": page.rotation,
                             "skew": page.skew,
+                            "vertical": page.vertical,
                             "note": page.note,
                             "lines": [asdict(ln) for ln in page.lines],
                             "markdown": page.markdown,

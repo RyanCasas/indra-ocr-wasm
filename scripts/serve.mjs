@@ -14,7 +14,7 @@ export function serve(port=5173, { transform } = {}) {
       const dir=/^\/(runtime|models)\//.test(path)?resolve(root,'public'):root;
       const file=resolve(dir,'.'+(path==='/'?'/tests/browser.html':path));
       const allowed=['dist','tests','vendor/indra/tests', 'public/runtime','public/models','assets']
-        .some(prefix=>file.startsWith(resolve(root,prefix)+'/'));
+        .some(prefix=>file.startsWith(resolve(root,prefix)+'/')) || file===resolve(root,'vendor/indra/integrity.json');
       if (!file.startsWith(dir+'/')||!allowed) {res.writeHead(403).end();return;}
       let data=await readFile(file);
       if (transform) data=await transform(path, data);

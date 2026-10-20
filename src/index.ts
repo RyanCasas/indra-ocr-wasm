@@ -3,15 +3,17 @@ export interface IndraOptions {
   runtimeURL?: string | URL;
   /** Versioned weights directory with manifest.json (default: /models/). */
   modelURL?: string | URL;
-  /** Prefer WebGPU with automatic WASM recovery, or force CPU (default: auto).
-   * Math models always use CPU. */
-  backend?: 'auto' | 'wasm';
+  /** auto: prefer WebGPU, keep math on CPU, and recover on WASM.
+   * webgpu: request WebGPU for all models including math; fail if unavailable.
+   * wasm: force CPU. Unsupported GPU operators can still use WASM. Default: auto. */
+  backend?: 'auto' | 'webgpu' | 'wasm';
   mode?: 'auto' | 'ocr' | 'text';
   dpi?: number;
+  /** @deprecated Upstream 1.1 always determines reading order from layout; this option is ignored. */
   pdfOrder?: boolean;
   imageOcr?: boolean;
   furniture?: boolean;
-  /** Enable math recognition on CPU/WASM (default: false). */
+  /** Enable math recognition (default: false). Backend selection also applies to math. */
   math?: boolean;
   /** Maximum total tensor bytes per ONNX response (default: 64 MiB). */
   responseBytes?: number;
@@ -32,6 +34,8 @@ export interface Page {
   note: string;
   rotation: number;
   skew: number;
+  /** True for pages set in vertical columns; boxes remain in the input frame. */
+  vertical: boolean;
   timings: Record<string, number>;
 }
 export type Input = Blob | ArrayBuffer | Uint8Array;
@@ -61,7 +65,7 @@ export class Indra {
   }
 
   static async create(options: IndraOptions = {}): Promise<Indra> {
-    if (options.backend !== undefined && !['auto', 'wasm'].includes(options.backend)) throw new TypeError('Invalid backend');
+    if (options.backend !== undefined && !['auto', 'webgpu', 'wasm'].includes(options.backend)) throw new TypeError('Invalid backend');
     if (options.mode !== undefined && !['auto', 'ocr', 'text'].includes(options.mode)) throw new TypeError('Invalid mode');
     if (options.dpi !== undefined && (!Number.isFinite(options.dpi) || options.dpi <= 0)) throw new TypeError('dpi must be positive');
     if (options.responseBytes !== undefined && (!Number.isSafeInteger(options.responseBytes) || options.responseBytes < 1024)) throw new TypeError('responseBytes must be an integer >= 1024');

@@ -9,13 +9,17 @@ self.onmessage = async ({ data }) => {
       ort.env.wasm.wasmPaths = data.runtimeURL;
       ort.env.wasm.numThreads = 1;
       ort.env.wasm.proxy = false;
+      const forcedGpu = data.backend === 'webgpu';
       let preferGpu = false;
       if (data.backend !== 'wasm') {
         try {
           const gpu = (navigator as Navigator & { gpu?: { requestAdapter(): Promise<unknown> } }).gpu;
           preferGpu = !!(await gpu?.requestAdapter());
         } catch { /* Adapter requests can fail even when the API is exposed. */ }
-        if (!preferGpu) self.postMessage({ kind: 'progress', message: 'WebGPU adapter unavailable; using WASM' });
+        if (!preferGpu) {
+          if (forcedGpu) throw new Error('WebGPU was requested but no adapter is available');
+          self.postMessage({ kind: 'progress', message: 'WebGPU adapter unavailable; using WASM' });
+        }
       }
       for (const name of data.models as string[]) {
         const url = new URL(name, data.modelURL).href;
@@ -26,16 +30,22 @@ self.onmessage = async ({ data }) => {
           .map(n => n.toString(16).padStart(2, '0')).join('');
         if (data.sha256[name] !== hash) throw new Error(`Model checksum mismatch: ${name}`);
         const mathModel = name.startsWith('math');
-        if (mathModel) self.postMessage({ kind: 'progress', message: `${name}: using CPU/WASM for math` });
+        if (mathModel && !forcedGpu) self.postMessage({ kind: 'progress', message: `${name}: using CPU/WASM for math` });
         const backend = new InferenceBackend(
           gpu => ort.InferenceSession.create(bytes, {
             executionProviders: gpu ? ['webgpu', 'wasm'] : ['wasm'], enableCpuMemArena: false,
-          }), preferGpu && !mathModel, message => self.postMessage({ kind: 'progress', message: `${name}: ${message}` }));
+          }), preferGpu && (forcedGpu || !mathModel),
+          message => self.postMessage({ kind: 'progress', message: `${name}: ${message}` }), !forcedGpu);
         await backend.load();
         sessions.set(name, backend);
       }
-      self.postMessage({ kind: 'ready', inputs: Object.fromEntries(
-        await Promise.all([...sessions].map(async ([name, s]) => [name, (await s.load()).inputNames]))) });
+      const metadata = await Promise.all([...sessions].map(async ([name, s]) => {
+        const session = await s.load();
+        return { name, inputs: session.inputNames, outputs: session.outputNames };
+      }));
+      self.postMessage({ kind: 'ready',
+        inputs: Object.fromEntries(metadata.map(s => [s.name, s.inputs])),
+        outputs: Object.fromEntries(metadata.map(s => [s.name, s.outputs])) });
     } catch (e) { self.postMessage({ kind: 'error', error: String(e) }); }
   } else if (data.kind === 'run') {
     try {
@@ -52,7 +62,7 @@ self.onmessage = async ({ data }) => {
       }
       let result: ort.InferenceSession.ReturnType | undefined;
       try {
-        result = await backend.run(session => session.run(feed));
+        result = await backend.run(session => data.outputs ? session.run(feed, data.outputs) : session.run(feed));
         const names = data.outputs ?? (await backend.load()).outputNames;
         const tensors = copyTensors(names.map((key: string) => ({ type: result![key].type,
           dims: [...result![key].dims], data: result![key].data as ArrayBufferView })), data.responseBytes);

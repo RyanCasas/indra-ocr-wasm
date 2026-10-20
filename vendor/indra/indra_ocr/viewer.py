@@ -141,7 +141,6 @@ class Engine:
                 ocr,
                 dpi=dpi,
                 mode=mode,
-                pdf_order=not opts.get("model_order"),
                 image_ocr=opts.get("image_ocr", True),
             )
             if data[:5] == b"%PDF-":
@@ -199,11 +198,13 @@ class Engine:
                 "note": page.note,
                 "rotation": page.rotation,
                 "skew": page.skew,
+                "vertical": page.vertical,
                 "json": {
                     "page": n,
                     "source": page.source,
                     "rotation": page.rotation,
                     "skew": page.skew,
+                    "vertical": page.vertical,
                     "note": page.note,
                     "lines": [asdict(ln) for ln in page.lines],
                     "markdown": page.markdown,
@@ -492,7 +493,6 @@ footer{padding:18px 24px;border-top:var(--hairline) solid var(--rule);display:fl
  <div class="group"><div class="label">Pipeline</div>
   <label class="sw">Math as LaTeX<input type="checkbox" id="math"></label>
   <label class="sw">Keep headers and footers<input type="checkbox" id="furniture"></label>
-  <label class="sw">PDF reading order<input type="checkbox" id="pdforder" checked></label>
   <label class="sw">OCR text inside images<input type="checkbox" id="imageocr" checked></label>
   <label class="sw" id="tesslab" hidden>Compare with Tesseract<input type="checkbox" id="tess"></label>
   <div class="row2"><div class="field"><span class="label">DPI</span><select id="dpi"><option>150</option><option selected>200</option><option>300</option></select></div>
@@ -528,13 +528,13 @@ drop.ondragover=e=>{e.preventDefault();drop.classList.add('over')};drop.ondragle
 drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over');e.dataTransfer.files[0]&&start(e.dataTransfer.files[0])};
 $('#rerun').onclick=()=>doc&&run();
 fetch('/info').then(r=>r.json()).then(i=>{$('#ver').textContent='v'+i.version;if(i.tesseract)$('#tesslab').hidden=false;const d=i.defaults||{};
- setMode(d.mode||'auto');$('#math').checked=!!d.math;$('#furniture').checked=!!d.furniture;$('#pdforder').checked=d.pdf_order!==false;$('#imageocr').checked=d.image_ocr!==false;
+ setMode(d.mode||'auto');$('#math').checked=!!d.math;$('#furniture').checked=!!d.furniture;$('#imageocr').checked=d.image_ocr!==false;
  if(d.dpi)$('#dpi').value=String(Math.round(d.dpi));if(d.max_pages)$('#maxp').value=d.max_pages});
 setMode('auto');
 async function start(f){$('#fname').textContent=f.name+' · '+(f.size/1024).toFixed(0)+' KB';$('#status').textContent='Uploading ...';
  const u=await (await fetch('/upload',{method:'POST',body:await f.arrayBuffer()})).json();
  if(u.error){$('#status').textContent='Error: '+u.error;return}doc={...u,name:f.name};$('#rerun').disabled=false;run()}
-function opts(){return{mode,math:$('#math').checked,furniture:$('#furniture').checked,model_order:!$('#pdforder').checked,image_ocr:$('#imageocr').checked,dpi:+$('#dpi').value,tesseract:$('#tess').checked}}
+function opts(){return{mode,math:$('#math').checked,furniture:$('#furniture').checked,image_ocr:$('#imageocr').checked,dpi:+$('#dpi').value,tesseract:$('#tess').checked}}
 async function run(){const id=++runId,o=opts(),N=Math.min(doc.pages,Math.max(1,+$('#maxp').value||1));
  $('#out').innerHTML='';stats=[];summary();const t0=performance.now();
  for(let n=0;n<N;n++){if(id!==runId)return;$('#status').textContent=`Reading page ${n+1} of ${N}`+(doc.pages>N?` (first ${N} of ${doc.pages})`:'')+(o.math&&n===0?' · math models load on first use':'')+' ...';
@@ -629,7 +629,6 @@ def _main():
     src = source_options(a)
     defaults = {
         "mode": src["mode"],
-        "pdf_order": src["pdf_order"],
         "image_ocr": src["image_ocr"],
         "math": a.math,
         "furniture": a.keep_furniture,

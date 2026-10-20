@@ -4,6 +4,8 @@ import { cpus, platform, release } from 'node:os';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
+import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { serve } from './serve.mjs';
 
 const { values } = parseArgs({ options: {
@@ -25,17 +27,24 @@ const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url
 const variants = [
   { name: 'wasm', backend: 'wasm', args: gpuArgs },
   { name: 'auto-webgpu', backend: 'auto', args: gpuArgs, requireGpu: true },
+  { name: 'webgpu', backend: 'webgpu', args: gpuArgs, requireGpu: true },
   { name: 'auto-no-webgpu', backend: 'auto', args: gpuArgs, disableGpu: true },
 ];
 const allSuites = [
-  { name: 'auto', files: ['scan.png', 'chinese.png', 'pages.tiff', 'digital.pdf', 'hybrid.pdf'] },
+  { name: 'auto', files: ['scan.png', 'chinese.png', 'arabic.png', 'hindi.png', 'dark.png', 'tilted.png', 'pages.tiff', 'digital.pdf', 'hybrid.pdf'] },
   { name: 'ocr', files: ['digital.pdf'] },
-  { name: 'math', files: ['formula.png'] },
+  { name: 'math', files: ['scan.png', 'formula.png', 'digital.pdf'] },
 ];
 if (values.suite && !allSuites.some(s => s.name === values.suite)) throw new Error('suite must be auto, ocr or math');
 const suites = allSuites.filter(s => !values.suite || s.name === values.suite);
 const report = {
-  schemaVersion: 1, date: new Date().toISOString(), packageVersion: pkg.version,
+  schemaVersion: 2, date: new Date().toISOString(), packageVersion: pkg.version,
+  upstream: (await readFile(new URL('../vendor/indra/REVISION', import.meta.url), 'utf8')).trim(),
+  models: JSON.parse(await readFile(new URL('../models.lock.json', import.meta.url), 'utf8')).revision,
+  source: { commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
+    modified: !!execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim(),
+    browserModulesSha256: Object.fromEntries(await Promise.all(['index.js', 'inference.worker.js', 'runtime.worker.js']
+      .map(async name => [name, createHash('sha256').update(await readFile(new URL('../dist/' + name, import.meta.url))).digest('hex')]))) },
   environment: { os: `${platform()} ${release()}`, cpu: cpus()[0].model, logicalCpus: cpus().length,
     node: process.version, dependencies: pkg.dependencies },
   methodology: { iterations, startups, warmupsPerCase: 1,
@@ -112,7 +121,8 @@ try {
   for (let index = 0; index < suites.length; index++) {
     const suite = suites[index];
     // Rotate configurations so one backend is not always measured first.
-    const ordered = variants.slice(index).concat(variants.slice(0,index));
+    const offset = index % variants.length;
+    const ordered = variants.slice(offset).concat(variants.slice(0,offset));
     for (const variant of ordered) {
       if (variant.result.skipped) continue;
       console.log(`${variant.name}/${suite.name}: running`);
@@ -159,11 +169,15 @@ try {
         .map(p => p.message.slice('Benchmark GPU compute: '.length)).filter(name => name !== 'initialization'))];
       if (suite.name === 'math') {
         const mathModels = ['mathcls.onnx', 'math_enc.onnx', 'math_dec_init.onnx', 'math_dec_step.onnx'];
-        if (result.gpuComputeModels.some(name => name.startsWith('math'))) report.valid = false;
+        const gpuMath = variant.backend === 'webgpu';
+        if (!gpuMath && result.gpuComputeModels.some(name => name.startsWith('math'))) report.valid = false;
         for (const model of mathModels) {
-          if (result.progress.filter(p => p.message === `${model}: using CPU/WASM for math`).length !== startups) report.valid = false;
+          if (gpuMath) {
+            if (!result.gpuComputeModels.includes(model)) report.valid = false;
+          } else if (result.progress.filter(p => p.message === `${model}: using CPU/WASM for math`).length !== startups) report.valid = false;
         }
       }
+      if (variant.backend === 'webgpu' && result.progress.some(p => /using WASM|retrying with WASM/.test(p.message))) report.valid = false;
       if (variant.requireGpu && !result.gpuComputeModels.length) report.valid = false;
       if (variant.disableGpu && result.progress.filter(p => p.message.includes('adapter unavailable; using WASM')).length !== startups) report.valid = false;
       if (!variant.requireGpu && result.gpuComputeModels.length) report.valid = false;

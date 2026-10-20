@@ -6,7 +6,7 @@ project are licensed under the Apache License, Version 2.0. See LICENSE.
 
 This project includes unmodified source code and tests from datalab-to/indra:
 https://github.com/datalab-to/indra
-Revision: 3d773aeedc5d79d1d0a2a04007a9075cd71a59f4
+Revision: 0e96b93c6810f17cf8352acbb4487cc9e45b66d5
 The upstream license is preserved in vendor/indra/LICENSE.
 The Ryan Casas copyright notice does not replace upstream authorship or notices.
 The python/web_document.py, python/web_pipeline.py, and python/web_math.py files

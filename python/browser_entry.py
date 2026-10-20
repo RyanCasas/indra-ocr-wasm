@@ -10,6 +10,8 @@ _converter = None
 def configure(options):
     global _converter
     config = json.loads(options)
+    # Accepted by older browser callers; upstream 1.1 uses model reading order.
+    config.pop("pdf_order", None)
     ocr = WebOCR("/models", threads=1, furniture=config.pop("furniture", False),
                  math=config.pop("math", False))
     _converter = WebConverter(ocr, **config)

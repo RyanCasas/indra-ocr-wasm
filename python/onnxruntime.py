@@ -4,7 +4,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from pyodide.ffi import to_js
 from js import Object
-from indra_bridge import inference, input_names
+from indra_bridge import inference, input_names, output_names
 
 
 class SessionOptions:
@@ -22,6 +22,9 @@ class InferenceSession:
 
     def get_inputs(self):
         return [SimpleNamespace(name=n) for n in input_names.get(self.name).to_py()]
+
+    def get_outputs(self):
+        return [SimpleNamespace(name=n) for n in output_names.get(self.name).to_py()]
 
     async def run(self, output_names, feed):
         # Transfer raw contiguous bytes, including int64 and bool. Never round

@@ -5,7 +5,9 @@ import { serve } from './serve.mjs';
 import { dirname } from 'node:path';
 const reportFile=process.env.BROWSER_REPORT??'test-results/browser.json';
 const browserType={chromium,firefox,webkit}[process.env.BROWSER??'chromium'];
+const backend=process.env.BACKEND??'auto';
 if (!browserType) throw new Error('BROWSER must be chromium, firefox or webkit');
+if (!['auto','webgpu','wasm'].includes(backend)) throw new Error('BACKEND must be auto, webgpu or wasm');
 const server=await serve(0);
 let browser;
 try {
@@ -36,25 +38,25 @@ try {
     throw new Error('Browser tests must run without cross-origin isolation or a service worker');
   }
   console.log('Browser environment: '+JSON.stringify(isolation));
-  const production=await page.evaluate(async()=>{
+  const production=await page.evaluate(async backend=>{
     const {createIndra}=await import('/dist/index.js');
-    const engine=await createIndra();
+    const engine=await createIndra({backend});
     try {
       const bytes=await (await fetch('/tests/fixtures/scan.png')).arrayBuffer();
       const pages=await engine.convert(bytes);
       if(pages.length!==1||pages[0].source!=='ocr'||!pages[0].lines.length)throw new Error('Production OCR smoke test failed');
       return {pages:pages.length,source:pages[0].source};
     } finally {engine.dispose();}
-  });
+  },backend);
   page.off('request',collect);
   const testPackages=productionRequests.filter(url=>/\/(pillow|pytest)[-_][^/]*\.whl$/i.test(new URL(url).pathname));
   if(testPackages.length)throw new Error('Production conversion loaded test-only packages: '+testPackages.join(', '));
   production.testOnlyPackagesLoaded=false;
-  await page.evaluate(()=>{void window.runTests();});
+  await page.evaluate(backend=>{void window.runTests({backend});},backend);
   await page.waitForFunction(()=>['passed','failed'].includes(window.testState?.status),null,{timeout:180_000});
   const result=await page.evaluate(()=>window.testState);
   await mkdir(dirname(reportFile),{recursive:true});
-  await writeFile(reportFile,JSON.stringify({browser:browserType.name(),isolation,production,errors,...result},null,2));
+  await writeFile(reportFile,JSON.stringify({browser:browserType.name(),backend,isolation,production,errors,...result},null,2));
   console.log(result.logs.map(l=>l.message).filter(s=>s.includes('passed')||s.includes('skipped')).join('\n'));
   for(const r of result.parity??[])console.log(`${r.suite}/${r.file}: ${r.pages} pages, ${r.differences.length} differences`);
   if(result.status!=='passed'||errors.length)throw new Error(result.error??errors.join('\n'));

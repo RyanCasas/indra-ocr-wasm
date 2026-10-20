@@ -24,6 +24,43 @@ PAD_X = 0.3
 WIDTH_MULTIPLE = 8  # widths are padded to a multiple of this (timestep stride)
 
 
+def _percentiles(b: np.ndarray, qs=(0.02, 0.5, 0.98)) -> list[float]:
+    """np.percentile(b, 100 * qs) (linear) of a uint8 array, from its histogram:
+    no sort of the pixels."""
+    n = b.size
+    cum = np.cumsum(np.bincount(b.ravel(), minlength=256))
+    out = []
+    for q in qs:
+        x = q * (n - 1)
+        i = math.floor(x)
+        g = x - i
+        lo = float(np.searchsorted(cum, i, side="right"))
+        hi = float(np.searchsorted(cum, min(i + 1, n - 1), side="right"))
+        d = hi - lo
+        # numpy's lerp: from the nearer end
+        out.append(hi - d * (1 - g) if g >= 0.5 else lo + d * g)
+    return out
+
+
+def is_dark_line(gray: np.ndarray, box) -> bool:
+    """Light text on a dark ground (a banner, a dark table head, a slide): the
+    ground (the median of the line box) lies nearer the dark end than the text
+    does, so the bright tail is the longer one.  A shadowed line keeps dark text
+    on a dimmer ground.  The recognizers read dark text on light paper, so a
+    light-on-dark line is read inverted."""
+    H, W = gray.shape
+    x0, y0, x1, y1 = (float(v) for v in box[:4])
+    b = gray[
+        max(0, int(y0)) : min(H, int(y1) + 1), max(0, int(x0)) : min(W, int(x1) + 1)
+    ]
+    if not b.size:
+        return False
+    lo, med, hi = (
+        _percentiles(b) if b.dtype == np.uint8 else np.percentile(b, (2, 50, 98))
+    )
+    return bool(hi - med > 2 * (med - lo) + 8)
+
+
 def crop_line(
     gray: np.ndarray,
     box,
@@ -31,9 +68,17 @@ def crop_line(
     pad_y: float = PAD_Y,
     pad_x: float = PAD_X,
     max_width: int = 4096,
+    window: int = 1,
+    dark: bool | None = None,
 ) -> np.ndarray:
-    """Crop one line from a uint8 grayscale page and return a float32 ink map [height, W]."""
+    """Crop one line from a uint8 grayscale page and return a float32 ink map
+    [window * height, W].  A tall window (``window`` > 1) keeps the text scale
+    and adds the page above and below the line; its middle band is the
+    window-1 crop.  dark: ``is_dark_line`` of the box, when already known."""
     import cv2
+
+    pad_y = (window * (1 + 2 * pad_y) - 1) / 2
+    height = height * window
 
     x0, y0, x1, y1 = (float(v) for v in box[:4])
     h = max(1.0, y1 - y0)
@@ -43,14 +88,17 @@ def crop_line(
     ix0, iy0 = int(math.floor(X0)), int(math.floor(Y0))
     ix1, iy1 = int(math.ceil(X1)), int(math.ceil(Y1))
     cw, ch = max(1, ix1 - ix0), max(1, iy1 - iy0)
-    crop = np.full((ch, cw), 255, np.uint8)
     sx0, sy0, sx1, sy1 = max(0, ix0), max(0, iy0), min(W, ix1), min(H, iy1)
+    if dark is None:
+        dark = is_dark_line(gray, box)
+    crop = np.full((ch, cw), 0 if dark else 255, np.uint8)
     if sx1 > sx0 and sy1 > sy0:
         crop[sy0 - iy0 : sy1 - iy0, sx0 - ix0 : sx1 - ix0] = gray[sy0:sy1, sx0:sx1]
     out_w = max(WIDTH_MULTIPLE, min(max_width, round(cw * height / ch)))
     interp = cv2.INTER_AREA if ch > height else cv2.INTER_LINEAR
     resized = cv2.resize(crop, (out_w, height), interpolation=interp)
-    return 1.0 - resized.astype(np.float32) / 255.0
+    ink = resized.astype(np.float32) / 255.0
+    return ink if dark else 1.0 - ink
 
 
 def pad_batch(lines: list[np.ndarray], multiple: int = WIDTH_MULTIPLE):
