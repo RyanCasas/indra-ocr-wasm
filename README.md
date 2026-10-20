@@ -136,20 +136,23 @@ conversions; `dispose()` cancels pending work and releases the workers.
 
 `createIndra` options:
 
-- `backend: 'auto' | 'wasm'` (default: `auto`). Tries WebGPU when available,
-  with unsupported operators handled by WASM. If a model fails to initialize or
-  execute on WebGPU, it switches to WASM and retries there; subsequent calls for
-  that model stay on CPU. Use `wasm` for CPU-only execution and comparisons.
-  Math models always use CPU/WASM, including with `backend: 'auto'`; see
-  [why math models use CPU](#why-math-models-use-cpu).
+- `backend: 'auto' | 'webgpu' | 'wasm'` (default: `auto`). `auto` tries WebGPU
+  for non-math models and uses CPU/WASM for math. If a GPU model fails to initialize
+  or execute, automatic mode switches that model to WASM and retries there;
+  subsequent calls for that model stay on CPU. `webgpu` requests WebGPU for every
+  model, including math, and reports an error if the adapter is unavailable or a
+  GPU model fails. It never retries the whole model on CPU. ONNX Runtime can still use WASM
+  for individual unsupported GPU operators. Use `wasm` for CPU-only execution.
+  See [math backend selection](#math-backend-selection) for the automatic policy.
   Backend selection and recovery are reported through `onProgress`.
 - `mode: 'auto' | 'ocr' | 'text'` (default: `auto`).
 - `dpi: 200`, `imageOcr: true`, `furniture: false`.
 - `pdfOrder` is deprecated and ignored. Indra 1.1 determines reading order from
   layout, with geometric ordering for vertical writing, instead of preserving
   PDF content order.
-- `math: true` enables the classifier and LaTeX recognition on CPU/WASM; default:
-  `false`. Other OCR models can continue using WebGPU.
+- `math: true` enables the classifier and LaTeX recognition; default: `false`.
+  Set `backend: 'webgpu'` to include math models in GPU execution, or use `auto`
+  for CPU math with GPU acceleration of the remaining OCR models.
 - `runtimeURL`, `modelURL`: relative or absolute static asset directories;
   defaults: `/runtime/` and `/models/`. Set these explicitly for apps hosted under
   a subpath.
@@ -192,143 +195,123 @@ weights again after a GPU failure. Performance and memory usage depend on the
 browser and document. There is no custom persistent cache; HTTP caching can be
 applied to versioned assets.
 
-## Performance comparison (0.3.0)
+## Performance comparison (1.0.0)
 
-These historical measurements use Indra 0.3.2 and its `v3.1.1` models at
-`ed345c7f158eddbc7dee0c6a7269afb75a94f7e8`. They do not describe the current
-Indra 1.1.2 pipeline or its larger model set; rerun the benchmark for current timings.
-
-Measured on **2026-10-16** using those older models and this machine:
+Measured on **2026-10-20**, using Indra 1.1.2 and the pinned `v1.1.0` model set.
+[The full benchmark report](tests/validation/benchmark-1.0.0.json) records raw
+samples, ranges, dependency versions, source and model revisions, hashes of the
+built browser modules, backend messages, and GPU dispatch evidence. The report's
+`packageVersion` is the repository development baseline (0.3.0); release CI sets
+the published version.
 
 | Component | Benchmark machine / configuration |
 | --- | --- |
 | CPU | AMD Ryzen 7 8845HS, 8 cores / 16 threads, x86-64 |
-| GPU | Integrated AMD Radeon 780M, RDNA 3; 8 GiB reported by `amdgpu` as VRAM |
-| System memory | 64 GB (2 × 32 GB) DDR5-5600 |
+| GPU | Integrated AMD Radeon 780M, RDNA 3; hardware adapter (`isFallbackAdapter: false`) |
+| System memory | 64 GB DDR5-5600 |
 | OS | Ubuntu 26.04.1 LTS, Linux 7.0.0-38-generic |
-| Graphics stack | `amdgpu`, Mesa Vulkan drivers 26.0.8-1ubuntu0.3, Vulkan loader 1.4.341.0-1 |
+| Graphics stack | Mesa Vulkan 26.0.8-1ubuntu0.3, Vulkan loader 1.4.341.0-1 |
 | Browser | Playwright Chromium 156.0.8078.4, headless, with the Vulkan flags below |
-| ONNX Runtime Web | 1.30.0; one WASM thread, with WebGPU enabled for non-math models in automatic mode |
-| Python runtime | Pyodide 0.29.3 |
-| PDFium package | `@embedpdf/pdfium` 2.15.1 |
-| Node.js | 24.21.0, serving the local assets and running the benchmark harness |
+| Runtime | ONNX Runtime Web 1.30.0, Pyodide 0.29.3, PDFium 2.15.1, Node v24.21.0 |
 
-The GPU adapter reported
-`isFallbackAdapter: false`; the benchmark observed actual WebGPU compute dispatches
-from every exercised non-math model. The four math models were created with
-WASM and produced no GPU compute dispatches. All three variants used the same
-Chromium flags and single-threaded WASM, without cross-origin
-isolation. The fallback variant made `navigator.gpu` unavailable inside the
-inference worker before initialization.
+Each value is **median milliseconds per complete document**, measured around
+`convert()` after one warmup per document, with five measured repetitions.
+Inputs are fetched before timing, and initialization is excluded. Cases execute
+sequentially; backend order rotates between suites. All four configurations use
+one WASM thread, the same browser flags, no cross-origin isolation, and no
+external requests. The fallback configuration makes `navigator.gpu` unavailable
+inside the inference worker before initialization.
 
-Times below are **median milliseconds per complete document**, measured around
-`convert()` after one warmup per document, with five measured repetitions. Input
-bytes were fetched before timing; initialization is excluded. Cases execute
-sequentially and backend order rotates between suites. WebGPU uses a mixture of
-GPU and CPU operations where required by ONNX Runtime. Math recognition always
-uses CPU/WASM. Math rows were remeasured after enforcing this policy; the other
-rows retain the original non-math measurements on the same machine and date.
+`Auto + GPU` uses GPU inference for non-math models and CPU math. `WebGPU` requests
+GPU inference for all models, including math. Both can use WASM for individual
+unsupported operators. The benchmark observed actual compute dispatches from
+all four math models in explicit GPU mode and none in automatic mode. It rejects
+whole-model CPU fallback in explicit GPU mode.
 
-| Document / options | Pages | WASM (ms) | Auto + WebGPU (ms) | Auto without WebGPU (ms) | WASM / auto |
+| Document / options | Pages | WASM (ms) | Auto + GPU (ms) | WebGPU incl. math (ms) | Auto without GPU (ms) |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Scanned PNG | 1 | 245.2 | 195.9 | 247.3 | 1.25× |
-| Chinese PNG | 1 | 196.4 | 145.1 | 193.9 | 1.35× |
-| Multipage TIFF | 3 | 605.7 | 455.8 | 610.3 | 1.33× |
-| Digital PDF, default reading order | 2 | 209.9 | 146.5 | 209.6 | 1.43× |
-| Hybrid PDF | 1 | 172.7 | 139.9 | 174.6 | 1.23× |
-| Digital PDF, `mode: 'ocr'` | 2 | 534.6 | 429.6 | 532.2 | 1.24× |
-| Formula PNG, `math: true` (CPU math) | 1 | 442.3 | 464.2 | 430.5 | 0.95× |
+| Scanned PNG | 1 | 293.8 | 268.6 | 261.7 | 319.6 |
+| Chinese PNG | 1 | 245.3 | 279.0 | 285.1 | 263.1 |
+| Arabic PNG | 1 | 191.9 | 185.9 | 186.0 | 199.4 |
+| Hindi PNG | 1 | 201.0 | 227.2 | 226.8 | 203.5 |
+| Light text on dark ground | 1 | 293.2 | 264.4 | 260.6 | 290.8 |
+| 12-degree tilt | 1 | 343.5 | 307.5 | 312.8 | 362.9 |
+| Multipage TIFF | 3 | 712.2 | 592.0 | 597.8 | 767.5 |
+| Digital PDF | 2 | 224.6 | 164.0 | 169.5 | 245.3 |
+| Hybrid PDF | 1 | 189.0 | 177.9 | 181.7 | 214.1 |
+| Digital PDF (`mode: 'ocr'`) | 2 | 650.2 | 581.8 | 1306.3 | 627.2 |
+| Scanned PNG (`math: true`) | 1 | 333.9 | 266.4 | 276.1 | 307.0 |
+| Formula PNG (`math: true`) | 1 | 463.8 | 381.2 | 538.4 | 400.6 |
+| Digital PDF (`math: true`) | 2 | 310.8 | 175.7 | 183.2 | 233.3 |
 
-On this machine, WebGPU reduced warm conversion latency by **19–30%** for the
-non-math cases (1.23–1.43× speedup). With math models pinned to CPU, the formula
-case was still about **5% slower** in automatic mode: its other OCR models can
-use the GPU. The all-CPU paths were faster for the whole formula document.
-Automatic CPU fallback stayed within about 3% of forced WASM across these cases.
-These are measurements of small fixtures on one machine, not a speed guarantee
-for other documents or GPUs.
+The formula fixture took **538.4 ms with explicit WebGPU math**,
+**381.2 ms with automatic CPU math**, and **463.8 ms
+with forced WASM**. GPU math was about **41% slower** than CPU math
+with the remaining models using the GPU. These are whole-document measurements
+on one device, not per-operator profiles or a speed guarantee. Results vary with the document,
+GPU, CPU load, and browser; explicit WebGPU and automatic mode use the same
+execution providers on non-math models, so differences between those columns
+on non-math documents reflect run variation rather than a different policy.
+The explicit-GPU forced-OCR samples ranged from 638 to 1658 ms, with the last
+two near 638 ms. One warmup did not establish steady timing for that case;
+its median should not be interpreted as an inherent cost of explicit selection.
 
-Initialization is measured separately around `createIndra()` with three fresh
-engines per configuration (median, milliseconds). Runtime and model assets are
-served from localhost with `Cache-Control: no-store`; these figures include local
-asset loading and checksum verification, not an initial download from the Internet.
+Initialization is measured separately around `createIndra()` using three fresh
+engines per configuration (median milliseconds). Assets are served from localhost
+with `Cache-Control: no-store`: these include local loading and verification,
+not an Internet download.
 
-| Initialization | WASM (ms) | Auto + WebGPU (ms) | Auto without WebGPU (ms) |
-| --- | ---: | ---: | ---: |
-| Default models | 3066.8 | 3117.1 | 3068.6 |
-| With `math: true` (CPU math) | 3248.0 | 3675.1 | 3271.1 |
+| Initialization | WASM (ms) | Auto + GPU (ms) | WebGPU incl. math (ms) | Auto without GPU (ms) |
+| --- | ---: | ---: | ---: | ---: |
+| Default models | 3877.6 | 4039.0 | 4029.2 | 3973.1 |
+| With `math: true` | 4273.8 | 4324.1 | 4486.0 | 4214.2 |
 
-The first scan conversion, before warmup, took 413.1 ms on WASM, 606.1 ms on
-WebGPU, and 425.2 ms with automatic CPU fallback (one observation each, excluding
-initialization). GPU setup and shader compilation
-can outweigh the warm-run savings for a single document. Reuse an engine for
-multiple conversions when possible.
+All **312 conversions / 432 pages**, including warmups, passed native
+parity comparisons with the unchanged tolerances. The harness verifies actual
+GPU dispatches, CPU selection for automatic math, and recovery when the adapter
+is unavailable. This establishes parity for the measured cases.
 
-All **126 conversions / 198 pages**, including warmups, passed comparisons with
-native golden outputs using the unchanged parity tolerances. Observed coordinate
-and confidence deltas were zero for these cases. Timings are excluded from parity
-comparisons; this does not establish universal GPU/native equivalence.
-
-To reproduce from a prepared repository checkout:
+To reproduce from a prepared checkout:
 
 ```bash
 npm run build
 npm run assets
 npx playwright install --with-deps chromium
-npm run benchmark -- --iterations 5 --startups 3
-```
-
-The script skips the GPU variant explicitly if no adapter is available. On this
-Linux machine, default headless Chromium exposed the API but returned no adapter;
-the published measurements used Vulkan with these explicit flags:
-
-```bash
 npm run benchmark -- --iterations 5 --startups 3 \
   --gpu-args '["--enable-unsafe-webgpu","--use-angle=vulkan","--enable-features=Vulkan","--disable-vulkan-surface"]'
 ```
 
-Raw samples, ranges, environment details, backend messages, GPU dispatch evidence,
-and parity checks are written to `test-results/benchmark.json` (ignored by Git).
-Set `--output <path>` to keep another run, or `--suite math` to remeasure only
-mathematics. The math rows above used `--suite math` with the same repetition
-counts and Vulkan flags, saved to `test-results/benchmark-math-cpu.json`. The
-benchmark fails if GPU execution or CPU fallback cannot be confirmed, a math model
-uses the GPU, or any output comparison fails.
+The Vulkan flags were needed to expose this machine's hardware adapter in
+headless Chromium. The script explicitly skips GPU variants if no adapter is
+available. Use `--suite math` to measure the three math-enabled cases only, or
+`--output <path>` to keep another report. Default output is
+`test-results/benchmark.json` (ignored by Git).
 
-### Why math models use CPU
+### Math backend selection
 
-The policy follows the measured latency of this browser pipeline. Before math
-was pinned to CPU, the formula fixture took **503.3 ms with WebGPU enabled for
-all models versus 421.4 ms with forced WASM**: about 19% longer. These were
-whole-document medians from the original five-run comparison, excluding engine
-initialization. They do not measure the four math models independently. The
-table above contains the later measurements with CPU math enforced.
+With `backend: 'auto'`, the four math models (`mathcls.onnx`, `math_enc.onnx`,
+`math_dec_init.onnx`, and `math_dec_step.onnx`) use CPU/WASM. Other OCR models
+can use WebGPU on the same document. This is an automatic selection policy,
+and an explicit GPU request overrides it:
 
-Math recognition also has a different execution pattern from a single OCR
-inference. In [the math reader](python/web_math.py), the decoder generates tokens
-sequentially: each step needs the previous token and its attention state (the
-key/value caches). The current [Python/ONNX bridge](python/onnxruntime.py) returns
-logits and updated caches to CPU memory after every step; Python selects the next
-token, then sends the state into the next inference call. The decoding loop and
-its caches do not stay resident on the GPU across calls.
+```js
+const indra = await createIndra({ backend: 'webgpu', math: true });
+```
 
-With GPU execution, that design introduces repeated CPU/GPU transfers and
-synchronization. For short formulas and small batches, those costs can outweigh
-faster arithmetic. This is an explanation suggested by the implementation and
-the end-to-end results; no per-operator profiling was collected to attribute the
-slowdown to a specific transfer or kernel. Both backends passed the checked
-native-output comparisons.
+This requests GPU execution for all four math models and fails if the adapter
+is unavailable or a model cannot initialize or execute. Unsupported individual
+operators can still use WASM. `backend: 'wasm'` keeps the complete pipeline on CPU.
 
-Consequently, `mathcls.onnx` (classification), `math_enc.onnx` (encoding),
-`math_dec_init.onnx`, and `math_dec_step.onnx` (decoder initialization and token
-generation) always use CPU/WASM. Keeping all four together avoids GPU transfers
-between stages of the math subpipeline. Orientation, detection, script
-identification, ordinary text recognition, and reading order can still use
-WebGPU, even on a document containing formulas. Set `backend: 'wasm'` to run the
-entire OCR pipeline on CPU.
+The [math decoder](python/web_math.py) generates tokens sequentially. Each step
+returns logits and attention caches to Python on the CPU, which selects the
+next token and sends the state into the next inference call. GPU execution
+therefore includes repeated CPU/GPU transfers and synchronization. This is an
+implementation-based explanation of the overhead; the benchmark measures whole
+documents and does not attribute latency to individual transfers or kernels.
 
-This is a conservative default based on the tested device and workloads.
-Different hardware, larger batches, or a future decoder that keeps its state on
-the GPU could change the tradeoff; the current API always enforces CPU math.
+The current formula measurement supports keeping CPU math as the automatic
+default on this device. Different hardware or a decoder that retains its state
+on the GPU could change the tradeoff; use explicit WebGPU to choose GPU math.
 
 ## Parity verification
 

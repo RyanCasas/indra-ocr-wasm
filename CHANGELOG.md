@@ -15,6 +15,12 @@ the upstream Indra OCR version. Release dates use UTC.
 
 ### Changed
 
+- Add `backend: 'webgpu'` to request GPU execution for all models, including
+  math. Explicit GPU requests fail when an adapter or model fails, without
+  silently retrying the model on CPU. Automatic mode retains CPU math and
+  per-model recovery to WASM; individual unsupported GPU operators can use WASM.
+- Rerun benchmarks against the 1.1.2 pipeline, comparing forced WASM, automatic
+  WebGPU with CPU math, explicit WebGPU with GPU math, and automatic CPU fallback.
 - Update the unmodified vendored Indra source and tests from 0.3.2 to 1.1.2,
   with SHA-256-pinned `v1.1.0` models and language models.
 - Adapt asynchronous inference for multilingual script routing, language-model

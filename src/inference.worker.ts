@@ -9,13 +9,17 @@ self.onmessage = async ({ data }) => {
       ort.env.wasm.wasmPaths = data.runtimeURL;
       ort.env.wasm.numThreads = 1;
       ort.env.wasm.proxy = false;
+      const forcedGpu = data.backend === 'webgpu';
       let preferGpu = false;
       if (data.backend !== 'wasm') {
         try {
           const gpu = (navigator as Navigator & { gpu?: { requestAdapter(): Promise<unknown> } }).gpu;
           preferGpu = !!(await gpu?.requestAdapter());
         } catch { /* Adapter requests can fail even when the API is exposed. */ }
-        if (!preferGpu) self.postMessage({ kind: 'progress', message: 'WebGPU adapter unavailable; using WASM' });
+        if (!preferGpu) {
+          if (forcedGpu) throw new Error('WebGPU was requested but no adapter is available');
+          self.postMessage({ kind: 'progress', message: 'WebGPU adapter unavailable; using WASM' });
+        }
       }
       for (const name of data.models as string[]) {
         const url = new URL(name, data.modelURL).href;
@@ -26,11 +30,12 @@ self.onmessage = async ({ data }) => {
           .map(n => n.toString(16).padStart(2, '0')).join('');
         if (data.sha256[name] !== hash) throw new Error(`Model checksum mismatch: ${name}`);
         const mathModel = name.startsWith('math');
-        if (mathModel) self.postMessage({ kind: 'progress', message: `${name}: using CPU/WASM for math` });
+        if (mathModel && !forcedGpu) self.postMessage({ kind: 'progress', message: `${name}: using CPU/WASM for math` });
         const backend = new InferenceBackend(
           gpu => ort.InferenceSession.create(bytes, {
             executionProviders: gpu ? ['webgpu', 'wasm'] : ['wasm'], enableCpuMemArena: false,
-          }), preferGpu && !mathModel, message => self.postMessage({ kind: 'progress', message: `${name}: ${message}` }));
+          }), preferGpu && (forcedGpu || !mathModel),
+          message => self.postMessage({ kind: 'progress', message: `${name}: ${message}` }), !forcedGpu);
         await backend.load();
         sessions.set(name, backend);
       }
