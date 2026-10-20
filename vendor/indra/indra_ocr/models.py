@@ -3,16 +3,12 @@
 from __future__ import annotations
 
 import os
-import time
 from pathlib import Path
 
 HF_REPO = "datalab-to/indra-ocr"
 # Model set this package version was built and tested against (a tag in HF_REPO).
-HF_REVISION = "v3.1.1"
+HF_REVISION = "v1.1.0"
 FILES = ("det.onnx", "rec.onnx", "order.onnx", "meta.json")
-# A cached model folder is checked against the Hub at most this often (a moved
-# tag or a fixed file arrives within a day; no network on the other runs).
-CHECK_EVERY_S = 24 * 3600
 
 
 class ModelError(OSError):
@@ -32,8 +28,10 @@ MATH_FILES = (
 def model_dir(
     path: str | Path | None = None, revision: str | None = None, math: bool = False
 ) -> Path:
-    """Folder with det.onnx, rec.onnx, order.onnx and meta.json (and, with
-    ``math``, the math models, which are downloaded only then).
+    """Folder with det.onnx, rec.onnx, meta.json and usually order.onnx (and,
+    with ``math``, the math models, which are downloaded only then).  A local
+    folder without order.onnx works: reading order then falls back to
+    XY-cut, with no layout labels.
 
     Order of lookup: ``path``, the INDRA_OCR_MODEL_DIR environment variable, then
     a download of ``HF_REPO``.  Downloads are cached by huggingface_hub."""
@@ -49,58 +47,29 @@ def model_dir(
     from huggingface_hub import snapshot_download
 
     rev = revision or HF_REVISION
-    # config.json is the file the Hub counts downloads by: it is requested with
-    # the models on the first download and on each daily check.
     kw = dict(
         revision=rev,
         allow_patterns=[
             "*.onnx",
             "meta.json",
-            "config.json",
+            "lm.npz",
+            "lm_*.npz",
             *(MATH_FILES if math else ()),
         ],
         ignore_patterns=[] if math else list(MATH_FILES),
     )
     try:
-        cached = Path(snapshot_download(HF_REPO, local_files_only=True, **kw))
+        # A tag's files never change: a cached copy needs no network (and no
+        # progress bar on every run).
+        return Path(snapshot_download(HF_REPO, local_files_only=True, **kw))
     except Exception:  # noqa: BLE001  (not cached yet)
-        cached = None
-    stamp = _check_stamp(rev)
-    if cached is not None and _age(stamp) < CHECK_EVERY_S:
-        return cached
+        pass
     try:
-        p = Path(snapshot_download(HF_REPO, **kw))
-        _touch(stamp)
-        return p
+        return Path(snapshot_download(HF_REPO, **kw))
     except Exception as e:  # noqa: BLE001  (network, access, disk: one clear message)
-        if cached is not None:  # offline or the Hub is down: keep the cached models
-            return cached
         reason = (str(e).strip().splitlines() or [type(e).__name__])[0]
         raise ModelError(
             f"could not download the models from Hugging Face ({HF_REPO}, {rev}): "
             f"{type(e).__name__}: {reason[:200]}. Check the network connection, or "
             "point at a local model folder with --model-dir or INDRA_OCR_MODEL_DIR."
         ) from e
-
-
-def _check_stamp(rev: str) -> Path:
-    """The file whose modification time records the last check of ``rev``."""
-    from huggingface_hub import constants
-
-    name = f".indra_ocr_checked--{HF_REPO.replace('/', '--')}--{rev}"
-    return Path(constants.HF_HUB_CACHE) / name
-
-
-def _age(stamp: Path) -> float:
-    try:
-        return time.time() - stamp.stat().st_mtime
-    except OSError:
-        return float("inf")
-
-
-def _touch(stamp: Path) -> None:
-    try:
-        stamp.parent.mkdir(parents=True, exist_ok=True)
-        stamp.touch()
-    except OSError:  # a read-only cache: check again next time
-        pass

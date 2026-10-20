@@ -1,4 +1,4 @@
-This directory vendors datalab-to/indra 0.3.2 under Apache-2.0.
+This directory vendors datalab-to/indra 1.1.2 under Apache-2.0.
 
 Source: https://github.com/datalab-to/indra
 Exact commit: see REVISION.

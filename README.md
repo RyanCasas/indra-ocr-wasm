@@ -2,9 +2,9 @@
 
 # Indra OCR WASM
 
-Browser WebAssembly port of Indra OCR 0.3.2, with no OCR server.
+Browser WebAssembly port of Indra OCR 1.1.2, with no OCR server.
 A TypeScript API converts PDFs and images into text, Markdown, and JSON with lines,
-bounding boxes, blocks, reading order, orientation, and timings.
+bounding boxes, blocks, reading order, orientation, vertical-writing flags, and timings.
 
 Install [@ryancasas/indra-ocr-wasm from npm](https://www.npmjs.com/package/@ryancasas/indra-ocr-wasm).
 Starting with package **0.2.0**, cross-origin isolation, COOP/COEP headers,
@@ -18,9 +18,9 @@ It adapts ONNX Runtime to the `onnxruntime-web` WebGPU/WASM backends and
 pypdfium2 to actual PDFium WASM. Users do not need Python installed on their devices.
 
 Upstream code is pinned to
-[`3d773ae`](https://github.com/datalab-to/indra/tree/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4).
-The `v3.1.1` models are pinned to Hugging Face commit
-`ed345c7f158eddbc7dee0c6a7269afb75a94f7e8`, with SHA-256 hashes in
+[`0e96b93`](https://github.com/datalab-to/indra/tree/0e96b93c6810f17cf8352acbb4487cc9e45b66d5).
+The `v1.1.0` models are pinned to Hugging Face commit
+`bd02167fdf2005a19962cc15188f8496a2c87d3b`, with SHA-256 hashes in
 [models.lock.json](models.lock.json).
 
 Model weights and model-generated outputs have a separate
@@ -144,7 +144,10 @@ conversions; `dispose()` cancels pending work and releases the workers.
   [why math models use CPU](#why-math-models-use-cpu).
   Backend selection and recovery are reported through `onProgress`.
 - `mode: 'auto' | 'ocr' | 'text'` (default: `auto`).
-- `dpi: 200`, `pdfOrder: true`, `imageOcr: true`, `furniture: false`.
+- `dpi: 200`, `imageOcr: true`, `furniture: false`.
+- `pdfOrder` is deprecated and ignored. Indra 1.1 determines reading order from
+  layout, with geometric ordering for vertical writing, instead of preserving
+  PDF content order.
 - `math: true` enables the classifier and LaTeX recognition on CPU/WASM; default:
   `false`. Other OCR models can continue using WebGPU.
 - `runtimeURL`, `modelURL`: relative or absolute static asset directories;
@@ -174,7 +177,8 @@ and WebGPU are not required. Opening the HTML directly through `file://` is not
 a supported deployment.
 
 The prepared runtime and dependencies occupy approximately 116 MB uncompressed;
-the models, including math models, occupy 37 MB. Math models are loaded only when
+the models, including math models and language models, occupy 96 MB (76 MB
+without math). Math models are loaded only when
 `math` is enabled. The initial download is larger than for a manual Rust/C++ port;
 this design reuses the algorithms and their synchronous helpers. The browser's
 asynchronous OCR, document, and math adaptations live in `python/web_*.py`; the
@@ -190,7 +194,11 @@ applied to versioned assets.
 
 ## Performance comparison (0.3.0)
 
-Measured on **2026-10-16** using the pinned models above and this machine:
+These historical measurements use Indra 0.3.2 and its `v3.1.1` models at
+`ed345c7f158eddbc7dee0c6a7269afb75a94f7e8`. They do not describe the current
+Indra 1.1.2 pipeline or its larger model set; rerun the benchmark for current timings.
+
+Measured on **2026-10-16** using those older models and this machine:
 
 | Component | Benchmark machine / configuration |
 | --- | --- |
@@ -324,7 +332,7 @@ the GPU could change the tradeoff; the current API always enforces CPU math.
 
 ## Parity verification
 
-The **27 original tests** are copied without modifications into
+The **74 original tests** are copied without modifications into
 [vendor/indra/tests](vendor/indra/tests). `npm test` checks their hashes and those
 of the upstream code, as well as tensor transport, including 64-bit integers,
 scalars, response size limits, inference errors, and timeouts. It also tests
@@ -332,7 +340,7 @@ automatic SemVer decisions and release guards using temporary Git repositories.
 
 The test button runs `pytest` **inside the production WASM worker**:
 
-- 26 original tests pass in WASM.
+- 73 original tests pass in WASM.
 - 1 original test is skipped by its existing `importorskip`: it uses pikepdf to
   *create* an encrypted PDF. Its behavior is also checked using a real encrypted
   PDF generated natively, with missing, incorrect, and correct passwords.
@@ -340,11 +348,12 @@ The test button runs `pytest` **inside the production WASM worker**:
   results, including rotation, crop boxes, and invisible text.
 
 In addition, [golden.json](tests/fixtures/golden.json) contains outputs from
-**unmodified native Indra** for 20 cases / 29 pages: PNG, Chinese, multipage TIFF,
+**unmodified native Indra** for 24 cases / 33 pages: PNG, Chinese, Arabic, Hindi,
+dark backgrounds, 12-degree tilt, multipage TIFF,
 digital PDFs, forced OCR, hybrid documents, HTML tables, encrypted PDFs, rotation,
 skew, cropping, invisible text, page limits, model-based reading order, and LaTeX
-formulas. The generator verifies that the Chinese recognizer and all four math
-models execute, including the decoder with cached state.
+formulas. The generator verifies that the CJK, right-to-left, and world recognizers
+and all four math models execute, including the decoder with cached state.
 
 Text, Markdown/HTML, labels, order, source, and notes are compared exactly.
 Bounding boxes allow a difference of 0.11 pixels and confidence scores allow
@@ -389,10 +398,13 @@ python3.13 -m venv .venv
 .venv/bin/pip install -r requirements-native.txt
 PYTHONPATH=vendor/indra .venv/bin/python -m pytest vendor/indra/tests -q
 .venv/bin/python scripts/fixtures.py
+# Refresh reference outputs while preserving the existing input documents:
+.venv/bin/python scripts/fixtures.py --golden-only
 ```
 
 Regeneration requires DejaVu Sans/Serif and Noto Sans CJK fonts at the Linux paths
-specified in `scripts/fixtures.py`. Fixtures are already included; neither Python
+specified in `scripts/fixtures.py`, plus Noto Sans Arabic and Devanagari and a
+Pillow build with Raqm for shaping. Fixtures are already included; neither Python
 nor these fonts are needed to run the browser tests.
 
 ## Releases

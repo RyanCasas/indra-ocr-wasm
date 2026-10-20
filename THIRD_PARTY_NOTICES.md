@@ -7,7 +7,7 @@ Retain these notices when redistributing the project or its prepared assets.
 ## Indra source code
 
 - Project: [datalab-to/indra](https://github.com/datalab-to/indra).
-- Revision: `3d773aeedc5d79d1d0a2a04007a9075cd71a59f4` (Indra OCR 0.3.2).
+- Revision: `0e96b93c6810f17cf8352acbb4487cc9e45b66d5` (Indra OCR 1.1.2).
 - Location: `vendor/indra/indra_ocr/` and `vendor/indra/tests/`, copied unchanged.
 - Browser adaptations: `python/web_document.py`, `python/web_pipeline.py`, and
   `python/web_math.py` change inference calls to await asynchronous results.
@@ -16,9 +16,9 @@ Retain these notices when redistributing the project or its prepared assets.
 ## Indra models and reference outputs
 
 - Publisher: [Datalab](https://huggingface.co/datalab-to/indra-ocr).
-- Revision: `ed345c7f158eddbc7dee0c6a7269afb75a94f7e8` (`v3.1.1`).
+- Revision: `bd02167fdf2005a19962cc15188f8496a2c87d3b` (`v1.1.0`).
 - License: [AI PUBS OPEN RAIL-M LICENSE (MODIFIED)](licenses/INDRA-MODEL-LICENSE).
-- [Original license at the pinned revision](https://huggingface.co/datalab-to/indra-ocr/blob/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8/LICENSE).
+- [Original license at the pinned revision](https://huggingface.co/datalab-to/indra-ocr/blob/bd02167fdf2005a19962cc15188f8496a2c87d3b/LICENSE).
 
 Weights are not committed to this repository. `npm run assets` downloads the
 unmodified weights and their license; `models.lock.json` records their hashes.
@@ -60,7 +60,8 @@ passwords (`pw` and `owner`). These are fixture values, not credentials.
 
 PDF fixtures embed subsets of DejaVu Sans. The full upstream
 [DejaVu font license](licenses/DEJAVU-LICENSE) includes the Bitstream and Arev
-copyright and permission notices. Noto Sans CJK is used to render the Chinese
-raster fixture; no Noto font file is bundled. Regenerating fixtures requires the
+copyright and permission notices. Noto Sans CJK, Arabic, and Devanagari are used
+to render the multilingual raster fixtures; no Noto font file is bundled.
+Regenerating fixtures requires the
 fonts installed on the developer's system. Model-generated OCR outputs have the
 separate license described above; see [the fixture notes](tests/fixtures/README.md).

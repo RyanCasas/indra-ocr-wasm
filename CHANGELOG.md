@@ -3,6 +3,35 @@
 Versions refer to the `@ryancasas/indra-ocr-wasm` npm package, independently of
 the upstream Indra OCR version. Release dates use UTC.
 
+## Unreleased
+
+### Breaking changes
+
+- `pdfOrder` remains accepted but is ignored: reading order now follows
+  upstream's layout-based ordering instead of preserving PDF content order.
+- The TypeScript `Page` interface now requires the `vertical` flag.
+- Regenerate runtime and model assets and copy the new browser modules together
+  when upgrading. Older model manifests are incompatible with this pipeline.
+
+### Changed
+
+- Update the unmodified vendored Indra source and tests from 0.3.2 to 1.1.2,
+  with SHA-256-pinned `v1.1.0` models and language models.
+- Adapt asynchronous inference for multilingual script routing, language-model
+  decoding, dark scans, larger tilts, vertical writing, picture regions, and
+  right-to-left layout.
+- Apply upstream fixes for rotated PDF text, visual-order right-to-left layers,
+  and legacy-font layers whose codes disagree with the page's script.
+- Refresh native parity references and exercise all 74 upstream tests in WASM,
+  with additional Arabic, Hindi, dark-background, and tilted-image fixtures.
+  The model download is now about 76 MB without math, or 96 MB with math.
+
+### Fixed
+
+- Keep PDF documents alive while a page is still referenced by the PDFium adapter.
+- Transfer only requested ONNX outputs and expose output metadata for language
+  model initialization. Verify metadata and language-model checksums at runtime.
+
 ## [0.3.0] - 2026-10-16
 
 ### Added

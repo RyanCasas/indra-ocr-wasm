@@ -39,12 +39,12 @@ class PdfDocument:
     def __getitem__(self, index):
         if not 0 <= index < len(self):
             raise IndexError(index)
-        page = PdfPage(raw.FPDF_LoadPage(self.raw, index))
+        page = PdfPage(raw.FPDF_LoadPage(self.raw, index), self)
         self.pages.append(page)
         return page
 
     def new_page(self, width, height):
-        page = PdfPage(raw.FPDFPage_New(self.raw, len(self), width, height))
+        page = PdfPage(raw.FPDFPage_New(self.raw, len(self), width, height), self)
         self.pages.append(page)
         return page
 
@@ -69,14 +69,22 @@ class PdfDocument:
 
 
 class PdfPage:
-    def __init__(self, handle):
+    def __init__(self, handle, document):
         self.raw = handle
+        # A page keeps its document alive, including PdfDocument(path)[0].
+        self.document = document
         self.textpages = []
         if not handle:
             raise PdfiumError("Could not load PDF page")
 
     def get_size(self):
         return raw.FPDF_GetPageWidth(self.raw), raw.FPDF_GetPageHeight(self.raw)
+
+    def get_rotation(self):
+        return raw.FPDFPage_GetRotation(self.raw) * 90
+
+    def set_rotation(self, rotation):
+        raw.FPDFPage_SetRotation(self.raw, (rotation // 90) % 4)
 
     def render(self, scale=1, grayscale=False):
         if not grayscale:

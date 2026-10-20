@@ -4,9 +4,9 @@
     "numpy": "2.2.5",
     "opencv": "4.11.0",
     "onnxruntime": "1.31.0",
-    "indra": "0.3.2"
+    "indra": "1.1.2"
   },
-  "upstream": "3d773aeedc5d79d1d0a2a04007a9075cd71a59f4",
+  "upstream": "0e96b93c6810f17cf8352acbb4487cc9e45b66d5",
   "suites": [
     {
       "name": "auto",
@@ -21,66 +21,66 @@
               "lines": [
                 {
                   "box": [
-                    90.6,
-                    106.8,
-                    538.3,
-                    140.5
+                    90.7,
+                    107.0,
+                    538.2,
+                    140.1
                   ],
                   "text": "Indra WebAssembly OCR",
-                  "conf": 0.9997
+                  "conf": 0.9985
                 },
                 {
                   "box": [
                     88.0,
-                    207.4,
-                    735.0,
+                    207.2,
+                    735.1,
                     240.5
                   ],
                   "text": "All documents stay in your browser.",
-                  "conf": 0.9919
+                  "conf": 0.9872
                 },
                 {
                   "box": [
-                    87.9,
-                    306.7,
-                    910.2,
-                    340.6
+                    93.2,
+                    306.4,
+                    910.3,
+                    341.2
                   ],
                   "text": "The quick brown fox jumps over the lazy dog.",
-                  "conf": 0.9989
+                  "conf": 0.9966
                 },
                 {
                   "box": [
-                    91.5,
-                    407.3,
-                    652.2,
-                    435.3
+                    91.4,
+                    406.9,
+                    652.3,
+                    435.4
                   ],
                   "text": "Invoice 2026: total 123.45 EUR",
-                  "conf": 0.9988
+                  "conf": 0.9836
                 },
                 {
                   "box": [
-                    90.5,
-                    505.5,
-                    795.4,
-                    539.9
+                    90.4,
+                    505.7,
+                    795.5,
+                    540.8
                   ],
-                  "text": "Unicode: café, España, über, Ελληνικά.",
-                  "conf": 0.9764
+                  "text": "Unicode: café, España, über, Eλληνικá.",
+                  "conf": 0.947
                 }
               ],
-              "markdown": "Indra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, Ελληνικά.",
+              "markdown": "Indra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, Eλληνικá.",
               "source": "ocr",
               "note": "order=model",
               "blocks": [
                 {
                   "label": "Text",
                   "bbox": [
-                    90.6,
-                    106.8,
-                    538.3,
-                    140.5
+                    90.7,
+                    107.0,
+                    538.2,
+                    140.1
                   ],
                   "text": "Indra WebAssembly OCR"
                 },
@@ -88,8 +88,8 @@
                   "label": "Text",
                   "bbox": [
                     88.0,
-                    207.4,
-                    735.0,
+                    207.2,
+                    735.1,
                     240.5
                   ],
                   "text": "All documents stay in your browser."
@@ -97,37 +97,38 @@
                 {
                   "label": "Text",
                   "bbox": [
-                    87.9,
-                    306.7,
-                    910.2,
-                    340.6
+                    93.2,
+                    306.4,
+                    910.3,
+                    341.2
                   ],
                   "text": "The quick brown fox jumps over the lazy dog."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    91.5,
-                    407.3,
-                    652.2,
-                    435.3
+                    91.4,
+                    406.9,
+                    652.3,
+                    435.4
                   ],
                   "text": "Invoice 2026: total 123.45 EUR"
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    90.5,
-                    505.5,
-                    795.4,
-                    539.9
+                    90.4,
+                    505.7,
+                    795.5,
+                    540.8
                   ],
-                  "text": "Unicode: café, España, über, Ελληνικά."
+                  "text": "Unicode: café, España, über, Eλληνικá."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
-              "text": "Indra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, Ελληνικά."
+              "vertical": false,
+              "text": "Indra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, Eλληνικá."
             }
           ]
         },
@@ -140,63 +141,474 @@
               "lines": [
                 {
                   "box": [
-                    89.3,
-                    112.2,
-                    698.2,
-                    155.0
+                    89.2,
+                    112.0,
+                    698.3,
+                    155.6
                   ],
                   "text": "中文识别测试，浏览器本地运行。",
-                  "conf": 0.9999
+                  "conf": 0.9991
                 },
                 {
                   "box": [
                     89.9,
-                    223.7,
-                    653.9,
-                    262.7
+                    224.4,
+                    656.5,
+                    262.8
                   ],
                   "text": "所有文档都保留在您的设备上。",
-                  "conf": 0.9999
+                  "conf": 0.9995
                 },
                 {
                   "box": [
-                    87.0,
-                    333.9,
-                    610.2,
-                    373.4
+                    86.8,
+                    333.8,
+                    610.5,
+                    375.0
                   ],
                   "text": "价格 123.45 元，总计 2026。",
-                  "conf": 0.9704
+                  "conf": 0.9905
                 }
               ],
-              "markdown": "## 中文识别测试，浏览器本地运行。所有文档都保留在您的设备上。\n\n价格 123.45 元，总计 2026。",
+              "markdown": "中文识别测试，浏览器本地运行。\n\n所有文档都保留在您的设备上。\n\n价格 123.45 元，总计 2026。",
               "source": "ocr",
               "note": "order=model",
               "blocks": [
                 {
-                  "label": "Section-Header",
+                  "label": "Text",
                   "bbox": [
-                    89.3,
-                    112.2,
-                    698.2,
-                    262.7
+                    89.2,
+                    112.0,
+                    698.3,
+                    155.6
                   ],
-                  "text": "中文识别测试，浏览器本地运行。\n所有文档都保留在您的设备上。"
+                  "text": "中文识别测试，浏览器本地运行。"
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    87.0,
-                    333.9,
-                    610.2,
-                    373.4
+                    89.9,
+                    224.4,
+                    656.5,
+                    262.8
+                  ],
+                  "text": "所有文档都保留在您的设备上。"
+                },
+                {
+                  "label": "Text",
+                  "bbox": [
+                    86.8,
+                    333.8,
+                    610.5,
+                    375.0
                   ],
                   "text": "价格 123.45 元，总计 2026。"
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
+              "vertical": false,
               "text": "中文识别测试，浏览器本地运行。\n所有文档都保留在您的设备上。\n价格 123.45 元，总计 2026。"
+            }
+          ]
+        },
+        {
+          "file": "arabic.png",
+          "options": {},
+          "pages": [
+            {
+              "page": 0,
+              "lines": [
+                {
+                  "box": [
+                    94.1,
+                    108.5,
+                    316.0,
+                    155.5
+                  ],
+                  "text": "مرحبا بالعالم",
+                  "conf": 0.9808
+                },
+                {
+                  "box": [
+                    96.5,
+                    255.7,
+                    699.2,
+                    305.3
+                  ],
+                  "text": "جميع المستندات تبقى على جهازك",
+                  "conf": 0.9834
+                },
+                {
+                  "box": [
+                    97.1,
+                    407.7,
+                    581.0,
+                    453.1
+                  ],
+                  "text": "قراءة النصوص باللغة العربية",
+                  "conf": 0.9702
+                }
+              ],
+              "markdown": "مرحبا بالعالم\n\nجميع المستندات تبقى على جهازك\n\nقراءة النصوص باللغة العربية",
+              "source": "ocr",
+              "note": "order=model",
+              "blocks": [
+                {
+                  "label": "Text",
+                  "bbox": [
+                    94.1,
+                    108.5,
+                    316.0,
+                    155.5
+                  ],
+                  "text": "مرحبا بالعالم"
+                },
+                {
+                  "label": "Text",
+                  "bbox": [
+                    96.5,
+                    255.7,
+                    699.2,
+                    305.3
+                  ],
+                  "text": "جميع المستندات تبقى على جهازك"
+                },
+                {
+                  "label": "Text",
+                  "bbox": [
+                    97.1,
+                    407.7,
+                    581.0,
+                    453.1
+                  ],
+                  "text": "قراءة النصوص باللغة العربية"
+                }
+              ],
+              "rotation": 0,
+              "skew": 0.0,
+              "vertical": false,
+              "text": "مرحبا بالعالم\nجميع المستندات تبقى على جهازك\nقراءة النصوص باللغة العربية"
+            }
+          ]
+        },
+        {
+          "file": "hindi.png",
+          "options": {},
+          "pages": [
+            {
+              "page": 0,
+              "lines": [
+                {
+                  "box": [
+                    93.5,
+                    80.6,
+                    305.7,
+                    131.6
+                  ],
+                  "text": "नमस्ते दुनिया",
+                  "conf": 0.9811
+                },
+                {
+                  "box": [
+                    94.6,
+                    230.6,
+                    750.3,
+                    274.3
+                  ],
+                  "text": "सभी दस्तावेज आपके उपकरण पर रहते हैं",
+                  "conf": 0.9634
+                },
+                {
+                  "box": [
+                    94.3,
+                    378.3,
+                    581.1,
+                    424.5
+                  ],
+                  "text": "ब्राउज़र में पाठ पहचान परीक्षण",
+                  "conf": 0.9763
+                }
+              ],
+              "markdown": "## नमस्ते दुनिया\n\nसभी दस्तावेज आपके उपकरण पर रहते हैं\n\nब्राउज़र में पाठ पहचान परीक्षण",
+              "source": "ocr",
+              "note": "order=model",
+              "blocks": [
+                {
+                  "label": "Section-Header",
+                  "bbox": [
+                    93.5,
+                    80.6,
+                    305.7,
+                    131.6
+                  ],
+                  "text": "नमस्ते दुनिया"
+                },
+                {
+                  "label": "Text",
+                  "bbox": [
+                    94.6,
+                    230.6,
+                    750.3,
+                    274.3
+                  ],
+                  "text": "सभी दस्तावेज आपके उपकरण पर रहते हैं"
+                },
+                {
+                  "label": "Text",
+                  "bbox": [
+                    94.3,
+                    378.3,
+                    581.1,
+                    424.5
+                  ],
+                  "text": "ब्राउज़र में पाठ पहचान परीक्षण"
+                }
+              ],
+              "rotation": 0,
+              "skew": 0.0,
+              "vertical": false,
+              "text": "नमस्ते दुनिया\nसभी दस्तावेज आपके उपकरण पर रहते हैं\nब्राउज़र में पाठ पहचान परीक्षण"
+            }
+          ]
+        },
+        {
+          "file": "dark.png",
+          "options": {},
+          "pages": [
+            {
+              "page": 0,
+              "lines": [
+                {
+                  "box": [
+                    90.1,
+                    105.0,
+                    541.5,
+                    142.4
+                  ],
+                  "text": "Indra WebAssembly OCR",
+                  "conf": 0.9955
+                },
+                {
+                  "box": [
+                    87.5,
+                    205.5,
+                    735.6,
+                    242.1
+                  ],
+                  "text": "All documents stay in your browser.",
+                  "conf": 0.995
+                },
+                {
+                  "box": [
+                    92.7,
+                    304.6,
+                    913.6,
+                    343.0
+                  ],
+                  "text": "The quick brown fox jumps over the lazy dog.",
+                  "conf": 0.9765
+                },
+                {
+                  "box": [
+                    87.8,
+                    404.6,
+                    653.2,
+                    438.8
+                  ],
+                  "text": "Invoice 2026: total 123.45 EUR",
+                  "conf": 0.9977
+                },
+                {
+                  "box": [
+                    89.6,
+                    502.8,
+                    796.3,
+                    543.2
+                  ],
+                  "text": "Unicode: café, España, über, Eλληνικá.",
+                  "conf": 0.9507
+                }
+              ],
+              "markdown": "Indra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, Eλληνικá.",
+              "source": "ocr",
+              "note": "order=model",
+              "blocks": [
+                {
+                  "label": "Text",
+                  "bbox": [
+                    90.1,
+                    105.0,
+                    541.5,
+                    142.4
+                  ],
+                  "text": "Indra WebAssembly OCR"
+                },
+                {
+                  "label": "Text",
+                  "bbox": [
+                    87.5,
+                    205.5,
+                    735.6,
+                    242.1
+                  ],
+                  "text": "All documents stay in your browser."
+                },
+                {
+                  "label": "Text",
+                  "bbox": [
+                    92.7,
+                    304.6,
+                    913.6,
+                    343.0
+                  ],
+                  "text": "The quick brown fox jumps over the lazy dog."
+                },
+                {
+                  "label": "Text",
+                  "bbox": [
+                    87.8,
+                    404.6,
+                    653.2,
+                    438.8
+                  ],
+                  "text": "Invoice 2026: total 123.45 EUR"
+                },
+                {
+                  "label": "Text",
+                  "bbox": [
+                    89.6,
+                    502.8,
+                    796.3,
+                    543.2
+                  ],
+                  "text": "Unicode: café, España, über, Eλληνικá."
+                }
+              ],
+              "rotation": 0,
+              "skew": 0.0,
+              "vertical": false,
+              "text": "Indra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, Eλληνικá."
+            }
+          ]
+        },
+        {
+          "file": "tilted.png",
+          "options": {},
+          "pages": [
+            {
+              "page": 0,
+              "lines": [
+                {
+                  "box": [
+                    22.3,
+                    149.1,
+                    466.9,
+                    274.8
+                  ],
+                  "text": "Indra WebAssembly OCR",
+                  "conf": 0.998
+                },
+                {
+                  "box": [
+                    40.4,
+                    206.1,
+                    680.4,
+                    373.4
+                  ],
+                  "text": "All documents stay in your browser.",
+                  "conf": 0.9971
+                },
+                {
+                  "box": [
+                    66.2,
+                    266.7,
+                    872.6,
+                    470.5
+                  ],
+                  "text": "The quick brown fox jumps over the lazy dog.",
+                  "conf": 0.9919
+                },
+                {
+                  "box": [
+                    85.5,
+                    419.1,
+                    639.8,
+                    563.0
+                  ],
+                  "text": "Invoice 2026: total 123.45 EUR",
+                  "conf": 0.9947
+                },
+                {
+                  "box": [
+                    104.9,
+                    485.6,
+                    801.9,
+                    666.7
+                  ],
+                  "text": "Unicode: café, España, über, Eλληνκá.",
+                  "conf": 0.9591
+                }
+              ],
+              "markdown": "Indra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, Eλληνκá.",
+              "source": "ocr",
+              "note": "order=model",
+              "blocks": [
+                {
+                  "label": "Text",
+                  "bbox": [
+                    22.3,
+                    149.1,
+                    466.9,
+                    274.8
+                  ],
+                  "text": "Indra WebAssembly OCR"
+                },
+                {
+                  "label": "Text",
+                  "bbox": [
+                    40.4,
+                    206.1,
+                    680.4,
+                    373.4
+                  ],
+                  "text": "All documents stay in your browser."
+                },
+                {
+                  "label": "Text",
+                  "bbox": [
+                    66.2,
+                    266.7,
+                    872.6,
+                    470.5
+                  ],
+                  "text": "The quick brown fox jumps over the lazy dog."
+                },
+                {
+                  "label": "Text",
+                  "bbox": [
+                    85.5,
+                    419.1,
+                    639.8,
+                    563.0
+                  ],
+                  "text": "Invoice 2026: total 123.45 EUR"
+                },
+                {
+                  "label": "Text",
+                  "bbox": [
+                    104.9,
+                    485.6,
+                    801.9,
+                    666.7
+                  ],
+                  "text": "Unicode: café, España, über, Eλληνκá."
+                }
+              ],
+              "rotation": 0,
+              "skew": -12.0,
+              "vertical": false,
+              "text": "Indra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, Eλληνκá."
             }
           ]
         },
@@ -209,66 +621,66 @@
               "lines": [
                 {
                   "box": [
-                    90.6,
-                    106.8,
-                    538.3,
-                    140.5
+                    90.7,
+                    107.0,
+                    538.2,
+                    140.1
                   ],
                   "text": "Indra WebAssembly OCR",
-                  "conf": 0.9997
+                  "conf": 0.9985
                 },
                 {
                   "box": [
                     88.0,
-                    207.4,
-                    735.0,
+                    207.2,
+                    735.1,
                     240.5
                   ],
                   "text": "All documents stay in your browser.",
-                  "conf": 0.9919
+                  "conf": 0.9872
                 },
                 {
                   "box": [
-                    87.9,
-                    306.7,
-                    910.2,
-                    340.6
+                    93.2,
+                    306.4,
+                    910.3,
+                    341.2
                   ],
                   "text": "The quick brown fox jumps over the lazy dog.",
-                  "conf": 0.9989
+                  "conf": 0.9966
                 },
                 {
                   "box": [
-                    91.5,
-                    407.3,
-                    652.2,
-                    435.3
+                    91.4,
+                    406.9,
+                    652.3,
+                    435.4
                   ],
                   "text": "Invoice 2026: total 123.45 EUR",
-                  "conf": 0.9988
+                  "conf": 0.9836
                 },
                 {
                   "box": [
-                    90.5,
-                    505.5,
-                    795.4,
-                    539.9
+                    90.4,
+                    505.7,
+                    795.5,
+                    540.8
                   ],
-                  "text": "Unicode: café, España, über, Ελληνικά.",
-                  "conf": 0.9764
+                  "text": "Unicode: café, España, über, Eλληνικá.",
+                  "conf": 0.947
                 }
               ],
-              "markdown": "Indra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, Ελληνικά.",
+              "markdown": "Indra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, Eλληνικá.",
               "source": "ocr",
               "note": "order=model",
               "blocks": [
                 {
                   "label": "Text",
                   "bbox": [
-                    90.6,
-                    106.8,
-                    538.3,
-                    140.5
+                    90.7,
+                    107.0,
+                    538.2,
+                    140.1
                   ],
                   "text": "Indra WebAssembly OCR"
                 },
@@ -276,8 +688,8 @@
                   "label": "Text",
                   "bbox": [
                     88.0,
-                    207.4,
-                    735.0,
+                    207.2,
+                    735.1,
                     240.5
                   ],
                   "text": "All documents stay in your browser."
@@ -285,37 +697,38 @@
                 {
                   "label": "Text",
                   "bbox": [
-                    87.9,
-                    306.7,
-                    910.2,
-                    340.6
+                    93.2,
+                    306.4,
+                    910.3,
+                    341.2
                   ],
                   "text": "The quick brown fox jumps over the lazy dog."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    91.5,
-                    407.3,
-                    652.2,
-                    435.3
+                    91.4,
+                    406.9,
+                    652.3,
+                    435.4
                   ],
                   "text": "Invoice 2026: total 123.45 EUR"
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    90.5,
-                    505.5,
-                    795.4,
-                    539.9
+                    90.4,
+                    505.7,
+                    795.5,
+                    540.8
                   ],
-                  "text": "Unicode: café, España, über, Ελληνικά."
+                  "text": "Unicode: café, España, über, Eλληνικá."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
-              "text": "Indra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, Ελληνικά."
+              "vertical": false,
+              "text": "Indra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, Eλληνικá."
             },
             {
               "page": 1,
@@ -326,6 +739,7 @@
               "blocks": [],
               "rotation": 0,
               "skew": 0.0,
+              "vertical": false,
               "text": ""
             },
             {
@@ -333,66 +747,66 @@
               "lines": [
                 {
                   "box": [
-                    90.6,
-                    106.8,
-                    538.3,
-                    140.5
+                    90.7,
+                    107.0,
+                    538.2,
+                    140.1
                   ],
                   "text": "Indra WebAssembly OCR",
-                  "conf": 0.9997
+                  "conf": 0.9985
                 },
                 {
                   "box": [
                     88.0,
-                    207.4,
-                    735.0,
+                    207.2,
+                    735.1,
                     240.5
                   ],
                   "text": "All documents stay in your browser.",
-                  "conf": 0.9919
+                  "conf": 0.9872
                 },
                 {
                   "box": [
-                    87.9,
-                    306.7,
-                    910.2,
-                    340.6
+                    93.2,
+                    306.4,
+                    910.3,
+                    341.2
                   ],
                   "text": "The quick brown fox jumps over the lazy dog.",
-                  "conf": 0.9989
+                  "conf": 0.9966
                 },
                 {
                   "box": [
-                    91.5,
-                    407.3,
-                    652.2,
-                    435.3
+                    91.4,
+                    406.9,
+                    652.3,
+                    435.4
                   ],
                   "text": "Invoice 2026: total 123.45 EUR",
-                  "conf": 0.9988
+                  "conf": 0.9836
                 },
                 {
                   "box": [
-                    90.5,
-                    505.5,
-                    795.4,
-                    539.9
+                    90.4,
+                    505.7,
+                    795.5,
+                    540.8
                   ],
-                  "text": "Unicode: café, España, über, Ελληνικά.",
-                  "conf": 0.9764
+                  "text": "Unicode: café, España, über, Eλληνικá.",
+                  "conf": 0.947
                 }
               ],
-              "markdown": "Indra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, Ελληνικά.",
+              "markdown": "Indra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, Eλληνικá.",
               "source": "ocr",
               "note": "order=model",
               "blocks": [
                 {
                   "label": "Text",
                   "bbox": [
-                    90.6,
-                    106.8,
-                    538.3,
-                    140.5
+                    90.7,
+                    107.0,
+                    538.2,
+                    140.1
                   ],
                   "text": "Indra WebAssembly OCR"
                 },
@@ -400,8 +814,8 @@
                   "label": "Text",
                   "bbox": [
                     88.0,
-                    207.4,
-                    735.0,
+                    207.2,
+                    735.1,
                     240.5
                   ],
                   "text": "All documents stay in your browser."
@@ -409,37 +823,38 @@
                 {
                   "label": "Text",
                   "bbox": [
-                    87.9,
-                    306.7,
-                    910.2,
-                    340.6
+                    93.2,
+                    306.4,
+                    910.3,
+                    341.2
                   ],
                   "text": "The quick brown fox jumps over the lazy dog."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    91.5,
-                    407.3,
-                    652.2,
-                    435.3
+                    91.4,
+                    406.9,
+                    652.3,
+                    435.4
                   ],
                   "text": "Invoice 2026: total 123.45 EUR"
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    90.5,
-                    505.5,
-                    795.4,
-                    539.9
+                    90.4,
+                    505.7,
+                    795.5,
+                    540.8
                   ],
-                  "text": "Unicode: café, España, über, Ελληνικά."
+                  "text": "Unicode: café, España, über, Eλληνικá."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
-              "text": "Indra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, Ελληνικά."
+              "vertical": false,
+              "text": "Indra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, Eλληνικá."
             }
           ]
         },
@@ -452,10 +867,10 @@
               "lines": [
                 {
                   "box": [
-                    152.0,
-                    162.8,
-                    814.8,
-                    209.6
+                    151.8,
+                    162.5,
+                    810.7,
+                    210.3
                   ],
                   "text": "Browser document page 1",
                   "conf": 1.0
@@ -463,19 +878,19 @@
                 {
                   "box": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved.",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123.",
                   "conf": 1.0
@@ -483,9 +898,9 @@
                 {
                   "box": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир.",
                   "conf": 1.0
@@ -493,9 +908,9 @@
                 {
                   "box": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order.",
                   "conf": 1.0
@@ -503,15 +918,15 @@
               ],
               "markdown": "## Browser document page 1\n\nThe original PDF text layer is preserved.\n\nEspañol: acción, información, número 123.\n\nGreek: Ελληνικά. Cyrillic: Привет мир.\n\nA final paragraph for reading order.",
               "source": "text",
-              "note": "order=pdf",
+              "note": "order=model",
               "blocks": [
                 {
                   "label": "Section-Header",
                   "bbox": [
-                    152.0,
-                    162.8,
-                    814.8,
-                    209.6
+                    151.8,
+                    162.5,
+                    810.7,
+                    210.3
                   ],
                   "text": "Browser document page 1"
                 },
@@ -519,19 +934,19 @@
                   "label": "Text",
                   "bbox": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123."
                 },
@@ -539,9 +954,9 @@
                   "label": "Text",
                   "bbox": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир."
                 },
@@ -549,15 +964,16 @@
                   "label": "Text",
                   "bbox": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
+              "vertical": false,
               "text": "Browser document page 1\nThe original PDF text layer is preserved.\nEspañol: acción, información, número 123.\nGreek: Ελληνικά. Cyrillic: Привет мир.\nA final paragraph for reading order."
             },
             {
@@ -565,10 +981,10 @@
               "lines": [
                 {
                   "box": [
-                    152.0,
-                    162.9,
-                    810.5,
-                    209.7
+                    151.8,
+                    162.4,
+                    810.7,
+                    210.5
                   ],
                   "text": "Browser document page 2",
                   "conf": 1.0
@@ -576,19 +992,19 @@
                 {
                   "box": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved.",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123.",
                   "conf": 1.0
@@ -596,9 +1012,9 @@
                 {
                   "box": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир.",
                   "conf": 1.0
@@ -606,9 +1022,9 @@
                 {
                   "box": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order.",
                   "conf": 1.0
@@ -616,15 +1032,15 @@
               ],
               "markdown": "## Browser document page 2\n\nThe original PDF text layer is preserved.\n\nEspañol: acción, información, número 123.\n\nGreek: Ελληνικά. Cyrillic: Привет мир.\n\nA final paragraph for reading order.",
               "source": "text",
-              "note": "order=pdf",
+              "note": "order=model",
               "blocks": [
                 {
                   "label": "Section-Header",
                   "bbox": [
-                    152.0,
-                    162.9,
-                    810.5,
-                    209.7
+                    151.8,
+                    162.4,
+                    810.7,
+                    210.5
                   ],
                   "text": "Browser document page 2"
                 },
@@ -632,19 +1048,19 @@
                   "label": "Text",
                   "bbox": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123."
                 },
@@ -652,9 +1068,9 @@
                   "label": "Text",
                   "bbox": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир."
                 },
@@ -662,15 +1078,16 @@
                   "label": "Text",
                   "bbox": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
+              "vertical": false,
               "text": "Browser document page 2\nThe original PDF text layer is preserved.\nEspañol: acción, información, número 123.\nGreek: Ελληνικά. Cyrillic: Привет мир.\nA final paragraph for reading order."
             }
           ]
@@ -684,10 +1101,10 @@
               "lines": [
                 {
                   "box": [
-                    138.8,
-                    132.9,
+                    138.7,
+                    132.3,
                     1077.3,
-                    181.9
+                    181.8
                   ],
                   "text": "Digital heading with scanned content",
                   "conf": 1.0
@@ -695,65 +1112,65 @@
                 {
                   "box": [
                     205.2,
-                    979.2,
+                    979.0,
                     679.9,
-                    1014.7
+                    1014.3
                   ],
                   "text": "Indra WebAssembly OCR",
-                  "conf": 0.9992
+                  "conf": 0.9989
                 },
                 {
                   "box": [
-                    205.2,
-                    1084.8,
-                    886.2,
-                    1120.5
+                    205.1,
+                    1084.7,
+                    886.3,
+                    1120.8
                   ],
                   "text": "All documents stay in your browser.",
-                  "conf": 0.998
+                  "conf": 0.9765
                 },
                 {
                   "box": [
-                    205.2,
-                    1190.3,
+                    205.1,
+                    1190.2,
                     1075.3,
-                    1226.2
+                    1226.3
                   ],
                   "text": "The quick brown fox jumps over the lazy dog.",
-                  "conf": 0.9728
+                  "conf": 0.9872
                 },
                 {
                   "box": [
                     205.9,
-                    1295.8,
-                    799.5,
-                    1326.6
+                    1295.5,
+                    799.6,
+                    1326.5
                   ],
                   "text": "Invoice 2026: total 123.45 EUR",
-                  "conf": 0.9855
+                  "conf": 0.9983
                 },
                 {
                   "box": [
                     204.9,
-                    1400.2,
-                    950.9,
+                    1400.1,
+                    946.7,
                     1437.7
                   ],
-                  "text": "Unicode: café, España, über, Ελληνικά.",
-                  "conf": 0.9784
+                  "text": "Unicode: café, España, über, Eλληνικá.",
+                  "conf": 0.9724
                 }
               ],
-              "markdown": "## Digital heading with scanned content\n\nIndra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, Ελληνικά.",
+              "markdown": "## Digital heading with scanned content\n\nIndra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, Eλληνικá.",
               "source": "hybrid",
               "note": "order=model",
               "blocks": [
                 {
                   "label": "Section-Header",
                   "bbox": [
-                    138.8,
-                    132.9,
+                    138.7,
+                    132.3,
                     1077.3,
-                    181.9
+                    181.8
                   ],
                   "text": "Digital heading with scanned content"
                 },
@@ -761,29 +1178,29 @@
                   "label": "Text",
                   "bbox": [
                     205.2,
-                    979.2,
+                    979.0,
                     679.9,
-                    1014.7
+                    1014.3
                   ],
                   "text": "Indra WebAssembly OCR"
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    205.2,
-                    1084.8,
-                    886.2,
-                    1120.5
+                    205.1,
+                    1084.7,
+                    886.3,
+                    1120.8
                   ],
                   "text": "All documents stay in your browser."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    205.2,
-                    1190.3,
+                    205.1,
+                    1190.2,
                     1075.3,
-                    1226.2
+                    1226.3
                   ],
                   "text": "The quick brown fox jumps over the lazy dog."
                 },
@@ -791,9 +1208,9 @@
                   "label": "Text",
                   "bbox": [
                     205.9,
-                    1295.8,
-                    799.5,
-                    1326.6
+                    1295.5,
+                    799.6,
+                    1326.5
                   ],
                   "text": "Invoice 2026: total 123.45 EUR"
                 },
@@ -801,16 +1218,17 @@
                   "label": "Text",
                   "bbox": [
                     204.9,
-                    1400.2,
-                    950.9,
+                    1400.1,
+                    946.7,
                     1437.7
                   ],
-                  "text": "Unicode: café, España, über, Ελληνικά."
+                  "text": "Unicode: café, España, über, Eλληνικá."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
-              "text": "Digital heading with scanned content\nIndra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, Ελληνικά."
+              "vertical": false,
+              "text": "Digital heading with scanned content\nIndra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, Eλληνικá."
             }
           ]
         },
@@ -824,9 +1242,9 @@
                 {
                   "box": [
                     168.1,
-                    129.7,
+                    130.5,
                     622.5,
-                    183.7
+                    184.1
                   ],
                   "text": "Quarterly report",
                   "conf": 1.0
@@ -834,59 +1252,59 @@
                 {
                   "box": [
                     180.3,
-                    392.3,
+                    392.0,
                     331.0,
-                    422.0
+                    421.6
                   ],
                   "text": "Product",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    666.0,
-                    393.5,
-                    769.1,
-                    422.0
+                    666.2,
+                    393.9,
+                    769.0,
+                    421.5
                   ],
                   "text": "Units",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    1134.3,
-                    393.1,
-                    1233.2,
-                    422.1
+                    1134.6,
+                    394.3,
+                    1233.0,
+                    421.3
                   ],
                   "text": "Total",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    179.5,
-                    505.2,
-                    293.2,
-                    540.6
+                    179.6,
+                    505.5,
+                    293.1,
+                    540.3
                   ],
                   "text": "Paper",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    666.0,
-                    504.9,
-                    713.3,
-                    533.6
+                    666.2,
+                    505.6,
+                    713.1,
+                    533.2
                   ],
                   "text": "12",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    1138.6,
+                    1138.7,
                     504.7,
                     1276.2,
-                    533.7
+                    533.4
                   ],
                   "text": "120.00",
                   "conf": 1.0
@@ -894,9 +1312,9 @@
                 {
                   "box": [
                     180.5,
-                    616.2,
+                    616.6,
                     240.6,
-                    644.4
+                    645.0
                   ],
                   "text": "Ink",
                   "conf": 1.0
@@ -904,9 +1322,9 @@
                 {
                   "box": [
                     666.5,
-                    617.9,
+                    618.7,
                     691.3,
-                    643.5
+                    644.2
                   ],
                   "text": "3",
                   "conf": 1.0
@@ -914,7 +1332,7 @@
                 {
                   "box": [
                     1138.8,
-                    616.0,
+                    615.9,
                     1250.3,
                     643.9
                   ],
@@ -923,20 +1341,20 @@
                 },
                 {
                   "box": [
-                    180.7,
-                    729.4,
+                    180.6,
+                    729.0,
                     266.2,
-                    756.5
+                    756.6
                   ],
                   "text": "Sum",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    666.1,
-                    728.7,
+                    670.4,
+                    728.9,
                     713.2,
-                    756.5
+                    757.1
                   ],
                   "text": "15",
                   "conf": 1.0
@@ -944,9 +1362,9 @@
                 {
                   "box": [
                     1138.7,
-                    728.0,
+                    727.7,
                     1276.2,
-                    756.6
+                    756.3
                   ],
                   "text": "165.00",
                   "conf": 1.0
@@ -954,31 +1372,32 @@
               ],
               "markdown": "## Quarterly report\n\n<table>\n<tr><th>Product</th><th>Units</th><th>Total</th></tr>\n<tr><td>Paper</td><td>12</td><td>120.00</td></tr>\n<tr><td>Ink</td><td>3</td><td>45.00</td></tr>\n<tr><td>Sum</td><td>15</td><td>165.00</td></tr>\n</table>",
               "source": "text",
-              "note": "order=pdf",
+              "note": "order=model",
               "blocks": [
                 {
                   "label": "Section-Header",
                   "bbox": [
                     168.1,
-                    129.7,
+                    130.5,
                     622.5,
-                    183.7
+                    184.1
                   ],
                   "text": "Quarterly report"
                 },
                 {
                   "label": "Table",
                   "bbox": [
-                    179.5,
-                    392.3,
+                    179.6,
+                    392.0,
                     1276.2,
-                    756.6
+                    757.1
                   ],
                   "text": "Product\nUnits\nTotal\nPaper\n12\n120.00\nInk\n3\n45.00\nSum\n15\n165.00"
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
+              "vertical": false,
               "text": "Quarterly report\nProduct\nUnits\nTotal\nPaper\n12\n120.00\nInk\n3\n45.00\nSum\n15\n165.00"
             }
           ]
@@ -992,143 +1411,30 @@
               "lines": [
                 {
                   "box": [
-                    152.0,
-                    162.8,
-                    814.8,
-                    209.6
+                    151.8,
+                    162.5,
+                    810.7,
+                    210.3
                   ],
                   "text": "Browser document page 1",
-                  "conf": 0.9995
-                },
-                {
-                  "box": [
-                    149.7,
-                    340.7,
-                    821.4,
-                    373.8
-                  ],
-                  "text": "The original PDF text layer is preserved.",
-                  "conf": 0.9718
-                },
-                {
-                  "box": [
-                    154.1,
-                    451.7,
-                    868.6,
-                    484.4
-                  ],
-                  "text": "Español: acción, información, número 123.",
-                  "conf": 0.9949
-                },
-                {
-                  "box": [
-                    154.1,
-                    563.1,
-                    799.8,
-                    595.5
-                  ],
-                  "text": "Greek: Еλληνιкά. Cyrillic: Привет мир.",
-                  "conf": 0.9771
-                },
-                {
-                  "box": [
-                    149.8,
-                    674.3,
-                    748.2,
-                    706.6
-                  ],
-                  "text": "A final paragraph for reading order.",
-                  "conf": 0.9981
-                }
-              ],
-              "markdown": "## Browser document page 1\n\nThe original PDF text layer is preserved.\n\nEspañol: acción, información, número 123.\n\nGreek: Еλληνιкά. Cyrillic: Привет мир.\n\nA final paragraph for reading order.",
-              "source": "ocr",
-              "note": "no text layer; order=model",
-              "blocks": [
-                {
-                  "label": "Section-Header",
-                  "bbox": [
-                    152.0,
-                    162.8,
-                    814.8,
-                    209.6
-                  ],
-                  "text": "Browser document page 1"
-                },
-                {
-                  "label": "Text",
-                  "bbox": [
-                    149.7,
-                    340.7,
-                    821.4,
-                    373.8
-                  ],
-                  "text": "The original PDF text layer is preserved."
-                },
-                {
-                  "label": "Text",
-                  "bbox": [
-                    154.1,
-                    451.7,
-                    868.6,
-                    484.4
-                  ],
-                  "text": "Español: acción, información, número 123."
-                },
-                {
-                  "label": "Text",
-                  "bbox": [
-                    154.1,
-                    563.1,
-                    799.8,
-                    595.5
-                  ],
-                  "text": "Greek: Еλληνιкά. Cyrillic: Привет мир."
-                },
-                {
-                  "label": "Text",
-                  "bbox": [
-                    149.8,
-                    674.3,
-                    748.2,
-                    706.6
-                  ],
-                  "text": "A final paragraph for reading order."
-                }
-              ],
-              "rotation": 270,
-              "skew": 0.0,
-              "text": "Browser document page 1\nThe original PDF text layer is preserved.\nEspañol: acción, información, número 123.\nGreek: Еλληνιкά. Cyrillic: Привет мир.\nA final paragraph for reading order."
-            },
-            {
-              "page": 1,
-              "lines": [
-                {
-                  "box": [
-                    152.0,
-                    162.9,
-                    810.5,
-                    209.7
-                  ],
-                  "text": "Browser document page 2",
                   "conf": 1.0
                 },
                 {
                   "box": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved.",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123.",
                   "conf": 1.0
@@ -1136,9 +1442,9 @@
                 {
                   "box": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир.",
                   "conf": 1.0
@@ -1146,45 +1452,45 @@
                 {
                   "box": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order.",
                   "conf": 1.0
                 }
               ],
-              "markdown": "## Browser document page 2\n\nThe original PDF text layer is preserved.\n\nEspañol: acción, información, número 123.\n\nGreek: Ελληνικά. Cyrillic: Привет мир.\n\nA final paragraph for reading order.",
+              "markdown": "## Browser document page 1\n\nThe original PDF text layer is preserved.\n\nEspañol: acción, información, número 123.\n\nGreek: Ελληνικά. Cyrillic: Привет мир.\n\nA final paragraph for reading order.",
               "source": "text",
-              "note": "order=pdf",
+              "note": "order=model",
               "blocks": [
                 {
                   "label": "Section-Header",
                   "bbox": [
-                    152.0,
-                    162.9,
-                    810.5,
-                    209.7
+                    151.8,
+                    162.5,
+                    810.7,
+                    210.3
                   ],
-                  "text": "Browser document page 2"
+                  "text": "Browser document page 1"
                 },
                 {
                   "label": "Text",
                   "bbox": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123."
                 },
@@ -1192,9 +1498,9 @@
                   "label": "Text",
                   "bbox": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир."
                 },
@@ -1202,15 +1508,130 @@
                   "label": "Text",
                   "bbox": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
+                  ],
+                  "text": "A final paragraph for reading order."
+                }
+              ],
+              "rotation": 270,
+              "skew": 0.0,
+              "vertical": false,
+              "text": "Browser document page 1\nThe original PDF text layer is preserved.\nEspañol: acción, información, número 123.\nGreek: Ελληνικά. Cyrillic: Привет мир.\nA final paragraph for reading order."
+            },
+            {
+              "page": 1,
+              "lines": [
+                {
+                  "box": [
+                    151.8,
+                    162.4,
+                    810.7,
+                    210.5
+                  ],
+                  "text": "Browser document page 2",
+                  "conf": 1.0
+                },
+                {
+                  "box": [
+                    149.7,
+                    340.5,
+                    821.4,
+                    374.0
+                  ],
+                  "text": "The original PDF text layer is preserved.",
+                  "conf": 1.0
+                },
+                {
+                  "box": [
+                    154.0,
+                    451.4,
+                    868.6,
+                    484.5
+                  ],
+                  "text": "Español: acción, información, número 123.",
+                  "conf": 1.0
+                },
+                {
+                  "box": [
+                    154.1,
+                    562.9,
+                    799.8,
+                    595.6
+                  ],
+                  "text": "Greek: Ελληνικά. Cyrillic: Привет мир.",
+                  "conf": 1.0
+                },
+                {
+                  "box": [
+                    149.8,
+                    674.2,
+                    743.9,
+                    706.7
+                  ],
+                  "text": "A final paragraph for reading order.",
+                  "conf": 1.0
+                }
+              ],
+              "markdown": "## Browser document page 2\n\nThe original PDF text layer is preserved.\n\nEspañol: acción, información, número 123.\n\nGreek: Ελληνικά. Cyrillic: Привет мир.\n\nA final paragraph for reading order.",
+              "source": "text",
+              "note": "order=model",
+              "blocks": [
+                {
+                  "label": "Section-Header",
+                  "bbox": [
+                    151.8,
+                    162.4,
+                    810.7,
+                    210.5
+                  ],
+                  "text": "Browser document page 2"
+                },
+                {
+                  "label": "Text",
+                  "bbox": [
+                    149.7,
+                    340.5,
+                    821.4,
+                    374.0
+                  ],
+                  "text": "The original PDF text layer is preserved."
+                },
+                {
+                  "label": "Text",
+                  "bbox": [
+                    154.0,
+                    451.4,
+                    868.6,
+                    484.5
+                  ],
+                  "text": "Español: acción, información, número 123."
+                },
+                {
+                  "label": "Text",
+                  "bbox": [
+                    154.1,
+                    562.9,
+                    799.8,
+                    595.6
+                  ],
+                  "text": "Greek: Ελληνικά. Cyrillic: Привет мир."
+                },
+                {
+                  "label": "Text",
+                  "bbox": [
+                    149.8,
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
+              "vertical": false,
               "text": "Browser document page 2\nThe original PDF text layer is preserved.\nEspañol: acción, información, número 123.\nGreek: Ελληνικά. Cyrillic: Привет мир.\nA final paragraph for reading order."
             }
           ]
@@ -1225,7 +1646,7 @@
                 {
                   "box": [
                     42.6,
-                    47.3,
+                    47.1,
                     701.7,
                     92.5
                   ],
@@ -1234,20 +1655,20 @@
                 },
                 {
                   "box": [
-                    40.9,
-                    224.1,
-                    713.9,
-                    257.0
+                    40.8,
+                    223.6,
+                    710.5,
+                    257.2
                   ],
                   "text": "The original PDF text layer is preserved.",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    40.9,
-                    334.4,
-                    756.3,
-                    367.7
+                    40.8,
+                    334.0,
+                    756.4,
+                    367.6
                   ],
                   "text": "Español: acción, información, número 123.",
                   "conf": 1.0
@@ -1255,8 +1676,8 @@
                 {
                   "box": [
                     40.8,
-                    445.4,
-                    685.9,
+                    445.5,
+                    685.8,
                     479.2
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир.",
@@ -1267,7 +1688,7 @@
                     40.8,
                     556.6,
                     636.4,
-                    590.3
+                    590.2
                   ],
                   "text": "A final paragraph for reading order.",
                   "conf": 1.0
@@ -1275,13 +1696,13 @@
               ],
               "markdown": "## Browser document page 1\n\nThe original PDF text layer is preserved.\n\nEspañol: acción, información, número 123.\n\nGreek: Ελληνικά. Cyrillic: Привет мир.\n\nA final paragraph for reading order.",
               "source": "text",
-              "note": "order=pdf",
+              "note": "order=model",
               "blocks": [
                 {
                   "label": "Section-Header",
                   "bbox": [
                     42.6,
-                    47.3,
+                    47.1,
                     701.7,
                     92.5
                   ],
@@ -1290,20 +1711,20 @@
                 {
                   "label": "Text",
                   "bbox": [
-                    40.9,
-                    224.1,
-                    713.9,
-                    257.0
+                    40.8,
+                    223.6,
+                    710.5,
+                    257.2
                   ],
                   "text": "The original PDF text layer is preserved."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    40.9,
-                    334.4,
-                    756.3,
-                    367.7
+                    40.8,
+                    334.0,
+                    756.4,
+                    367.6
                   ],
                   "text": "Español: acción, información, número 123."
                 },
@@ -1311,8 +1732,8 @@
                   "label": "Text",
                   "bbox": [
                     40.8,
-                    445.4,
-                    685.9,
+                    445.5,
+                    685.8,
                     479.2
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир."
@@ -1323,13 +1744,14 @@
                     40.8,
                     556.6,
                     636.4,
-                    590.3
+                    590.2
                   ],
                   "text": "A final paragraph for reading order."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
+              "vertical": false,
               "text": "Browser document page 1\nThe original PDF text layer is preserved.\nEspañol: acción, información, número 123.\nGreek: Ελληνικά. Cyrillic: Привет мир.\nA final paragraph for reading order."
             },
             {
@@ -1337,10 +1759,10 @@
               "lines": [
                 {
                   "box": [
-                    152.0,
-                    162.9,
-                    810.5,
-                    209.7
+                    151.8,
+                    162.4,
+                    810.7,
+                    210.5
                   ],
                   "text": "Browser document page 2",
                   "conf": 1.0
@@ -1348,19 +1770,19 @@
                 {
                   "box": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved.",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123.",
                   "conf": 1.0
@@ -1368,9 +1790,9 @@
                 {
                   "box": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир.",
                   "conf": 1.0
@@ -1378,9 +1800,9 @@
                 {
                   "box": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order.",
                   "conf": 1.0
@@ -1388,15 +1810,15 @@
               ],
               "markdown": "## Browser document page 2\n\nThe original PDF text layer is preserved.\n\nEspañol: acción, información, número 123.\n\nGreek: Ελληνικά. Cyrillic: Привет мир.\n\nA final paragraph for reading order.",
               "source": "text",
-              "note": "order=pdf",
+              "note": "order=model",
               "blocks": [
                 {
                   "label": "Section-Header",
                   "bbox": [
-                    152.0,
-                    162.9,
-                    810.5,
-                    209.7
+                    151.8,
+                    162.4,
+                    810.7,
+                    210.5
                   ],
                   "text": "Browser document page 2"
                 },
@@ -1404,19 +1826,19 @@
                   "label": "Text",
                   "bbox": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123."
                 },
@@ -1424,9 +1846,9 @@
                   "label": "Text",
                   "bbox": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир."
                 },
@@ -1434,15 +1856,16 @@
                   "label": "Text",
                   "bbox": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
+              "vertical": false,
               "text": "Browser document page 2\nThe original PDF text layer is preserved.\nEspañol: acción, información, número 123.\nGreek: Ελληνικά. Cyrillic: Привет мир.\nA final paragraph for reading order."
             }
           ]
@@ -1457,55 +1880,55 @@
                 {
                   "box": [
                     105.3,
-                    235.7,
+                    237.1,
                     655.3,
-                    307.4
+                    308.8
                   ],
                   "text": "Indra WebAssembly OCR",
-                  "conf": 0.9983
+                  "conf": 0.979
                 },
                 {
                   "box": [
-                    100.9,
-                    456.9,
-                    891.7,
-                    529.1
+                    101.2,
+                    458.1,
+                    895.7,
+                    528.2
                   ],
                   "text": "All documents stay in your browser.",
-                  "conf": 0.9882
-                },
-                {
-                  "box": [
-                    109.1,
-                    675.2,
-                    1111.2,
-                    750.1
-                  ],
-                  "text": "The quick brown fox jumps over the lazy dog.",
-                  "conf": 0.9859
-                },
-                {
-                  "box": [
-                    111.7,
-                    896.7,
-                    790.7,
-                    954.3
-                  ],
-                  "text": "Invoice 2026: total 123.45 EUR",
-                  "conf": 0.9791
+                  "conf": 0.9825
                 },
                 {
                   "box": [
                     104.9,
-                    1113.3,
-                    965.0,
-                    1187.2
+                    676.7,
+                    1111.1,
+                    750.7
                   ],
-                  "text": "Unicode: café, España, über, EλAηvικá.",
-                  "conf": 0.8847
+                  "text": "The quick brown fox jumps over the lazy dog.",
+                  "conf": 0.9848
+                },
+                {
+                  "box": [
+                    107.4,
+                    898.0,
+                    790.6,
+                    955.4
+                  ],
+                  "text": "Invoice 2026: total 123.45 EUR",
+                  "conf": 0.9989
+                },
+                {
+                  "box": [
+                    104.9,
+                    1114.6,
+                    969.3,
+                    1188.9
+                  ],
+                  "text": "Unicode: cafe, Espana, uber, EAAnvixd.",
+                  "conf": 0.8992
                 }
               ],
-              "markdown": "## Indra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, EλAηvικá.",
+              "markdown": "## Indra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: cafe, Espana, uber, EAAnvixd.",
               "source": "ocr",
               "note": "invisible text 100% (OCR layer); order=model",
               "blocks": [
@@ -1513,39 +1936,39 @@
                   "label": "Section-Header",
                   "bbox": [
                     105.3,
-                    235.7,
+                    237.1,
                     655.3,
-                    307.4
+                    308.8
                   ],
                   "text": "Indra WebAssembly OCR"
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    100.9,
-                    456.9,
-                    891.7,
-                    529.1
+                    101.2,
+                    458.1,
+                    895.7,
+                    528.2
                   ],
                   "text": "All documents stay in your browser."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    109.1,
-                    675.2,
-                    1111.2,
-                    750.1
+                    104.9,
+                    676.7,
+                    1111.1,
+                    750.7
                   ],
                   "text": "The quick brown fox jumps over the lazy dog."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    111.7,
-                    896.7,
-                    790.7,
-                    954.3
+                    107.4,
+                    898.0,
+                    790.6,
+                    955.4
                   ],
                   "text": "Invoice 2026: total 123.45 EUR"
                 },
@@ -1553,16 +1976,17 @@
                   "label": "Text",
                   "bbox": [
                     104.9,
-                    1113.3,
-                    965.0,
-                    1187.2
+                    1114.6,
+                    969.3,
+                    1188.9
                   ],
-                  "text": "Unicode: café, España, über, EλAηvικá."
+                  "text": "Unicode: cafe, Espana, uber, EAAnvixd."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
-              "text": "Indra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, EλAηvικá."
+              "vertical": false,
+              "text": "Indra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: cafe, Espana, uber, EAAnvixd."
             }
           ]
         },
@@ -1577,10 +2001,10 @@
               "lines": [
                 {
                   "box": [
-                    152.0,
-                    162.8,
-                    814.8,
-                    209.6
+                    151.8,
+                    162.5,
+                    810.7,
+                    210.3
                   ],
                   "text": "Browser document page 1",
                   "conf": 1.0
@@ -1588,19 +2012,19 @@
                 {
                   "box": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved.",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123.",
                   "conf": 1.0
@@ -1608,9 +2032,9 @@
                 {
                   "box": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир.",
                   "conf": 1.0
@@ -1618,9 +2042,9 @@
                 {
                   "box": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order.",
                   "conf": 1.0
@@ -1628,15 +2052,15 @@
               ],
               "markdown": "## Browser document page 1\n\nThe original PDF text layer is preserved.\n\nEspañol: acción, información, número 123.\n\nGreek: Ελληνικά. Cyrillic: Привет мир.\n\nA final paragraph for reading order.",
               "source": "text",
-              "note": "order=pdf",
+              "note": "order=model",
               "blocks": [
                 {
                   "label": "Section-Header",
                   "bbox": [
-                    152.0,
-                    162.8,
-                    814.8,
-                    209.6
+                    151.8,
+                    162.5,
+                    810.7,
+                    210.3
                   ],
                   "text": "Browser document page 1"
                 },
@@ -1644,19 +2068,19 @@
                   "label": "Text",
                   "bbox": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123."
                 },
@@ -1664,9 +2088,9 @@
                   "label": "Text",
                   "bbox": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир."
                 },
@@ -1674,15 +2098,16 @@
                   "label": "Text",
                   "bbox": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
+              "vertical": false,
               "text": "Browser document page 1\nThe original PDF text layer is preserved.\nEspañol: acción, información, número 123.\nGreek: Ελληνικά. Cyrillic: Привет мир.\nA final paragraph for reading order."
             },
             {
@@ -1690,10 +2115,10 @@
               "lines": [
                 {
                   "box": [
-                    152.0,
-                    162.9,
-                    810.5,
-                    209.7
+                    151.8,
+                    162.4,
+                    810.7,
+                    210.5
                   ],
                   "text": "Browser document page 2",
                   "conf": 1.0
@@ -1701,19 +2126,19 @@
                 {
                   "box": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved.",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123.",
                   "conf": 1.0
@@ -1721,9 +2146,9 @@
                 {
                   "box": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир.",
                   "conf": 1.0
@@ -1731,9 +2156,9 @@
                 {
                   "box": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order.",
                   "conf": 1.0
@@ -1741,15 +2166,15 @@
               ],
               "markdown": "## Browser document page 2\n\nThe original PDF text layer is preserved.\n\nEspañol: acción, información, número 123.\n\nGreek: Ελληνικά. Cyrillic: Привет мир.\n\nA final paragraph for reading order.",
               "source": "text",
-              "note": "order=pdf",
+              "note": "order=model",
               "blocks": [
                 {
                   "label": "Section-Header",
                   "bbox": [
-                    152.0,
-                    162.9,
-                    810.5,
-                    209.7
+                    151.8,
+                    162.4,
+                    810.7,
+                    210.5
                   ],
                   "text": "Browser document page 2"
                 },
@@ -1757,19 +2182,19 @@
                   "label": "Text",
                   "bbox": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123."
                 },
@@ -1777,9 +2202,9 @@
                   "label": "Text",
                   "bbox": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир."
                 },
@@ -1787,15 +2212,16 @@
                   "label": "Text",
                   "bbox": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
+              "vertical": false,
               "text": "Browser document page 2\nThe original PDF text layer is preserved.\nEspañol: acción, información, número 123.\nGreek: Ελληνικά. Cyrillic: Привет мир.\nA final paragraph for reading order."
             }
           ]
@@ -1811,10 +2237,10 @@
               "lines": [
                 {
                   "box": [
-                    152.0,
-                    162.8,
-                    814.8,
-                    209.6
+                    151.8,
+                    162.5,
+                    810.7,
+                    210.3
                   ],
                   "text": "Browser document page 1",
                   "conf": 1.0
@@ -1822,19 +2248,19 @@
                 {
                   "box": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved.",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123.",
                   "conf": 1.0
@@ -1842,9 +2268,9 @@
                 {
                   "box": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир.",
                   "conf": 1.0
@@ -1852,9 +2278,9 @@
                 {
                   "box": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order.",
                   "conf": 1.0
@@ -1862,15 +2288,15 @@
               ],
               "markdown": "## Browser document page 1\n\nThe original PDF text layer is preserved.\n\nEspañol: acción, información, número 123.\n\nGreek: Ελληνικά. Cyrillic: Привет мир.\n\nA final paragraph for reading order.",
               "source": "text",
-              "note": "order=pdf",
+              "note": "order=model",
               "blocks": [
                 {
                   "label": "Section-Header",
                   "bbox": [
-                    152.0,
-                    162.8,
-                    814.8,
-                    209.6
+                    151.8,
+                    162.5,
+                    810.7,
+                    210.3
                   ],
                   "text": "Browser document page 1"
                 },
@@ -1878,19 +2304,19 @@
                   "label": "Text",
                   "bbox": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123."
                 },
@@ -1898,9 +2324,9 @@
                   "label": "Text",
                   "bbox": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир."
                 },
@@ -1908,27 +2334,30 @@
                   "label": "Text",
                   "bbox": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
+              "vertical": false,
               "text": "Browser document page 1\nThe original PDF text layer is preserved.\nEspañol: acción, información, número 123.\nGreek: Ελληνικά. Cyrillic: Привет мир.\nA final paragraph for reading order."
             }
           ]
         }
       ],
       "nativeModelCalls": {
-        "orient": 7,
-        "det": 17,
-        "script": 13,
-        "rec": 12,
-        "order": 16,
-        "rec_cjk": 1
+        "orient": 10,
+        "det": 21,
+        "script": 42,
+        "rec": 14,
+        "order": 20,
+        "rec_cjk": 1,
+        "rec_rtl": 2,
+        "rec_world": 4
       }
     },
     {
@@ -1946,66 +2375,66 @@
               "lines": [
                 {
                   "box": [
-                    90.6,
-                    106.8,
-                    538.3,
-                    140.5
+                    90.7,
+                    107.0,
+                    538.2,
+                    140.1
                   ],
                   "text": "Indra WebAssembly OCR",
-                  "conf": 0.9997
+                  "conf": 0.9985
                 },
                 {
                   "box": [
                     88.0,
-                    207.4,
-                    735.0,
+                    207.2,
+                    735.1,
                     240.5
                   ],
                   "text": "All documents stay in your browser.",
-                  "conf": 0.9919
+                  "conf": 0.9872
                 },
                 {
                   "box": [
-                    87.9,
-                    306.7,
-                    910.2,
-                    340.6
+                    93.2,
+                    306.4,
+                    910.3,
+                    341.2
                   ],
                   "text": "The quick brown fox jumps over the lazy dog.",
-                  "conf": 0.9989
+                  "conf": 0.9966
                 },
                 {
                   "box": [
-                    91.5,
-                    407.3,
-                    652.2,
-                    435.3
+                    91.4,
+                    406.9,
+                    652.3,
+                    435.4
                   ],
                   "text": "Invoice 2026: total 123.45 EUR",
-                  "conf": 0.9988
+                  "conf": 0.9836
                 },
                 {
                   "box": [
-                    90.5,
-                    505.5,
-                    795.4,
-                    539.9
+                    90.4,
+                    505.7,
+                    795.5,
+                    540.8
                   ],
-                  "text": "Unicode: café, España, über, Ελληνικά.",
-                  "conf": 0.9764
+                  "text": "Unicode: café, España, über, Eλληνικá.",
+                  "conf": 0.947
                 }
               ],
-              "markdown": "Indra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, Ελληνικά.",
+              "markdown": "Indra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, Eλληνικá.",
               "source": "ocr",
               "note": "order=model",
               "blocks": [
                 {
                   "label": "Text",
                   "bbox": [
-                    90.6,
-                    106.8,
-                    538.3,
-                    140.5
+                    90.7,
+                    107.0,
+                    538.2,
+                    140.1
                   ],
                   "text": "Indra WebAssembly OCR"
                 },
@@ -2013,8 +2442,8 @@
                   "label": "Text",
                   "bbox": [
                     88.0,
-                    207.4,
-                    735.0,
+                    207.2,
+                    735.1,
                     240.5
                   ],
                   "text": "All documents stay in your browser."
@@ -2022,37 +2451,38 @@
                 {
                   "label": "Text",
                   "bbox": [
-                    87.9,
-                    306.7,
-                    910.2,
-                    340.6
+                    93.2,
+                    306.4,
+                    910.3,
+                    341.2
                   ],
                   "text": "The quick brown fox jumps over the lazy dog."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    91.5,
-                    407.3,
-                    652.2,
-                    435.3
+                    91.4,
+                    406.9,
+                    652.3,
+                    435.4
                   ],
                   "text": "Invoice 2026: total 123.45 EUR"
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    90.5,
-                    505.5,
-                    795.4,
-                    539.9
+                    90.4,
+                    505.7,
+                    795.5,
+                    540.8
                   ],
-                  "text": "Unicode: café, España, über, Ελληνικά."
+                  "text": "Unicode: café, España, über, Eλληνικá."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
-              "text": "Indra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, Ελληνικά."
+              "vertical": false,
+              "text": "Indra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, Eλληνικá."
             }
           ]
         },
@@ -2065,66 +2495,66 @@
               "lines": [
                 {
                   "box": [
-                    90.6,
-                    106.8,
-                    538.3,
-                    140.5
+                    90.7,
+                    107.0,
+                    538.2,
+                    140.1
                   ],
                   "text": "Indra WebAssembly OCR",
-                  "conf": 0.9997
+                  "conf": 0.9985
                 },
                 {
                   "box": [
                     88.0,
-                    207.4,
-                    735.0,
+                    207.2,
+                    735.1,
                     240.5
                   ],
                   "text": "All documents stay in your browser.",
-                  "conf": 0.9919
+                  "conf": 0.9872
                 },
                 {
                   "box": [
-                    87.9,
-                    306.7,
-                    910.2,
-                    340.6
+                    93.2,
+                    306.4,
+                    910.3,
+                    341.2
                   ],
                   "text": "The quick brown fox jumps over the lazy dog.",
-                  "conf": 0.9989
+                  "conf": 0.9966
                 },
                 {
                   "box": [
-                    91.5,
-                    407.3,
-                    652.2,
-                    435.3
+                    91.4,
+                    406.9,
+                    652.3,
+                    435.4
                   ],
                   "text": "Invoice 2026: total 123.45 EUR",
-                  "conf": 0.9988
+                  "conf": 0.9836
                 },
                 {
                   "box": [
-                    90.5,
-                    505.5,
-                    795.4,
-                    539.9
+                    90.4,
+                    505.7,
+                    795.5,
+                    540.8
                   ],
-                  "text": "Unicode: café, España, über, Ελληνικά.",
-                  "conf": 0.9764
+                  "text": "Unicode: café, España, über, Eλληνικá.",
+                  "conf": 0.947
                 }
               ],
-              "markdown": "Indra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, Ελληνικά.",
+              "markdown": "Indra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, Eλληνικá.",
               "source": "ocr",
               "note": "order=model",
               "blocks": [
                 {
                   "label": "Text",
                   "bbox": [
-                    90.6,
-                    106.8,
-                    538.3,
-                    140.5
+                    90.7,
+                    107.0,
+                    538.2,
+                    140.1
                   ],
                   "text": "Indra WebAssembly OCR"
                 },
@@ -2132,8 +2562,8 @@
                   "label": "Text",
                   "bbox": [
                     88.0,
-                    207.4,
-                    735.0,
+                    207.2,
+                    735.1,
                     240.5
                   ],
                   "text": "All documents stay in your browser."
@@ -2141,37 +2571,38 @@
                 {
                   "label": "Text",
                   "bbox": [
-                    87.9,
-                    306.7,
-                    910.2,
-                    340.6
+                    93.2,
+                    306.4,
+                    910.3,
+                    341.2
                   ],
                   "text": "The quick brown fox jumps over the lazy dog."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    91.5,
-                    407.3,
-                    652.2,
-                    435.3
+                    91.4,
+                    406.9,
+                    652.3,
+                    435.4
                   ],
                   "text": "Invoice 2026: total 123.45 EUR"
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    90.5,
-                    505.5,
-                    795.4,
-                    539.9
+                    90.4,
+                    505.7,
+                    795.5,
+                    540.8
                   ],
-                  "text": "Unicode: café, España, über, Ελληνικά."
+                  "text": "Unicode: café, España, über, Eλληνικá."
                 }
               ],
               "rotation": 90,
               "skew": 0.0,
-              "text": "Indra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, Ελληνικά."
+              "vertical": false,
+              "text": "Indra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, Eλληνικá."
             }
           ]
         },
@@ -2184,66 +2615,66 @@
               "lines": [
                 {
                   "box": [
-                    77.2,
-                    112.5,
-                    525.9,
-                    162.3
+                    77.4,
+                    112.8,
+                    525.8,
+                    162.0
                   ],
                   "text": "Indra WebAssembly OCR",
-                  "conf": 0.9709
+                  "conf": 0.9864
                 },
                 {
                   "box": [
                     78.2,
-                    206.2,
+                    206.1,
                     726.0,
-                    261.9
+                    262.0
                   ],
                   "text": "All documents stay in your browser.",
-                  "conf": 0.9945
+                  "conf": 0.9844
                 },
                 {
                   "box": [
-                    84.2,
-                    299.4,
-                    904.5,
-                    362.1
+                    86.9,
+                    299.3,
+                    904.6,
+                    362.4
                   ],
                   "text": "The quick brown fox jumps over the lazy dog.",
-                  "conf": 0.9812
+                  "conf": 0.9809
                 },
                 {
                   "box": [
                     85.8,
-                    408.9,
+                    408.6,
                     650.1,
-                    456.7
+                    456.8
                   ],
                   "text": "Invoice 2026: total 123.45 EUR",
-                  "conf": 0.9997
+                  "conf": 0.9968
                 },
                 {
                   "box": [
-                    88.4,
-                    502.1,
-                    796.7,
-                    561.3
+                    91.0,
+                    502.5,
+                    796.9,
+                    562.1
                   ],
-                  "text": "Unicode: café, España, über, Ελληνικά.",
-                  "conf": 0.9641
+                  "text": "Unicode: café, España, über, Eλληνικá.",
+                  "conf": 0.9653
                 }
               ],
-              "markdown": "## Indra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, Ελληνικά.",
+              "markdown": "Indra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, Eλληνικá.",
               "source": "ocr",
               "note": "order=model",
               "blocks": [
                 {
-                  "label": "Section-Header",
+                  "label": "Text",
                   "bbox": [
-                    77.2,
-                    112.5,
-                    525.9,
-                    162.3
+                    77.4,
+                    112.8,
+                    525.8,
+                    162.0
                   ],
                   "text": "Indra WebAssembly OCR"
                 },
@@ -2251,19 +2682,19 @@
                   "label": "Text",
                   "bbox": [
                     78.2,
-                    206.2,
+                    206.1,
                     726.0,
-                    261.9
+                    262.0
                   ],
                   "text": "All documents stay in your browser."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    84.2,
-                    299.4,
-                    904.5,
-                    362.1
+                    86.9,
+                    299.3,
+                    904.6,
+                    362.4
                   ],
                   "text": "The quick brown fox jumps over the lazy dog."
                 },
@@ -2271,26 +2702,27 @@
                   "label": "Text",
                   "bbox": [
                     85.8,
-                    408.9,
+                    408.6,
                     650.1,
-                    456.7
+                    456.8
                   ],
                   "text": "Invoice 2026: total 123.45 EUR"
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    88.4,
-                    502.1,
-                    796.7,
-                    561.3
+                    91.0,
+                    502.5,
+                    796.9,
+                    562.1
                   ],
-                  "text": "Unicode: café, España, über, Ελληνικά."
+                  "text": "Unicode: café, España, über, Eλληνικá."
                 }
               ],
               "rotation": 0,
               "skew": -2.0,
-              "text": "Indra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, Ελληνικά."
+              "vertical": false,
+              "text": "Indra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, Eλληνικá."
             }
           ]
         },
@@ -2303,53 +2735,53 @@
               "lines": [
                 {
                   "box": [
-                    152.0,
-                    162.8,
-                    814.8,
-                    209.6
+                    151.8,
+                    162.5,
+                    810.7,
+                    210.3
                   ],
                   "text": "Browser document page 1",
-                  "conf": 0.9995
+                  "conf": 0.974
                 },
                 {
                   "box": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved.",
-                  "conf": 0.9723
+                  "conf": 0.9994
                 },
                 {
                   "box": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123.",
-                  "conf": 0.9952
+                  "conf": 0.9803
                 },
                 {
                   "box": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Еλληνιкά. Cyrillic: Привет мир.",
-                  "conf": 0.9771
+                  "conf": 0.9287
                 },
                 {
                   "box": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order.",
-                  "conf": 0.9982
+                  "conf": 0.9858
                 }
               ],
               "markdown": "## Browser document page 1\n\nThe original PDF text layer is preserved.\n\nEspañol: acción, información, número 123.\n\nGreek: Еλληνιкά. Cyrillic: Привет мир.\n\nA final paragraph for reading order.",
@@ -2359,10 +2791,10 @@
                 {
                   "label": "Section-Header",
                   "bbox": [
-                    152.0,
-                    162.8,
-                    814.8,
-                    209.6
+                    151.8,
+                    162.5,
+                    810.7,
+                    210.3
                   ],
                   "text": "Browser document page 1"
                 },
@@ -2370,19 +2802,19 @@
                   "label": "Text",
                   "bbox": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123."
                 },
@@ -2390,9 +2822,9 @@
                   "label": "Text",
                   "bbox": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Еλληνιкά. Cyrillic: Привет мир."
                 },
@@ -2400,15 +2832,16 @@
                   "label": "Text",
                   "bbox": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
+              "vertical": false,
               "text": "Browser document page 1\nThe original PDF text layer is preserved.\nEspañol: acción, información, número 123.\nGreek: Еλληνιкά. Cyrillic: Привет мир.\nA final paragraph for reading order."
             },
             {
@@ -2416,53 +2849,53 @@
               "lines": [
                 {
                   "box": [
-                    152.0,
-                    162.9,
-                    810.5,
-                    209.7
+                    151.8,
+                    162.4,
+                    810.7,
+                    210.5
                   ],
                   "text": "Browser document page 2",
-                  "conf": 0.9999
+                  "conf": 0.9895
                 },
                 {
                   "box": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved.",
-                  "conf": 0.9723
+                  "conf": 0.9994
                 },
                 {
                   "box": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123.",
-                  "conf": 0.9952
+                  "conf": 0.9803
                 },
                 {
                   "box": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Еλληνιкά. Cyrillic: Привет мир.",
-                  "conf": 0.9771
+                  "conf": 0.9287
                 },
                 {
                   "box": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order.",
-                  "conf": 0.9982
+                  "conf": 0.9859
                 }
               ],
               "markdown": "## Browser document page 2\n\nThe original PDF text layer is preserved.\n\nEspañol: acción, información, número 123.\n\nGreek: Еλληνιкά. Cyrillic: Привет мир.\n\nA final paragraph for reading order.",
@@ -2472,10 +2905,10 @@
                 {
                   "label": "Section-Header",
                   "bbox": [
-                    152.0,
-                    162.9,
-                    810.5,
-                    209.7
+                    151.8,
+                    162.4,
+                    810.7,
+                    210.5
                   ],
                   "text": "Browser document page 2"
                 },
@@ -2483,19 +2916,19 @@
                   "label": "Text",
                   "bbox": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123."
                 },
@@ -2503,9 +2936,9 @@
                   "label": "Text",
                   "bbox": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Еλληνιкά. Cyrillic: Привет мир."
                 },
@@ -2513,15 +2946,16 @@
                   "label": "Text",
                   "bbox": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
+              "vertical": false,
               "text": "Browser document page 2\nThe original PDF text layer is preserved.\nEspañol: acción, información, número 123.\nGreek: Еλληνιкά. Cyrillic: Привет мир.\nA final paragraph for reading order."
             }
           ]
@@ -2553,10 +2987,10 @@
               "lines": [
                 {
                   "box": [
-                    152.0,
-                    162.8,
-                    814.8,
-                    209.6
+                    151.8,
+                    162.5,
+                    810.7,
+                    210.3
                   ],
                   "text": "Browser document page 1",
                   "conf": 1.0
@@ -2564,19 +2998,19 @@
                 {
                   "box": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved.",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123.",
                   "conf": 1.0
@@ -2584,9 +3018,9 @@
                 {
                   "box": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир.",
                   "conf": 1.0
@@ -2594,9 +3028,9 @@
                 {
                   "box": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order.",
                   "conf": 1.0
@@ -2609,10 +3043,10 @@
                 {
                   "label": "Section-Header",
                   "bbox": [
-                    152.0,
-                    162.8,
-                    814.8,
-                    209.6
+                    151.8,
+                    162.5,
+                    810.7,
+                    210.3
                   ],
                   "text": "Browser document page 1"
                 },
@@ -2620,19 +3054,19 @@
                   "label": "Text",
                   "bbox": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123."
                 },
@@ -2640,9 +3074,9 @@
                   "label": "Text",
                   "bbox": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир."
                 },
@@ -2650,15 +3084,16 @@
                   "label": "Text",
                   "bbox": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
+              "vertical": false,
               "text": "Browser document page 1\nThe original PDF text layer is preserved.\nEspañol: acción, información, número 123.\nGreek: Ελληνικά. Cyrillic: Привет мир.\nA final paragraph for reading order."
             },
             {
@@ -2666,10 +3101,10 @@
               "lines": [
                 {
                   "box": [
-                    152.0,
-                    162.9,
-                    810.5,
-                    209.7
+                    151.8,
+                    162.4,
+                    810.7,
+                    210.5
                   ],
                   "text": "Browser document page 2",
                   "conf": 1.0
@@ -2677,19 +3112,19 @@
                 {
                   "box": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved.",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123.",
                   "conf": 1.0
@@ -2697,9 +3132,9 @@
                 {
                   "box": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир.",
                   "conf": 1.0
@@ -2707,9 +3142,9 @@
                 {
                   "box": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order.",
                   "conf": 1.0
@@ -2722,10 +3157,10 @@
                 {
                   "label": "Section-Header",
                   "bbox": [
-                    152.0,
-                    162.9,
-                    810.5,
-                    209.7
+                    151.8,
+                    162.4,
+                    810.7,
+                    210.5
                   ],
                   "text": "Browser document page 2"
                 },
@@ -2733,19 +3168,19 @@
                   "label": "Text",
                   "bbox": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123."
                 },
@@ -2753,9 +3188,9 @@
                   "label": "Text",
                   "bbox": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир."
                 },
@@ -2763,15 +3198,16 @@
                   "label": "Text",
                   "bbox": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
+              "vertical": false,
               "text": "Browser document page 2\nThe original PDF text layer is preserved.\nEspañol: acción, información, número 123.\nGreek: Ελληνικά. Cyrillic: Привет мир.\nA final paragraph for reading order."
             }
           ]
@@ -2786,9 +3222,9 @@
                 {
                   "box": [
                     168.1,
-                    129.7,
+                    130.5,
                     622.5,
-                    183.7
+                    184.1
                   ],
                   "text": "Quarterly report",
                   "conf": 1.0
@@ -2796,69 +3232,69 @@
                 {
                   "box": [
                     180.3,
-                    392.3,
+                    392.0,
                     331.0,
-                    422.0
+                    421.6
                   ],
                   "text": "Product",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    666.0,
-                    393.5,
-                    769.1,
-                    422.0
+                    666.2,
+                    393.9,
+                    769.0,
+                    421.5
                   ],
                   "text": "Units",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    1134.3,
-                    393.1,
-                    1233.2,
-                    422.1
+                    1134.6,
+                    394.3,
+                    1233.0,
+                    421.3
                   ],
                   "text": "Total",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    666.0,
-                    504.9,
-                    713.3,
-                    533.6
-                  ],
-                  "text": "12",
-                  "conf": 1.0
-                },
-                {
-                  "box": [
-                    1138.6,
-                    504.7,
-                    1276.2,
-                    533.7
-                  ],
-                  "text": "120.00",
-                  "conf": 1.0
-                },
-                {
-                  "box": [
-                    179.5,
-                    505.2,
-                    293.2,
-                    540.6
+                    179.6,
+                    505.5,
+                    293.1,
+                    540.3
                   ],
                   "text": "Paper",
                   "conf": 1.0
                 },
                 {
                   "box": [
+                    666.2,
+                    505.6,
+                    713.1,
+                    533.2
+                  ],
+                  "text": "12",
+                  "conf": 1.0
+                },
+                {
+                  "box": [
+                    1138.7,
+                    504.7,
+                    1276.2,
+                    533.4
+                  ],
+                  "text": "120.00",
+                  "conf": 1.0
+                },
+                {
+                  "box": [
                     180.5,
-                    616.2,
+                    616.6,
                     240.6,
-                    644.4
+                    645.0
                   ],
                   "text": "Ink",
                   "conf": 1.0
@@ -2866,9 +3302,9 @@
                 {
                   "box": [
                     666.5,
-                    617.9,
+                    618.7,
                     691.3,
-                    643.5
+                    644.2
                   ],
                   "text": "3",
                   "conf": 1.0
@@ -2876,7 +3312,7 @@
                 {
                   "box": [
                     1138.8,
-                    616.0,
+                    615.9,
                     1250.3,
                     643.9
                   ],
@@ -2885,20 +3321,20 @@
                 },
                 {
                   "box": [
-                    180.7,
-                    729.4,
+                    180.6,
+                    729.0,
                     266.2,
-                    756.5
+                    756.6
                   ],
                   "text": "Sum",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    666.1,
-                    728.7,
+                    670.4,
+                    728.9,
                     713.2,
-                    756.5
+                    757.1
                   ],
                   "text": "15",
                   "conf": 1.0
@@ -2906,9 +3342,9 @@
                 {
                   "box": [
                     1138.7,
-                    728.0,
+                    727.7,
                     1276.2,
-                    756.6
+                    756.3
                   ],
                   "text": "165.00",
                   "conf": 1.0
@@ -2922,26 +3358,27 @@
                   "label": "Section-Header",
                   "bbox": [
                     168.1,
-                    129.7,
+                    130.5,
                     622.5,
-                    183.7
+                    184.1
                   ],
                   "text": "Quarterly report"
                 },
                 {
                   "label": "Table",
                   "bbox": [
-                    179.5,
-                    392.3,
+                    179.6,
+                    392.0,
                     1276.2,
-                    756.6
+                    757.1
                   ],
-                  "text": "Product\nUnits\nTotal\n12\n120.00\nPaper\nInk\n3\n45.00\nSum\n15\n165.00"
+                  "text": "Product\nUnits\nTotal\nPaper\n12\n120.00\nInk\n3\n45.00\nSum\n15\n165.00"
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
-              "text": "Quarterly report\nProduct\nUnits\nTotal\n12\n120.00\nPaper\nInk\n3\n45.00\nSum\n15\n165.00"
+              "vertical": false,
+              "text": "Quarterly report\nProduct\nUnits\nTotal\nPaper\n12\n120.00\nInk\n3\n45.00\nSum\n15\n165.00"
             }
           ]
         }
@@ -2966,66 +3403,66 @@
               "lines": [
                 {
                   "box": [
-                    90.6,
-                    106.8,
-                    538.3,
-                    140.5
+                    90.7,
+                    107.0,
+                    538.2,
+                    140.1
                   ],
                   "text": "Indra WebAssembly OCR",
-                  "conf": 0.9997
+                  "conf": 0.9985
                 },
                 {
                   "box": [
                     88.0,
-                    207.4,
-                    735.0,
+                    207.2,
+                    735.1,
                     240.5
                   ],
                   "text": "All documents stay in your browser.",
-                  "conf": 0.9919
+                  "conf": 0.9872
                 },
                 {
                   "box": [
-                    87.9,
-                    306.7,
-                    910.2,
-                    340.6
+                    93.2,
+                    306.4,
+                    910.3,
+                    341.2
                   ],
                   "text": "The quick brown fox jumps over the lazy dog.",
-                  "conf": 0.9989
+                  "conf": 0.9966
                 },
                 {
                   "box": [
-                    91.5,
-                    407.3,
-                    652.2,
-                    435.3
+                    91.4,
+                    406.9,
+                    652.3,
+                    435.4
                   ],
                   "text": "Invoice 2026: total 123.45 EUR",
-                  "conf": 0.9988
+                  "conf": 0.9836
                 },
                 {
                   "box": [
-                    90.5,
-                    505.5,
-                    795.4,
-                    539.9
+                    90.4,
+                    505.7,
+                    795.5,
+                    540.8
                   ],
-                  "text": "Unicode: café, España, über, Ελληνικά.",
-                  "conf": 0.9764
+                  "text": "Unicode: café, España, über, Eλληνικá.",
+                  "conf": 0.947
                 }
               ],
-              "markdown": "Indra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, Ελληνικά.",
+              "markdown": "Indra WebAssembly OCR\n\nAll documents stay in your browser.\n\nThe quick brown fox jumps over the lazy dog.\n\nInvoice 2026: total 123.45 EUR\n\nUnicode: café, España, über, Eλληνικá.",
               "source": "ocr",
               "note": "order=model",
               "blocks": [
                 {
                   "label": "Text",
                   "bbox": [
-                    90.6,
-                    106.8,
-                    538.3,
-                    140.5
+                    90.7,
+                    107.0,
+                    538.2,
+                    140.1
                   ],
                   "text": "Indra WebAssembly OCR"
                 },
@@ -3033,8 +3470,8 @@
                   "label": "Text",
                   "bbox": [
                     88.0,
-                    207.4,
-                    735.0,
+                    207.2,
+                    735.1,
                     240.5
                   ],
                   "text": "All documents stay in your browser."
@@ -3042,37 +3479,38 @@
                 {
                   "label": "Text",
                   "bbox": [
-                    87.9,
-                    306.7,
-                    910.2,
-                    340.6
+                    93.2,
+                    306.4,
+                    910.3,
+                    341.2
                   ],
                   "text": "The quick brown fox jumps over the lazy dog."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    91.5,
-                    407.3,
-                    652.2,
-                    435.3
+                    91.4,
+                    406.9,
+                    652.3,
+                    435.4
                   ],
                   "text": "Invoice 2026: total 123.45 EUR"
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    90.5,
-                    505.5,
-                    795.4,
-                    539.9
+                    90.4,
+                    505.7,
+                    795.5,
+                    540.8
                   ],
-                  "text": "Unicode: café, España, über, Ελληνικά."
+                  "text": "Unicode: café, España, über, Eλληνικá."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
-              "text": "Indra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, Ελληνικά."
+              "vertical": false,
+              "text": "Indra WebAssembly OCR\nAll documents stay in your browser.\nThe quick brown fox jumps over the lazy dog.\nInvoice 2026: total 123.45 EUR\nUnicode: café, España, über, Eλληνικá."
             }
           ]
         },
@@ -3085,183 +3523,154 @@
               "lines": [
                 {
                   "box": [
-                    347.3,
-                    110.6,
-                    464.8,
-                    146.7
+                    344.8,
+                    106.0,
+                    470.0,
+                    158.7
                   ],
-                  "text": "x + 1",
-                  "conf": 0.9342
+                  "text": "x + 1$",
+                  "conf": 0.9321
                 },
                 {
                   "box": [
-                    95.2,
-                    137.5,
-                    227.5,
-                    177.7
+                    94.6,
+                    135.2,
+                    228.1,
+                    179.2
+                  ],
+                  "text": "f(x) =$",
+                  "conf": 0.9803
+                },
+                {
+                  "box": [
+                    523.6,
+                    132.7,
+                    816.3,
+                    178.5
+                  ],
+                  "text": "+\\alpha+\\beta=0$",
+                  "conf": 0.9515
+                },
+                {
+                  "box": [
+                    371.3,
+                    193.0,
+                    391.6,
+                    214.9
+                  ],
+                  "text": "$\\mathbf { X }$",
+                  "conf": 1.0
+                },
+                {
+                  "box": [
+                    345.9,
+                    327.0,
+                    469.0,
+                    372.7
+                  ],
+                  "text": "x + 1",
+                  "conf": 0.9307
+                },
+                {
+                  "box": [
+                    393.3,
+                    319.7,
+                    427.0,
+                    395.7
+                  ],
+                  "text": "+",
+                  "conf": 0.9858
+                },
+                {
+                  "box": [
+                    97.3,
+                    355.1,
+                    228.0,
+                    398.8
                   ],
                   "text": "f(x) =",
-                  "conf": 0.9772
+                  "conf": 0.8973
                 },
                 {
                   "box": [
-                    526.5,
-                    135.5,
-                    816.0,
-                    179.9
-                  ],
-                  "text": "- + \\alpha+ ß = 0",
-                  "conf": 0.8557
-                },
-                {
-                  "box": [
-                    406.2,
-                    166.6,
-                    419.6,
-                    192.9
-                  ],
-                  "text": "2",
-                  "conf": 0.9997
-                },
-                {
-                  "box": [
-                    368.3,
-                    190.9,
-                    394.5,
-                    214.4
-                  ],
-                  "text": "X",
-                  "conf": 0.9633
-                },
-                {
-                  "box": [
-                    347.0,
-                    329.5,
-                    465.1,
-                    367.4
-                  ],
-                  "text": "x + 1",
-                  "conf": 0.931
-                },
-                {
-                  "box": [
-                    97.8,
-                    357.0,
-                    224.9,
+                    529.2,
+                    352.7,
+                    816.1,
                     397.8
                   ],
-                  "text": "f(x) =",
-                  "conf": 0.9701
+                  "text": "+\\alpha+\\beta=0$",
+                  "conf": 0.9345
                 },
                 {
                   "box": [
-                    526.4,
-                    355.1,
-                    816.2,
-                    400.3
+                    367.9,
+                    409.8,
+                    395.0,
+                    436.1
                   ],
-                  "text": "- + \\alpha + ß = 0",
-                  "conf": 0.8856
+                  "text": "X",
+                  "conf": 0.7456
+                },
+                {
+                  "box": [
+                    346.1,
+                    547.2,
+                    468.8,
+                    591.7
+                  ],
+                  "text": "x + 1",
+                  "conf": 0.9304
+                },
+                {
+                  "box": [
+                    94.6,
+                    574.8,
+                    228.1,
+                    618.7
+                  ],
+                  "text": "f(x) =$",
+                  "conf": 0.9615
+                },
+                {
+                  "box": [
+                    523.7,
+                    572.2,
+                    816.1,
+                    617.1
+                  ],
+                  "text": "++B=0",
+                  "conf": 0.7807
                 },
                 {
                   "box": [
                     368.3,
-                    410.9,
-                    394.6,
-                    434.8
+                    630.3,
+                    397.3,
+                    654.0
                   ],
                   "text": "X",
-                  "conf": 0.9633
-                },
-                {
-                  "box": [
-                    346.8,
-                    549.0,
-                    468.1,
-                    588.7
-                  ],
-                  "text": "x + 1",
-                  "conf": 0.9642
-                },
-                {
-                  "box": [
-                    95.0,
-                    576.5,
-                    227.7,
-                    617.7
-                  ],
-                  "text": "f(x) =",
-                  "conf": 0.999
-                },
-                {
-                  "box": [
-                    518.9,
-                    575.9,
-                    536.6,
-                    616.8
-                  ],
-                  "text": "-",
-                  "conf": 0.9799
-                },
-                {
-                  "box": [
-                    526.6,
-                    575.1,
-                    816.0,
-                    619.1
-                  ],
-                  "text": "- + \\alpha+ß = 0",
-                  "conf": 0.8798
-                },
-                {
-                  "box": [
-                    368.1,
-                    628.4,
-                    397.5,
-                    653.7
-                  ],
-                  "text": "$\\textbf { X }$",
-                  "conf": 1.0
+                  "conf": 0.8938
                 }
               ],
-              "markdown": "<table>\n<tr><th>x + 1</th></tr>\n<tr><td>f(x) =</td></tr>\n</table>\n\n<table>\n<tr><th></th><th colspan=\"2\">- + \\alpha+ ß = 0</th></tr>\n<tr><td></td><td>2</td><td></td></tr>\n<tr><td>X</td><td></td><td></td></tr>\n<tr><td>x + 1</td><td></td><td></td></tr>\n<tr><td>f(x) =</td><td colspan=\"2\">- + \\alpha + ß = 0</td></tr>\n<tr><td>X</td><td></td><td></td></tr>\n<tr><td>x + 1</td><td></td><td></td></tr>\n<tr><td>f(x) =</td><td colspan=\"2\">- + \\alpha+ß = 0 -</td></tr>\n</table>\n\n$$\\textbf { X }$$",
+              "markdown": "<table>\n<tr><th></th><th colspan=\"2\">x + 1$</th><th></th></tr>\n<tr><td>f(x) =$</td><td></td><td></td><td>+\\alpha+\\beta=0$</td></tr>\n<tr><td></td><td>$\\mathbf { X }$</td><td></td><td></td></tr>\n<tr><td>f(x) =</td><td colspan=\"2\">+ x + 1</td><td>+\\alpha+\\beta=0$</td></tr>\n<tr><td></td><td>X</td><td></td><td></td></tr>\n<tr><td></td><td colspan=\"2\">x + 1</td><td></td></tr>\n<tr><td>f(x) =$</td><td></td><td></td><td>+ +B=0</td></tr>\n<tr><td></td><td>X</td><td></td><td></td></tr>\n</table>",
               "source": "ocr",
               "note": "order=model",
               "blocks": [
                 {
                   "label": "Table",
                   "bbox": [
-                    95.2,
-                    110.6,
-                    464.8,
-                    177.7
+                    94.6,
+                    106.0,
+                    816.3,
+                    654.0
                   ],
-                  "text": "x + 1\nf(x) ="
-                },
-                {
-                  "label": "Table",
-                  "bbox": [
-                    95.0,
-                    135.5,
-                    816.2,
-                    619.1
-                  ],
-                  "text": "- + \\alpha+ ß = 0\n2\nX\nx + 1\nf(x) =\n- + \\alpha + ß = 0\nX\nx + 1\nf(x) =\n-\n- + \\alpha+ß = 0"
-                },
-                {
-                  "label": "Text",
-                  "bbox": [
-                    368.1,
-                    628.4,
-                    397.5,
-                    653.7
-                  ],
-                  "text": "$\\textbf { X }$"
+                  "text": "x + 1$\nf(x) =$\n+\\alpha+\\beta=0$\n$\\mathbf { X }$\nx + 1\n+\nf(x) =\n+\\alpha+\\beta=0$\nX\nx + 1\nf(x) =$\n++B=0\nX"
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
-              "text": "x + 1\nf(x) =\n- + \\alpha+ ß = 0\n2\nX\nx + 1\nf(x) =\n- + \\alpha + ß = 0\nX\nx + 1\nf(x) =\n-\n- + \\alpha+ß = 0\n$\\textbf { X }$"
+              "vertical": false,
+              "text": "x + 1$\nf(x) =$\n+\\alpha+\\beta=0$\n$\\mathbf { X }$\nx + 1\n+\nf(x) =\n+\\alpha+\\beta=0$\nX\nx + 1\nf(x) =$\n++B=0\nX"
             }
           ]
         },
@@ -3274,10 +3683,10 @@
               "lines": [
                 {
                   "box": [
-                    152.0,
-                    162.8,
-                    814.8,
-                    209.6
+                    151.8,
+                    162.5,
+                    810.7,
+                    210.3
                   ],
                   "text": "Browser document page 1",
                   "conf": 1.0
@@ -3285,19 +3694,19 @@
                 {
                   "box": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved.",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123.",
                   "conf": 1.0
@@ -3305,9 +3714,9 @@
                 {
                   "box": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир.",
                   "conf": 1.0
@@ -3315,9 +3724,9 @@
                 {
                   "box": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order.",
                   "conf": 1.0
@@ -3325,15 +3734,15 @@
               ],
               "markdown": "## Browser document page 1\n\nThe original PDF text layer is preserved.\n\nEspañol: acción, información, número 123.\n\nGreek: Ελληνικά. Cyrillic: Привет мир.\n\nA final paragraph for reading order.",
               "source": "text",
-              "note": "order=pdf",
+              "note": "order=model",
               "blocks": [
                 {
                   "label": "Section-Header",
                   "bbox": [
-                    152.0,
-                    162.8,
-                    814.8,
-                    209.6
+                    151.8,
+                    162.5,
+                    810.7,
+                    210.3
                   ],
                   "text": "Browser document page 1"
                 },
@@ -3341,19 +3750,19 @@
                   "label": "Text",
                   "bbox": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123."
                 },
@@ -3361,9 +3770,9 @@
                   "label": "Text",
                   "bbox": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир."
                 },
@@ -3371,15 +3780,16 @@
                   "label": "Text",
                   "bbox": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
+              "vertical": false,
               "text": "Browser document page 1\nThe original PDF text layer is preserved.\nEspañol: acción, información, número 123.\nGreek: Ελληνικά. Cyrillic: Привет мир.\nA final paragraph for reading order."
             },
             {
@@ -3387,10 +3797,10 @@
               "lines": [
                 {
                   "box": [
-                    152.0,
-                    162.9,
-                    810.5,
-                    209.7
+                    151.8,
+                    162.4,
+                    810.7,
+                    210.5
                   ],
                   "text": "Browser document page 2",
                   "conf": 1.0
@@ -3398,19 +3808,19 @@
                 {
                   "box": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved.",
                   "conf": 1.0
                 },
                 {
                   "box": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123.",
                   "conf": 1.0
@@ -3418,9 +3828,9 @@
                 {
                   "box": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир.",
                   "conf": 1.0
@@ -3428,9 +3838,9 @@
                 {
                   "box": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order.",
                   "conf": 1.0
@@ -3438,15 +3848,15 @@
               ],
               "markdown": "## Browser document page 2\n\nThe original PDF text layer is preserved.\n\nEspañol: acción, información, número 123.\n\nGreek: Ελληνικά. Cyrillic: Привет мир.\n\nA final paragraph for reading order.",
               "source": "text",
-              "note": "order=pdf",
+              "note": "order=model",
               "blocks": [
                 {
                   "label": "Section-Header",
                   "bbox": [
-                    152.0,
-                    162.9,
-                    810.5,
-                    209.7
+                    151.8,
+                    162.4,
+                    810.7,
+                    210.5
                   ],
                   "text": "Browser document page 2"
                 },
@@ -3454,19 +3864,19 @@
                   "label": "Text",
                   "bbox": [
                     149.7,
-                    340.7,
+                    340.5,
                     821.4,
-                    373.8
+                    374.0
                   ],
                   "text": "The original PDF text layer is preserved."
                 },
                 {
                   "label": "Text",
                   "bbox": [
-                    154.1,
-                    451.7,
+                    154.0,
+                    451.4,
                     868.6,
-                    484.4
+                    484.5
                   ],
                   "text": "Español: acción, información, número 123."
                 },
@@ -3474,9 +3884,9 @@
                   "label": "Text",
                   "bbox": [
                     154.1,
-                    563.1,
+                    562.9,
                     799.8,
-                    595.5
+                    595.6
                   ],
                   "text": "Greek: Ελληνικά. Cyrillic: Привет мир."
                 },
@@ -3484,15 +3894,16 @@
                   "label": "Text",
                   "bbox": [
                     149.8,
-                    674.3,
-                    748.2,
-                    706.6
+                    674.2,
+                    743.9,
+                    706.7
                   ],
                   "text": "A final paragraph for reading order."
                 }
               ],
               "rotation": 0,
               "skew": 0.0,
+              "vertical": false,
               "text": "Browser document page 2\nThe original PDF text layer is preserved.\nEspañol: acción, información, número 123.\nGreek: Ελληνικά. Cyrillic: Привет мир.\nA final paragraph for reading order."
             }
           ]
@@ -3501,13 +3912,13 @@
       "nativeModelCalls": {
         "orient": 2,
         "det": 4,
-        "script": 5,
-        "rec": 5,
-        "math_cls": 9,
+        "script": 8,
+        "rec": 4,
+        "math_cls": 8,
         "order": 4,
-        "math_enc": 1,
-        "math_init": 1,
-        "math_step": 16
+        "math_enc": 2,
+        "math_init": 2,
+        "math_step": 24
       }
     }
   ]

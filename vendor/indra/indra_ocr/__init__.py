@@ -19,7 +19,7 @@ __all__ = [
     "load",
     "model_dir",
 ]
-__version__ = "0.3.2"
+__version__ = "1.1.2"
 
 
 def load(
@@ -27,7 +27,6 @@ def load(
     threads: int = 4,
     dpi: float = 200.0,
     mode: str = "auto",
-    pdf_order: bool = True,
     image_ocr: bool = True,
     providers: list | None = None,
     furniture: bool = False,
@@ -46,6 +45,5 @@ def load(
         ),
         dpi=dpi,
         mode=mode,
-        pdf_order=pdf_order,
         image_ocr=image_ocr,
     )

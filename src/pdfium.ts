@@ -42,6 +42,13 @@ export async function createPdfium(wasmURL: string) {
         return [0, 8, 16, 24].map(i => m.getValue(ptr + i, 'double'));
       } finally { free(ptr); }
     },
+    setText(object: number, codeUnits: Uint16Array) {
+      const ptr = alloc(codeUnits.byteLength);
+      try {
+        write(ptr, new Uint8Array(codeUnits.buffer, codeUnits.byteOffset, codeUnits.byteLength));
+        return p.FPDFText_SetText(object, ptr);
+      } finally { free(ptr); }
+    },
     render(page: number, scale: number) {
       const w = Math.ceil(p.FPDF_GetPageWidth(page) * scale);
       const h = Math.ceil(p.FPDF_GetPageHeight(page) * scale);

@@ -4,21 +4,31 @@ import { build } from 'esbuild';
 
 const sessions = [];
 globalThis.indraTestSessions = sessions;
+const runs = [];
+globalThis.indraTestRuns = runs;
 const { outputFiles } = await build({ entryPoints: ['src/inference.worker.ts'], bundle: true,
   write: false, format: 'esm', platform: 'node', plugins: [{
     name: 'mock-ort', setup(build) {
       build.onResolve({ filter: /^onnxruntime-web\/webgpu$/ }, () => ({ path: 'ort', namespace: 'mock' }));
       build.onLoad({ filter: /.*/, namespace: 'mock' }, () => ({ contents: `
         export const env = { wasm: {} };
-        export class Tensor { constructor() { throw new Error('Unexpected inference during initialization test'); } }
+        export class Tensor {
+          constructor(type, data, dims) { Object.assign(this, { type, data, dims }); }
+          dispose() {}
+        }
         export const InferenceSession = { create: async (bytes, options) => {
           globalThis.indraTestSessions.push({ model: new TextDecoder().decode(bytes), options });
-          return { inputNames: ['input'], release: async () => {} };
+          const outputNames = ['ids', 'conf', 'lengths', 'blank', 'topv', 'topi'];
+          return { inputNames: ['input'], outputNames, release: async () => {},
+            run: async (feed, outputs = outputNames) => {
+              globalThis.indraTestRuns.push(outputs);
+              return Object.fromEntries(outputs.map(name => [name, new Tensor('float32', new Float32Array([1]), [1])]));
+            } };
         } };
       ` }));
     },
   }] });
-const models = ['det.onnx', 'rec.onnx', 'order.onnx', 'orient.onnx', 'script.onnx', 'rec_cjk.onnx',
+const models = ['det.onnx', 'rec.onnx', 'order.onnx', 'orient.onnx', 'script.onnx', 'rec_cjk.onnx', 'rec_rtl.onnx', 'rec_world.onnx',
   'mathcls.onnx', 'math_enc.onnx', 'math_dec_init.onnx', 'math_dec_step.onnx'];
 const sha256 = {};
 for (const model of models) sha256[model] = Buffer.from(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(model))).toString('hex');
@@ -35,6 +45,7 @@ for (const backend of ['auto', 'wasm']) {
       runtimeURL: 'https://example.test/runtime/', modelURL: 'https://example.test/' } });
     assert.equal(messages.at(-1).kind, 'ready', JSON.stringify(messages.at(-1)));
     assert.equal(sessions.length, models.length);
+    assert.deepEqual(messages.at(-1).outputs['rec.onnx'], ['ids', 'conf', 'lengths', 'blank', 'topv', 'topi']);
     for (const { model, options } of sessions) {
       assert.deepEqual(options.executionProviders,
         backend === 'auto' && !model.startsWith('math') ? ['webgpu', 'wasm'] : ['wasm'], model);
@@ -42,3 +53,15 @@ for (const backend of ['auto', 'wasm']) {
     assert.equal(messages.filter(m => m.message?.includes('using CPU/WASM for math')).length, 4);
   });
 }
+
+test('recognizer requests fetch only the selected outputs in the requested order', async () => {
+  messages.length = 0; runs.length = 0;
+  const outputs = ['lengths', 'ids'];
+  await self.onmessage({ data: { kind: 'run', id: 42, model: 'rec.onnx', outputs,
+    feed: { input: { type: 'float32', dims: [1], data: new Uint8Array(new Float32Array([1]).buffer) } },
+    responseBytes: 8 } });
+  assert.deepEqual(runs, [outputs]);
+  assert.equal(messages.at(-1).kind, 'result', JSON.stringify(messages.at(-1)));
+  assert.equal(messages.at(-1).id, 42);
+  assert.equal(messages.at(-1).tensors.length, outputs.length);
+});

@@ -161,6 +161,7 @@ class Vocab:
         self.chars = list(chars)  # tokens: characters, or LaTeX commands
         self.index = {c: i + 1 for i, c in enumerate(self.chars)}
         self.has_commands = any(len(c) > 1 for c in self.chars)
+        self.jamo = "\u1100" in self.index  # Hangul syllables read as jamo
 
     @classmethod
     def latin(cls) -> "Vocab":
@@ -221,6 +222,8 @@ class Vocab:
 
     def decode(self, ids: list[int]) -> str:
         toks = [self.chars[i - 1] for i in ids if 0 < i <= len(self.chars)]
+        if self.jamo:  # compose the jamo back into syllables
+            return unicodedata.normalize("NFC", "".join(toks))
         if not self.has_commands:
             return "".join(toks)
         out = []

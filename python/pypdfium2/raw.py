@@ -22,6 +22,16 @@ def FPDFText_GetCharBox(tp, index, pl, pr, pb, pt):
     return 1
 
 
+def FPDFPageObj_NewTextObj(doc, font, size):
+    return pdfium.call("FPDFPageObj_NewTextObj", to_js([doc, font.decode(), size.value]))
+
+
+def FPDFText_SetText(obj, text):
+    import numpy as np
+
+    return pdfium.setText(obj, to_js(np.ctypeslib.as_array(text)))
+
+
 def __getattr__(name):
     if name.startswith("FPDF"):
         return lambda *args: pdfium.call(name, to_js(args))

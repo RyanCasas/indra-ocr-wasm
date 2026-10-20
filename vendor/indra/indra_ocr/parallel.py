@@ -113,6 +113,8 @@ def convert_many(
     load_kwargs go to indra_ocr.load (not threads)."""
     from .models import model_dir
 
+    if max_pages < 0:
+        raise ValueError(f"max_pages must be 0 (all pages) or more, not {max_pages}")
     # Resolve (and on a first run download) the models once, not in every worker.
     load_kwargs["path"] = str(
         model_dir(load_kwargs.get("path"), math=load_kwargs.get("math", False))

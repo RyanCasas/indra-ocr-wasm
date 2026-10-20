@@ -34,8 +34,13 @@ self.onmessage = async ({ data }) => {
         await backend.load();
         sessions.set(name, backend);
       }
-      self.postMessage({ kind: 'ready', inputs: Object.fromEntries(
-        await Promise.all([...sessions].map(async ([name, s]) => [name, (await s.load()).inputNames]))) });
+      const metadata = await Promise.all([...sessions].map(async ([name, s]) => {
+        const session = await s.load();
+        return { name, inputs: session.inputNames, outputs: session.outputNames };
+      }));
+      self.postMessage({ kind: 'ready',
+        inputs: Object.fromEntries(metadata.map(s => [s.name, s.inputs])),
+        outputs: Object.fromEntries(metadata.map(s => [s.name, s.outputs])) });
     } catch (e) { self.postMessage({ kind: 'error', error: String(e) }); }
   } else if (data.kind === 'run') {
     try {
@@ -52,7 +57,7 @@ self.onmessage = async ({ data }) => {
       }
       let result: ort.InferenceSession.ReturnType | undefined;
       try {
-        result = await backend.run(session => session.run(feed));
+        result = await backend.run(session => data.outputs ? session.run(feed, data.outputs) : session.run(feed));
         const names = data.outputs ?? (await backend.load()).outputNames;
         const tensors = copyTensors(names.map((key: string) => ({ type: result![key].type,
           dims: [...result![key].dims], data: result![key].data as ArrayBufferView })), data.responseBytes);

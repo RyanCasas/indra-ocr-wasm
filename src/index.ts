@@ -8,6 +8,7 @@ export interface IndraOptions {
   backend?: 'auto' | 'wasm';
   mode?: 'auto' | 'ocr' | 'text';
   dpi?: number;
+  /** @deprecated Upstream 1.1 always determines reading order from layout; this option is ignored. */
   pdfOrder?: boolean;
   imageOcr?: boolean;
   furniture?: boolean;
@@ -32,6 +33,8 @@ export interface Page {
   note: string;
   rotation: number;
   skew: number;
+  /** True for pages set in vertical columns; boxes remain in the input frame. */
+  vertical: boolean;
   timings: Record<string, number>;
 }
 export type Input = Blob | ArrayBuffer | Uint8Array;
