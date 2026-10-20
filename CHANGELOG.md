@@ -3,7 +3,7 @@
 Versions refer to the `@ryancasas/indra-ocr-wasm` npm package, independently of
 the upstream Indra OCR version. Release dates use UTC.
 
-## Unreleased
+## [1.0.0] - 2026-10-20
 
 ### Breaking changes
 
