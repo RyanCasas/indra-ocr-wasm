@@ -40,7 +40,7 @@ when a newer commit is already on `main`.
 Use Conventional Commits for the commits that reach `main` (the PR title when
 squash merging):
 
-- `fix: ...` and `perf: ...` produce a patch release, such as `0.1.0` → `0.1.1`.
+- `fix: ...`, `perf: ...`, and `chore(deps): ...` produce a patch release, such as `0.1.0` → `0.1.1`.
 - `feat: ...` produces a minor release, such as `0.1.0` → `0.2.0`.
 - `feat!: ...`, `fix(api)!: ...`, or a `BREAKING CHANGE: ...` footer produces a
   major release, such as `0.1.0` → `1.0.0`.

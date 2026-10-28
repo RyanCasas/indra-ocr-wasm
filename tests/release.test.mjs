@@ -27,6 +27,9 @@ for (const [message, releaseType, version] of [
   ['refactor: replace the API\n\nBREAKING CHANGE: convert now returns a different shape.', 'major', '1.0.0'],
   ['docs: clarify hosting requirements', null, null],
   ['ci: add publishing workflow', null, null],
+  ['chore(deps): update runtime dependencies', 'patch', '0.1.1'],
+  ['chore: tidy up', null, null],
+  ['chore(build): tidy up', null, null],
 ]) {
   test(`release recommendation for ${message.split('\n')[0]}`, async t => {
     const repo = await repository(t);

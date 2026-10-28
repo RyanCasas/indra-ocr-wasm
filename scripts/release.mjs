@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 import { Bumper } from 'conventional-recommended-bump';
+import { DEFAULT_COMMIT_TYPES } from 'conventional-changelog-conventionalcommits';
 import semver from 'semver';
 
 const root = resolve(import.meta.dirname, '..');
@@ -26,7 +27,9 @@ export async function planRelease(cwd = root, initial = initialRelease) {
   const from = lastTag ?? initial.ref;
   // Fail on shallow/missing history rather than guessing the first version.
   git('merge-base', '--is-ancestor', from, 'HEAD');
-  const recommendation = await new Bumper(cwd).loadPreset('conventionalcommits')
+  const recommendation = await new Bumper(cwd).loadPreset({ name: 'conventionalcommits', types: [
+      { type: 'chore', scope: 'deps', effect: 'bump' }, ...DEFAULT_COMMIT_TYPES,
+    ] })
     .commits({ from, to: 'HEAD' }).bump();
   return {
     head: git('rev-parse', 'HEAD'), lastTag, lastVersion,
