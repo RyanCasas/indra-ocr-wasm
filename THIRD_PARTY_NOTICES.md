@@ -33,11 +33,11 @@ downloading, using, or hosting the models and before redistributing their output
 
 ## Browser runtime
 
-- [Pyodide 0.29.3](https://github.com/pyodide/pyodide/tree/72e3c78d53a32a76e0aca7443ad24e5cae1042d3):
+- [Pyodide 314.0.7](https://github.com/pyodide/pyodide/tree/b1e4fcc2488962f6360a97f19b9982d6fdb5d16f):
   [MPL-2.0](licenses/PYODIDE-LICENSE). Its unmodified source is available at the
   linked revision. The Python, NumPy, OpenCV, Pillow, and pytest distributions
   downloaded for Pyodide retain their own license terms and packaged notices.
-- [ONNX Runtime Web 1.30.0](https://github.com/microsoft/onnxruntime/tree/f2c39fe2f838cf35ce7da92824f5a5e3ee6e88a7):
+- [ONNX Runtime Web 1.31.1](https://github.com/microsoft/onnxruntime/tree/6af1a932e2286d5c58166085d24c68783033edee):
   [MIT](licenses/ONNXRUNTIME-LICENSE), Copyright Microsoft Corporation. The
   [upstream third-party notices](licenses/ONNXRUNTIME-NOTICES) are also included.
 - [EmbedPDF PDFium 2.15.1](https://www.npmjs.com/package/@embedpdf/pdfium):

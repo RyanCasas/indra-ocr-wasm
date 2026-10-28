@@ -38,10 +38,11 @@ const ort = await packageDirectory('onnxruntime-web');
 const modelLock = JSON.parse(await readFile(join(root, 'models.lock.json'), 'utf8'));
 const revision = modelLock.revision;
 await mkdir(`${runtime}/pyodide`, { recursive: true });
-for (const name of ['pyodide.mjs', 'pyodide.asm.js', 'pyodide.asm.wasm', 'python_stdlib.zip', 'pyodide-lock.json']) {
+for (const name of ['pyodide.mjs', 'pyodide.asm.mjs', 'pyodide.asm.wasm', 'python_stdlib.zip', 'pyodide-lock.json']) {
   await cp(join(pyodide, name), `${runtime}/pyodide/${name}`);
 }
 const lock = JSON.parse(await readFile(join(pyodide, 'pyodide-lock.json'), 'utf8'));
+const pyodideVersion = JSON.parse(await readFile(join(pyodide, 'package.json'), 'utf8')).version;
 const needed = new Set();
 function add(name) {
   if (needed.has(name)) return;
@@ -64,7 +65,7 @@ async function download(url, dest, sha256) {
 }
 for (const name of needed) {
   const pkg = lock.packages[name];
-  await download(`https://cdn.jsdelivr.net/pyodide/v0.29.3/full/${pkg.file_name}`,
+  await download(`https://cdn.jsdelivr.net/pyodide/v${pyodideVersion}/full/${pkg.file_name}`,
     `${runtime}/pyodide/${pkg.file_name}`, pkg.sha256);
 }
 await cp(join(pdfium, 'dist/pdfium.wasm'), `${runtime}/pdfium.wasm`);
