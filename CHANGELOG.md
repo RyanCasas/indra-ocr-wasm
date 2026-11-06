@@ -1,7 +1,6 @@
 # Changelog
 
-Versions refer to the `@ryancasas/indra-ocr-wasm` npm package, independently of
-the upstream Indra OCR version. Release dates use UTC.
+Versions track `@ryancasas/indra-ocr-wasm`, independently of Indra OCR. Dates use UTC.
 
 ## [1.0.0] - 2026-10-20
 
@@ -15,12 +14,11 @@ the upstream Indra OCR version. Release dates use UTC.
 
 ### Changed
 
-- Add `backend: 'webgpu'` to request GPU execution for all models, including
-  math. Explicit GPU requests fail when an adapter or model fails, without
-  silently retrying the model on CPU. Automatic mode retains CPU math and
-  per-model recovery to WASM; individual unsupported GPU operators can use WASM.
-- Rerun benchmarks against the 1.1.2 pipeline, comparing forced WASM, automatic
-  WebGPU with CPU math, explicit WebGPU with GPU math, and automatic CPU fallback.
+- Add `backend: 'webgpu'` for all models, including math, with errors on adapter
+  or model failure. Automatic mode retains CPU math and per-model WASM recovery;
+  individual unsupported GPU operators can use WASM.
+- Benchmark Indra 1.1.2 with WASM, automatic WebGPU, explicit WebGPU math, and
+  automatic CPU fallback.
 - Update the unmodified vendored Indra source and tests from 0.3.2 to 1.1.2,
   with SHA-256-pinned `v1.1.0` models and language models.
 - Adapt asynchronous inference for multilingual script routing, language-model
@@ -60,14 +58,11 @@ the upstream Indra OCR version. Release dates use UTC.
 
 ### Added
 
-- A changelog covering the stable npm releases, included in the npm package and
-  linked from the README.
+- Stable-release changelog, included in npm and linked from the README.
 
 ### Changed
 
-- Updated the README with npm installation and upgrade instructions, a browser
-  API example using the installed asset paths, current CI results, and the
-  automatic release rules.
+- README installation, upgrades, browser example, CI results, and release rules.
 
 ### Fixed
 
@@ -117,10 +112,10 @@ the upstream Indra OCR version. Release dates use UTC.
 
 ### Requirements
 
-- This version requires cross-origin isolation and COOP/COEP hosting headers
-  for its synchronous shared-memory inference bridge. Upgrade to 0.2.0 or later
-  to remove that requirement.
+- The synchronous shared-memory inference bridge requires cross-origin isolation
+  and COOP/COEP headers. Version 0.2.0 removes this requirement.
 
+[1.0.0]: https://github.com/RyanCasas/indra-ocr-wasm/releases/tag/v1.0.0
 [0.3.0]: https://github.com/RyanCasas/indra-ocr-wasm/releases/tag/v0.3.0
 [0.2.1]: https://github.com/RyanCasas/indra-ocr-wasm/releases/tag/v0.2.1
 [0.2.0]: https://github.com/RyanCasas/indra-ocr-wasm/releases/tag/v0.2.0

@@ -1,37 +1,35 @@
 # Security policy
 
-Security fixes are made on the default branch. Historical commits and old
-releases are not maintained separately.
+Security fixes target the default branch; older releases have no separate maintenance.
 
 ## Reporting a vulnerability
 
-Use the repository's [Security tab](https://github.com/RyanCasas/indra-ocr-wasm/security)
-and its **Report a vulnerability** action when private reporting is available.
-If that action is unavailable, open an issue requesting a private contact method
-without including exploit details, credentials, or confidential documents.
+Use **Report a vulnerability** in the repository's
+[Security tab](https://github.com/RyanCasas/indra-ocr-wasm/security) when available.
+Otherwise, open an issue requesting a private contact method and reserve sensitive
+details for that channel.
 
-Include the affected revision, browser and operating-system versions, a minimal
-synthetic reproducer, expected behavior, and observed behavior. Do not attach
-customer documents or personal data. No response-time commitment is specified.
+Include the affected revision, browser and OS versions, a synthetic reproducer,
+and expected and observed behavior. Exclude customer documents, personal data,
+credentials, and public exploit details. No response-time commitment is specified.
 
-## Processing untrusted documents
+## Untrusted documents
 
-OCR and PDF parsing run locally in browser workers. Keep the browser and pinned
-runtime dependencies updated. Calling `dispose()` terminates pending work; use
-application-level file-size and page-count limits appropriate to the deployment.
-Workers isolate scheduling, but they do not eliminate memory-exhaustion risks
-from very large or malformed files.
+OCR and PDF parsing run in local browser workers. Keep browsers and runtime
+dependencies updated, and set application-level file-size and page-count limits.
+`dispose()` terminates pending work. Workers isolate scheduling but cannot prevent
+memory exhaustion from large or malformed files.
 
-The included HTTP server is a development and test server. Use a maintained
-static server for production and follow the hosting requirements in README.md.
+Use a maintained static server for production and follow the README's
+[hosting requirements](README.md#hosting-and-distribution). The included server
+is for development and tests.
 
-## Dependency audit scope
+## Dependency audits
 
-Audit the native development requirements with `pip-audit` alongside `npm audit`;
-the npm audit alone does not cover Python or WebAssembly libraries.
+Run `pip-audit -r requirements-native.txt` alongside `npm audit`; npm covers
+neither Python nor WASM libraries. Audit Pyodide's bundled packages separately
+when updating them; its lockfile records their versions and hashes.
 
-Pyodide 314.0.7 bundles Pillow 12.2.0 and pytest 9.0.2 as **test-only**
-dependencies of the browser parity harness. They are loaded only by `runTests`,
-not by engine initialization or document conversion. The browser harness uses
-synthetic, repository-controlled fixtures. The production image path uses OpenCV;
-PDFs use PDFium. Audit the bundled Pyodide packages separately when updating them.
+Pillow and pytest in the prepared Pyodide runtime serve only the `runTests`
+parity harness, which uses synthetic repository fixtures. Engine initialization
+and conversion leave them unloaded. Production images use OpenCV; PDFs use PDFium.

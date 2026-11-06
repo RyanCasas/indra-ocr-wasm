@@ -1,8 +1,10 @@
 # Contributing
 
-Read [README.md](README.md) for the runtime design and browser API, and
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for dependency and model licenses.
-Review the model license before running `npm run assets`.
+Read [README.md](README.md) for the API and runtime design. Before downloading
+models, review their [license](licenses/INDRA-MODEL-LICENSE) and
+[third-party notices](THIRD_PARTY_NOTICES.md).
+
+## Validation
 
 Use Node.js 22 or later:
 
@@ -16,73 +18,93 @@ npx playwright install --with-deps chromium
 npm run test:browser
 ```
 
-Set `BROWSER=firefox` or `BROWSER=webkit` after installing that engine to run the
-same harness there. Browser reports are written to the ignored `test-results/`
-directory. Native tests and fixture regeneration are described in README.md.
+For Firefox or WebKit, install the engine and set `BROWSER=firefox` or
+`BROWSER=webkit`. Browser reports go to the ignored `test-results/` directory.
+Acceptance criteria and numeric tolerances are in
+[Parity verification](README.md#parity-verification).
 
-Keep documentation, code comments, and interface text in English. Preserve
-multilingual OCR fixtures and the unmodified upstream code and tests in
-`vendor/indra/`. Make browser adaptations in `src/` and `python/`; update the
-vendored revision and integrity manifest together only when upgrading upstream.
+Run upstream tests natively with Python 3.13:
 
-For behavior changes, include a focused regression test and describe validation
-and any numeric tolerances in the pull request. Never weaken parity assertions
-or regenerate golden outputs just to make a failing browser implementation pass.
-Document the source revision and dependency versions when changing fixtures.
+```bash
+python3.13 -m venv .venv
+.venv/bin/pip install -r requirements-native.txt
+PYTHONPATH=vendor/indra .venv/bin/python -m pytest vendor/indra/tests -q
+```
+
+Regenerate fixtures only when their inputs or native references need updating:
+
+```bash
+.venv/bin/python scripts/fixtures.py
+# Refresh references while preserving input documents:
+.venv/bin/python scripts/fixtures.py --golden-only
+```
+
+Generation requires DejaVu Sans/Serif, Noto Sans CJK, Arabic, and Devanagari at
+the paths in `scripts/fixtures.py`, and Pillow with Raqm shaping. Included fixtures
+let browser tests run without Python or fonts. See
+[fixture provenance](tests/fixtures/README.md) for licensing and test passwords.
+
+## Change boundaries
+
+Keep documentation, comments, and interface text in English; preserve multilingual
+fixture text. Keep `vendor/indra/` unchanged as an upstream reference. Make browser
+adaptations in `src/` and `python/`. An upstream upgrade must update the vendored
+revision and integrity manifest together.
+
+Behavior changes need a focused regression test and a PR description of validation
+and numeric tolerances. Fix browser failures against the existing parity assertions
+and golden outputs; do not weaken assertions or regenerate references to mask a
+failure. Fixture changes must record source revision and dependency versions.
+
+Commit source and synthetic fixtures; keep weights, built assets, environment
+files, secrets, customer documents, and local reports out of Git. Original-code
+contributions use Apache-2.0; preserve third-party and reference-output licenses.
 
 ## Automated npm releases
 
-Pushes to `main` publish automatically after the Chromium, Firefox, WebKit, and
-native CI jobs all succeed. Pull requests, other branches, and failed CI runs
-cannot publish. Release jobs run one at a time; an older run skips publishing
-when a newer commit is already on `main`.
+Pushes to `main` publish after Chromium, Firefox, WebKit, and native CI pass.
+Release jobs serialize and skip a run if a newer commit is on `main`.
 
-Use Conventional Commits for the commits that reach `main` (the PR title when
-squash merging):
+Use Conventional Commits for commits reaching `main`, or the PR title when
+squash merging. The largest change since the last reachable stable `vX.Y.Z` tag
+sets the bump, including below 1.0.0:
 
-- `fix: ...`, `perf: ...`, and `chore(deps): ...` produce a patch release, such as `0.1.0` → `0.1.1`.
-- `feat: ...` produces a minor release, such as `0.1.0` → `0.2.0`.
-- `feat!: ...`, `fix(api)!: ...`, or a `BREAKING CHANGE: ...` footer produces a
-  major release, such as `0.1.0` → `1.0.0`.
-- Documentation, CI, test, and maintenance commits alone do not publish.
+| Commit | Bump |
+| --- | --- |
+| `fix:`, `perf:`, `chore(deps):` | Patch |
+| `feat:` | Minor |
+| `!` before the colon or a `BREAKING CHANGE:` footer | Major |
+| Documentation, CI, tests, other maintenance, or unrecognized prefixes | None |
 
-The largest change since the last reachable stable `vX.Y.Z` tag determines the
-next version. The original, manually published `0.1.0` is anchored to commit
-`536123cd749d54d47bb043603c0b9cc22bc421cb` until the first automated release tag.
-The standard SemVer rules apply even while the package is below `1.0.0`.
+Before the first automated tag, the manually published 0.1.0 baseline is commit
+`536123cd749d54d47bb043603c0b9cc22bc421cb`.
 
-CI updates `package.json` and `package-lock.json` in its checkout, publishes to
-npm with provenance, then creates a GitHub release and version tag. Version bumps
-are not committed back to `main`; release tags and npm contain the released
-version. The repository's package version remains its development baseline.
-If publishing succeeds but GitHub release creation fails, rerunning the workflow
-can complete the release only if npm's recorded source commit matches that run.
+CI updates `package.json` and `package-lock.json` in its checkout, publishes with
+npm provenance, and creates a GitHub release and tag. Version bumps stay out of
+`main`; the repository package version is a development baseline. npm availability
+may lag publication by a few minutes. If GitHub release creation fails after
+publishing, rerunning can finish only when npm's recorded source commit matches
+the run.
 
-Preview the next version from committed history without changing files or
-publishing anything:
+Preview the version from committed history without publishing:
 
 ```bash
+git fetch origin --tags
 npm run release -- --dry-run
 ```
 
 ### One-time npm authentication setup
 
-Publishing uses npm trusted publishing through GitHub OIDC; no `NPM_TOKEN` secret
-is required. Configure a GitHub Actions trusted publisher in the npm settings
-for `@ryancasas/indra-ocr-wasm` with owner `RyanCasas`, repository
-`indra-ocr-wasm`, workflow filename **`test.yml`**, no environment name, and
-permission to publish directly. The workflow grants `id-token: write` only to
-its release job. See [npm's trusted publishing documentation](https://docs.npmjs.com/trusted-publishers/).
+Publishing uses GitHub OIDC trusted publishing. In npm's settings for
+`@ryancasas/indra-ocr-wasm`, configure owner `RyanCasas`, repository
+`indra-ocr-wasm`, workflow **`test.yml`**, no environment name, and direct-publish
+permission. Only the release job receives `id-token: write`; no `NPM_TOKEN` is
+needed. See [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/).
 
-With npm 11.15 or later, an authenticated maintainer can also configure it using:
+An authenticated maintainer using npm 11.15 or later can configure it with:
 
 ```bash
 npm trust github @ryancasas/indra-ocr-wasm --repo RyanCasas/indra-ocr-wasm --file test.yml --allow-publish --yes
 ```
 
-npm may require interactive account authentication to complete this command.
-
-Do not commit model weights, built runtime assets, environment files, secrets,
-customer documents, or local test reports. Contributions to the original code
-are accepted under Apache-2.0; preserve the separate licenses of third-party
-material and model-generated reference outputs.
+npm may require interactive authentication.
