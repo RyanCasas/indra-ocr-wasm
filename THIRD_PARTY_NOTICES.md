@@ -1,8 +1,8 @@
 # Third-party notices
 
-The Apache-2.0 license for this project's original code does not replace the
-licenses of its dependencies, vendored source, model weights, or reference outputs.
-Retain these notices when redistributing the project or its prepared assets.
+This project's original code uses Apache-2.0. Dependencies, vendored source,
+weights, and reference outputs retain their licenses. Preserve these notices
+when redistributing the project or prepared assets.
 
 ## Indra source code
 
@@ -20,16 +20,14 @@ Retain these notices when redistributing the project or its prepared assets.
 - License: [AI PUBS OPEN RAIL-M LICENSE (MODIFIED)](licenses/INDRA-MODEL-LICENSE).
 - [Original license at the pinned revision](https://huggingface.co/datalab-to/indra-ocr/blob/bd02167fdf2005a19962cc15188f8496a2c87d3b/LICENSE).
 
-Weights are not committed to this repository. `npm run assets` downloads the
-unmodified weights and their license; `models.lock.json` records their hashes.
-This repository does not modify or relicense the weights.
+`npm run assets` downloads unmodified weights and their license;
+[models.lock.json](models.lock.json) records SHA-256 hashes. Weights stay out of Git.
 
-The model license includes use, commercial, competition, attribution, and
-redistribution conditions. Paragraph 8 also addresses outputs and share-alike
-licensing. Model-generated OCR reference results in `tests/fixtures/golden.json`
-are distributed under that license. These conditions are separate from the
-Apache-2.0 license on the browser implementation. Read the full license before
-downloading, using, or hosting the models and before redistributing their outputs.
+Read the full license before downloading, using, or hosting weights or
+redistributing outputs. It includes use, commercial, competition, attribution,
+and redistribution conditions; paragraph 8 covers outputs and share-alike
+licensing. It also governs the model-generated references in
+`tests/fixtures/golden.json`.
 
 ## Browser runtime
 
@@ -46,22 +44,15 @@ downloading, using, or hosting the models and before redistributing their output
   and distribution directories. These files include the upstream package's
   additional Apache-2.0 text.
 
-`package-lock.json` fixes the npm dependency graph and archive integrity hashes.
-The Pyodide lockfile fixes its package archives and hashes. Building and preparing
-assets copies this project's notices and the runtime license files alongside the
-redistributable code and binaries; package archives retain their embedded notices.
+`package-lock.json` pins npm archives; Pyodide's lockfile pins its package
+archives. Build and asset preparation copy notices and licenses beside the
+redistributable code and binaries. Archives retain embedded notices.
 
 ## Synthetic test fixtures and fonts
 
-The input documents and images in `tests/fixtures/` are synthetic examples
-created by `scripts/fixtures.py`. They are not customer documents or extracts
-from third-party publications. The encrypted PDF uses deliberately public test
-passwords (`pw` and `owner`). These are fixture values, not credentials.
-
-PDF fixtures embed subsets of DejaVu Sans. The full upstream
-[DejaVu font license](licenses/DEJAVU-LICENSE) includes the Bitstream and Arev
-copyright and permission notices. Noto Sans CJK, Arabic, and Devanagari are used
-to render the multilingual raster fixtures; no Noto font file is bundled.
-Regenerating fixtures requires the
-fonts installed on the developer's system. Model-generated OCR outputs have the
-separate license described above; see [the fixture notes](tests/fixtures/README.md).
+[Fixture provenance](tests/fixtures/README.md) identifies input and reference-output
+licenses. The PDFs embed DejaVu Sans subsets; the
+[DejaVu license](licenses/DEJAVU-LICENSE) includes Bitstream and Arev notices.
+Multilingual raster fixtures use Noto Sans CJK, Arabic, and Devanagari, with no
+Noto font files bundled. Regeneration uses system-installed fonts as described
+in [Contributing](CONTRIBUTING.md#validation).

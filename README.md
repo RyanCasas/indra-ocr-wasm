@@ -2,32 +2,20 @@
 
 # Indra OCR WASM
 
-Browser WebAssembly port of Indra OCR 1.1.2, with no OCR server.
-A TypeScript API converts PDFs and images into text, Markdown, and JSON with lines,
-bounding boxes, blocks, reading order, orientation, vertical-writing flags, and timings.
+Browser WebAssembly port of Indra OCR 1.1.2. The TypeScript API converts PDFs
+and images locally into text, Markdown, and JSON with lines, bounding boxes,
+blocks, reading order, orientation, vertical-writing flags, and timings.
 
-Install [@ryancasas/indra-ocr-wasm from npm](https://www.npmjs.com/package/@ryancasas/indra-ocr-wasm).
-Starting with package **0.2.0**, cross-origin isolation, COOP/COEP headers,
-SharedArrayBuffer, and service workers are **not required**. Documents stay in
-the browser. Starting with **0.3.0**, inference automatically prefers WebGPU, with
-a CPU/WebAssembly fallback.
+The Python pipeline runs asynchronously on CPython/Pyodide, NumPy, and OpenCV
+compiled to WASM, with ONNX Runtime Web for inference and PDFium WASM for PDFs.
+Users need no Python installation or OCR server.
 
-This is a **WebAssembly port**: it adapts the Python pipeline to asynchronous
-inference and runs it with CPython/Pyodide, NumPy, and OpenCV compiled to WASM.
-It adapts ONNX Runtime to the `onnxruntime-web` WebGPU/WASM backends and
-pypdfium2 to actual PDFium WASM. Users do not need Python installed on their devices.
-
-Upstream code is pinned to
-[`0e96b93`](https://github.com/datalab-to/indra/tree/0e96b93c6810f17cf8352acbb4487cc9e45b66d5).
-The `v1.1.0` models are pinned to Hugging Face commit
-`bd02167fdf2005a19962cc15188f8496a2c87d3b`, with SHA-256 hashes in
-[models.lock.json](models.lock.json).
-
-Model weights and model-generated outputs have a separate
-[Modified OpenRAIL-M license](licenses/INDRA-MODEL-LICENSE), with commercial,
-competition, and redistribution restrictions. Review it before running
-`npm run assets` or hosting the weights. The Apache-2.0 license applies to this
-port's original code; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Code and models are pinned; see [third-party notices](THIRD_PARTY_NOTICES.md)
+for revisions and licenses. This port's original code is Apache-2.0. Model
+weights and generated outputs use a separate
+[Modified OpenRAIL-M license](licenses/INDRA-MODEL-LICENSE) with commercial,
+competition, and redistribution restrictions. Review it before downloading or
+hosting weights.
 
 ## Getting started
 
@@ -42,12 +30,10 @@ mkdir -p public/indra
 cp -R node_modules/@ryancasas/indra-ocr-wasm/dist/. public/indra/
 ```
 
-Serve `public/` over HTTPS or localhost as described under [Hosting and distribution](#hosting-and-distribution),
-then import `createIndra` from `/indra/index.js` in a browser module. Keep
-`index.js`, `runtime.worker.js`, and `inference.worker.js` together in that
-directory. TypeScript projects can import types from `@ryancasas/indra-ocr-wasm`.
-Runtime archives and model weights are downloaded separately by the asset command;
-they are not bundled in the npm tarball.
+Serve `public/` using the [hosting requirements](#hosting-and-distribution),
+then import `createIndra` from `/indra/index.js` in a browser module. TypeScript
+projects can import types from `@ryancasas/indra-ocr-wasm`. The asset command
+downloads runtime archives and weights separately from the npm package.
 
 Your static directory will contain:
 
@@ -75,9 +61,8 @@ npm run dev
 ```
 
 Open **http://localhost:5173/** to convert a local file or run the tests.
-The `assets` command downloads and verifies the runtime and models once; the
-server then serves only static files. Conversion does not send documents over
-the network.
+The asset command downloads and verifies the runtime and models; the demo
+server serves the prepared files.
 
 ## Browser API
 
@@ -130,29 +115,27 @@ demo serves the browser modules at `/dist/` instead.
 caller-owned buffers and returns `Promise<Page[]>` with zero-based indices, in
 page order. An unreadable file rejects the promise; a failed page returns
 `source: 'error'` with its message in `note`, and processing continues with the
-rest of the document, as in Indra. `convertMany(inputs)` returns `{ pages }` or
+rest of the document. `convertMany(inputs)` returns `{ pages }` or
 `{ error }` for each file, preserving input order. Each instance serializes its
 conversions; `dispose()` cancels pending work and releases the workers.
 
 `createIndra` options:
 
-- `backend: 'auto' | 'webgpu' | 'wasm'` (default: `auto`). `auto` tries WebGPU
-  for non-math models and uses CPU/WASM for math. If a GPU model fails to initialize
-  or execute, automatic mode switches that model to WASM and retries there;
-  subsequent calls for that model stay on CPU. `webgpu` requests WebGPU for every
-  model, including math, and reports an error if the adapter is unavailable or a
-  GPU model fails. It never retries the whole model on CPU. ONNX Runtime can still use WASM
-  for individual unsupported GPU operators. Use `wasm` for CPU-only execution.
-  See [math backend selection](#math-backend-selection) for the automatic policy.
-  Backend selection and recovery are reported through `onProgress`.
+- `backend: 'auto' | 'webgpu' | 'wasm'` (default: `auto`):
+  - `auto`: WebGPU for non-math models, CPU/WASM for math. A GPU initialization
+    or execution failure retries that model on WASM for this and subsequent calls.
+  - `webgpu`: requests GPU execution for every model, including math. An
+    unavailable adapter or model failure raises an error without whole-model CPU
+    retry. Unsupported individual operators may still use WASM.
+  - `wasm`: CPU-only inference.
+  Selection and recovery appear in `onProgress`. See
+  [math backend selection](#math-backend-selection) for the automatic policy's rationale.
 - `mode: 'auto' | 'ocr' | 'text'` (default: `auto`).
 - `dpi: 200`, `imageOcr: true`, `furniture: false`.
 - `pdfOrder` is deprecated and ignored. Indra 1.1 determines reading order from
   layout, with geometric ordering for vertical writing, instead of preserving
   PDF content order.
 - `math: true` enables the classifier and LaTeX recognition; default: `false`.
-  Set `backend: 'webgpu'` to include math models in GPU execution, or use `auto`
-  for CPU math with GPU acceleration of the remaining OCR models.
 - `runtimeURL`, `modelURL`: relative or absolute static asset directories;
   defaults: `/runtime/` and `/models/`. Set these explicitly for apps hosted under
   a subpath.
@@ -165,44 +148,33 @@ Exported interfaces are defined in [src/index.ts](https://github.com/RyanCasas/i
 
 ## Hosting and distribution
 
-Requires HTTPS or localhost, WebAssembly SIMD, and module workers. Cross-origin
-isolation, COOP/COEP headers, SharedArrayBuffer, and service workers are not required.
-The browser pipeline awaits inference results sent through ordinary worker
-messages with transferable output buffers; CPU inference uses one WASM thread.
-Existing sites do not need to enable cross-origin isolation to use the library.
+Serve over HTTPS or localhost with WebAssembly SIMD and module workers.
+Cross-origin isolation, COOP/COEP headers, SharedArrayBuffer, service workers,
+JSPI, and WebGPU are optional. Use HTTP serving rather than `file://`.
 
-Serve `.wasm` files with `Content-Type: application/wasm`. The included server
-already applies this setting and serves without COOP/COEP headers. Static hosting
-can be used. Assets are served from the same origin; configure CORS if you use a
-different origin for runtime archives or model weights. Keep the browser modules
-and worker scripts together on the application's origin. Experimental JSPI APIs
-and WebGPU are not required. Opening the HTML directly through `file://` is not
-a supported deployment.
+Serve `.wasm` files as `application/wasm`; the included development server sets
+this MIME type. Keep `index.js`, `runtime.worker.js`, and `inference.worker.js`
+together on the application's origin. Runtime archives and model weights can
+use another origin with CORS configured.
 
-The prepared runtime and dependencies occupy approximately 116 MB uncompressed;
-the models, including math models and language models, occupy 96 MB (76 MB
-without math). Math models are loaded only when
-`math` is enabled. The initial download is larger than for a manual Rust/C++ port;
-this design reuses the algorithms and their synchronous helpers. The browser's
-asynchronous OCR, document, and math adaptations live in `python/web_*.py`; the
-pinned upstream files remain unchanged for reference and upstream unit tests.
-WebGPU accelerates ONNX inference only; Python preprocessing and PDF rendering
-remain on WASM. GPU performance depends on the hardware, model and document;
-small models and CPU/GPU transfers can limit gains. Measured comparisons for the
-checked documents appear below. Verified model bytes are retained in the inference
-worker to recreate CPU sessions without downloading
-weights again after a GPU failure. Performance and memory usage depend on the
-browser and document. There is no custom persistent cache; HTTP caching can be
-applied to versioned assets.
+Inference uses worker messages with transferable buffers and one WASM thread.
+WebGPU accelerates ONNX inference; Python preprocessing and PDF rendering remain
+on WASM. Verified model bytes stay in the inference worker for CPU recovery
+without another download. Apply HTTP caching to versioned assets; the library
+has no custom persistent cache.
+
+Models occupy about 96 MB, or 76 MB without math; math models load only when
+`math` is enabled. The 1.0.0 runtime occupied about 116 MB uncompressed; runtime
+size varies with dependency versions. This port reuses Python algorithms and
+synchronous helpers, with asynchronous browser adaptations in `python/web_*.py`.
 
 ## Performance comparison (1.0.0)
 
 Measured on **2026-10-20**, using Indra 1.1.2 and the pinned `v1.1.0` model set.
-[The full benchmark report](tests/validation/benchmark-1.0.0.json) records raw
-samples, ranges, dependency versions, source and model revisions, hashes of the
-built browser modules, backend messages, and GPU dispatch evidence. The report's
-`packageVersion` is the repository development baseline (0.3.0); release CI sets
-the published version.
+The [benchmark report](tests/validation/benchmark-1.0.0.json) records samples,
+versions, revisions, browser-module hashes, and GPU dispatch evidence. These are
+historical results, not measurements of the current dependency pins. Its
+`packageVersion` is the development baseline; see [release rules](CONTRIBUTING.md#automated-npm-releases).
 
 | Component | Benchmark machine / configuration |
 | --- | --- |
@@ -222,11 +194,9 @@ one WASM thread, the same browser flags, no cross-origin isolation, and no
 external requests. The fallback configuration makes `navigator.gpu` unavailable
 inside the inference worker before initialization.
 
-`Auto + GPU` uses GPU inference for non-math models and CPU math. `WebGPU` requests
-GPU inference for all models, including math. Both can use WASM for individual
-unsupported operators. The benchmark observed actual compute dispatches from
-all four math models in explicit GPU mode and none in automatic mode. It rejects
-whole-model CPU fallback in explicit GPU mode.
+Columns follow the [backend options](#browser-api). The harness observed compute
+dispatches from all four math models in explicit WebGPU mode and none in automatic
+mode, and rejects whole-model CPU fallback in explicit mode.
 
 | Document / options | Pages | WASM (ms) | Auto + GPU (ms) | WebGPU incl. math (ms) | Auto without GPU (ms) |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -244,14 +214,11 @@ whole-model CPU fallback in explicit GPU mode.
 | Formula PNG (`math: true`) | 1 | 463.8 | 381.2 | 538.4 | 400.6 |
 | Digital PDF (`math: true`) | 2 | 310.8 | 175.7 | 183.2 | 233.3 |
 
-The formula fixture took **538.4 ms with explicit WebGPU math**,
-**381.2 ms with automatic CPU math**, and **463.8 ms
-with forced WASM**. GPU math was about **41% slower** than CPU math
-with the remaining models using the GPU. These are whole-document measurements
-on one device, not per-operator profiles or a speed guarantee. Results vary with the document,
-GPU, CPU load, and browser; explicit WebGPU and automatic mode use the same
-execution providers on non-math models, so differences between those columns
-on non-math documents reflect run variation rather than a different policy.
+Explicit GPU math was about 41% slower than automatic CPU math on the formula
+fixture. These whole-document measurements cover one device, not individual
+operators or a speed guarantee. Performance varies with the document, hardware,
+load, and browser. Automatic and explicit GPU modes use the same providers for
+non-math models; their non-math timing differences reflect run variation.
 The explicit-GPU forced-OCR samples ranged from 638 to 1658 ms, with the last
 two near 638 ms. One warmup did not establish steady timing for that case;
 its median should not be interpreted as an inherent cost of explicit selection.
@@ -266,10 +233,9 @@ not an Internet download.
 | Default models | 3877.6 | 4039.0 | 4029.2 | 3973.1 |
 | With `math: true` | 4273.8 | 4324.1 | 4486.0 | 4214.2 |
 
-All **312 conversions / 432 pages**, including warmups, passed native
-parity comparisons with the unchanged tolerances. The harness verifies actual
-GPU dispatches, CPU selection for automatic math, and recovery when the adapter
-is unavailable. This establishes parity for the measured cases.
+All **312 conversions / 432 pages**, including warmups, passed the
+[parity comparisons](#parity-verification). The harness also checks GPU dispatches,
+automatic CPU math selection, and recovery from an unavailable adapter.
 
 To reproduce from a prepared checkout:
 
@@ -289,18 +255,12 @@ available. Use `--suite math` to measure the three math-enabled cases only, or
 
 ### Math backend selection
 
-With `backend: 'auto'`, the four math models (`mathcls.onnx`, `math_enc.onnx`,
-`math_dec_init.onnx`, and `math_dec_step.onnx`) use CPU/WASM. Other OCR models
-can use WebGPU on the same document. This is an automatic selection policy,
-and an explicit GPU request overrides it:
+Automatic mode keeps `mathcls.onnx`, `math_enc.onnx`, `math_dec_init.onnx`, and
+`math_dec_step.onnx` on CPU/WASM. To request GPU math, use:
 
 ```js
 const indra = await createIndra({ backend: 'webgpu', math: true });
 ```
-
-This requests GPU execution for all four math models and fails if the adapter
-is unavailable or a model cannot initialize or execute. Unsupported individual
-operators can still use WASM. `backend: 'wasm'` keeps the complete pipeline on CPU.
 
 The [math decoder](python/web_math.py) generates tokens sequentially. Each step
 returns logits and attention caches to Python on the CPU, which selects the
@@ -309,9 +269,8 @@ therefore includes repeated CPU/GPU transfers and synchronization. This is an
 implementation-based explanation of the overhead; the benchmark measures whole
 documents and does not attribute latency to individual transfers or kernels.
 
-The current formula measurement supports keeping CPU math as the automatic
-default on this device. Different hardware or a decoder that retains its state
-on the GPU could change the tradeoff; use explicit WebGPU to choose GPU math.
+The formula result supports CPU math as the automatic default on this device;
+other hardware or a decoder that keeps state on the GPU could change the tradeoff.
 
 ## Parity verification
 
@@ -351,95 +310,23 @@ Face cache are outside the web API; JavaScript handles asset loading. The
 original cache tests use their original mocks and do not test a persistent
 browser cache.
 
-### Automated testing
+### Running tests
 
-After preparing the repository with `npm ci`, `npm run build`, and `npm run assets`:
+Use [Contributing](CONTRIBUTING.md#validation) for setup, browser validation,
+native tests, and fixture regeneration. The browser runner uses the interactive
+test HTML, checks operation without isolation or a service worker, blocks external
+requests, and checks concurrent conversion, invalid-input recovery, buffer
+ownership, and disposal. Reports go to `test-results/browser.json` and CI artifacts.
+CI covers Chromium, Firefox, WebKit, and native upstream tests;
+[tests/validation](tests/validation) contains historical reports.
 
-```bash
-npm test
-npm run typecheck
-npx playwright install --with-deps chromium
-npm run test:browser
-# Optional: install the corresponding engine and set BROWSER=firefox or webkit.
-```
+## Project guidance
 
-The runner uses the same HTML as the interactive test, verifies that the page has
-no COOP/COEP headers, cross-origin isolation, or controlling service worker, blocks
-requests to external servers, and writes `test-results/browser.json`.
-It also checks concurrent conversion, recovery after invalid inputs, buffer
-ownership, and engine disposal.
-CI runs Chromium, Firefox, WebKit, and the original native tests. All four jobs
-passed for the [0.2.0 release](https://github.com/RyanCasas/indra-ocr-wasm/actions/runs/38939405940).
-Each browser job uploads its report as a workflow artifact. The older reports in
-[tests/validation](tests/validation) are historical snapshots; current CI artifacts
-include the page's isolation state and the latest parity results.
+- [Changelog](CHANGELOG.md): npm release history, independent of Indra versions.
+- [Contributing](CONTRIBUTING.md): validation, fixture regeneration, release rules,
+  and trusted publisher setup.
+- [Security](SECURITY.md): vulnerability reporting and dependency audit scope.
+- [Third-party notices](THIRD_PARTY_NOTICES.md): source and model pins, licenses,
+  and fixture provenance. [NOTICE](NOTICE) records copyright and attribution.
 
-To run the original tests natively or regenerate the reference outputs:
-
-```bash
-python3.13 -m venv .venv
-.venv/bin/pip install -r requirements-native.txt
-PYTHONPATH=vendor/indra .venv/bin/python -m pytest vendor/indra/tests -q
-.venv/bin/python scripts/fixtures.py
-# Refresh reference outputs while preserving the existing input documents:
-.venv/bin/python scripts/fixtures.py --golden-only
-```
-
-Regeneration requires DejaVu Sans/Serif and Noto Sans CJK fonts at the Linux paths
-specified in `scripts/fixtures.py`, plus Noto Sans Arabic and Devanagari and a
-Pillow build with Raqm for shaping. Fixtures are already included; neither Python
-nor these fonts are needed to run the browser tests.
-
-## Releases
-
-See [CHANGELOG.md](CHANGELOG.md) for release history and changes in each version.
-
-The [GitHub Actions workflow](.github/workflows/test.yml) publishes to npm after
-all browser and native checks pass on a push to `main`. Version bumps follow
-Conventional Commit messages:
-
-- `fix: ...` or `perf: ...` → patch release.
-- `feat: ...` → minor release.
-- A `!` before the colon, such as `feat(api)!: ...`, or a `BREAKING CHANGE: ...`
-  footer → major release.
-
-The largest change since the last stable release tag determines the bump.
-Documentation and maintenance commits alone do not publish. Commit messages
-without a recognized Conventional Commit prefix do not trigger a release either;
-when squash merging, use the prefix in the PR title.
-
-Publishing uses npm trusted publishing with provenance and creates a GitHub
-release and `vX.Y.Z` tag. CI updates the package version in its checkout without
-committing a version bump back to `main`, so the repository's `package.json`
-version can differ from the latest version on npm. npm may take a few minutes to
-make a successfully submitted version available.
-
-Preview the version calculated from committed history:
-
-```bash
-git fetch origin --tags
-npm run release -- --dry-run
-```
-
-See [CONTRIBUTING.md](CONTRIBUTING.md#automated-npm-releases) for the full release
-rules and trusted publisher setup.
-
-## Project structure and licenses
-
-- `vendor/indra/`: original code and tests, revision, hashes, and license.
-- `python/`: asynchronous browser pipeline, dependency adapters, and entry point.
-- `src/`: TypeScript API, workers, binary transport, and PDFium bridge.
-- `scripts/`: build, asset preparation, fixture generation, and test scripts.
-- `tests/`: browser harness, native fixtures, and transport tests.
-
-Indra's code and this port are licensed under Apache-2.0. Model weights and model-generated reference outputs retain
-their own [Modified OpenRAIL-M license](licenses/INDRA-MODEL-LICENSE), also
-downloaded as `public/models/LICENSE`.
-PDFium and other dependencies retain their respective licenses. Third-party
-weights and binaries are not included in Git: `npm run assets` prepares them
-from pinned versions.
-
-Contribution guidance is in [CONTRIBUTING.md](CONTRIBUTING.md). For security
-reports and the scope of dependency audits, follow [SECURITY.md](SECURITY.md). Copyright and upstream attributions
-are recorded in [NOTICE](NOTICE). This is an independent project and is not
-affiliated with or endorsed by Datalab.
+This independent project is not affiliated with or endorsed by Datalab.
