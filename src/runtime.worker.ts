@@ -95,7 +95,7 @@ async function handle(data: any) {
         py.FS.writeFile(file.path, await get(file.url));
       }
       const entry = py.pyimport('browser_entry');
-      try { result = entry.run_tests(); } finally { entry.destroy(); }
+      try { result = await entry.run_tests(); } finally { entry.destroy(); }
     } else if (data.kind === 'dispose') {
       inference?.dispose();
       inferenceWorker?.terminate();

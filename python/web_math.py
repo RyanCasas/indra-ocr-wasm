@@ -22,7 +22,7 @@ class WebMathReader(MathReader):
         out = [False] * len(crops)
         for idx in width_batches([c.shape[1] for c in crops], batch):
             arr, widths = pad_batch([crops[j] for j in idx])
-            p = (await self.cls.run(None, {"x": arr, "widths": widths}))[0]
+            p = (await self.cls.run(None, {"x": arr, "widths": widths}, self.ro))[0]
             for k, j in enumerate(idx):
                 out[j] = bool(p[k] > MATH_MIN)
         return out
@@ -38,10 +38,10 @@ class WebMathReader(MathReader):
         widths = [c.shape[1] for c in crops]
         for idx in width_batches(widths, batch, max_ratio=4.0, max_area=16 * 64 * 640):
             arr, widths = pad_batch([crops[j] for j in idx])
-            mem, mask = (await self.enc.run(None, {"x": arr, "widths": widths}))
+            mem, mask = (await self.enc.run(None, {"x": arr, "widths": widths}, self.ro))
             feed = {"memory": mem, "mask": mask}
             names = self.inputs["math_dec_init.onnx"]
-            ck, cv = (await self.init.run(None, {k: v for k, v in feed.items() if k in names}))
+            ck, cv = (await self.init.run(None, {k: v for k, v in feed.items() if k in names}, self.ro))
             B = len(idx)
             sk = np.zeros((self.layers, B, self.heads, 0, self.head_dim), np.float32)
             sv = sk
@@ -61,7 +61,7 @@ class WebMathReader(MathReader):
                     "mask": mask,
                 }
                 logits, sk, sv = (await self.step.run(
-                    None, {k: v for k, v in feed.items() if k in step_in}
+                    None, {k: v for k, v in feed.items() if k in step_in}, self.ro
                 ))
                 tok = logits.argmax(-1).astype(np.int64)
                 e = np.exp(logits - logits.max(-1, keepdims=True))

@@ -24,6 +24,7 @@ window.runTests = async (options = {}) => {
     const files = Object.keys(integrity).filter(name => name.startsWith('tests/') && name.endsWith('.py'))
       .map(name => ({ path:'/upstream/'+name, url: location.origin+'/vendor/indra/'+name }));
     files.push({path:'/browser-tests/test_pdfium.py',url:location.origin+'/tests/test_pdfium.py'});
+    files.push({path:'/browser-tests/browser_inference.py',url:location.origin+'/tests/browser_inference.py'});
     for (const name of ['digital.pdf','locked.pdf','rotated.pdf','cropped.pdf','invisible.pdf','pdfium.json']) {
       files.push({path:'/fixtures/'+name,url:location.origin+'/tests/fixtures/'+name});
     }

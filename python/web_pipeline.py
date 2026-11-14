@@ -60,7 +60,7 @@ class WebOCR(OrtOCR):
 
     async def _detect_at(self, gray: np.ndarray, long_side: int):
         x, s = page_to_input(gray, long_side)
-        out = (await self.det.run(None, {"x": x[None, None]}))[0][0]
+        out = (await self.det.run(None, {"x": x[None, None]}, self.ro))[0][0]
         self._pic = (out[3], s) if out.shape[0] > 3 else None
         return (decode(out), s)
 
@@ -151,6 +151,7 @@ class WebOCR(OrtOCR):
                 res = await sess.run(
                     OUT_GREEDY + (OUT_LM if use_lm else []),
                     {"x": arr, "widths": widths},
+                    self.ro,
                 )
                 best, pmax, lengths = res[:3]
                 stride = arr.shape[-1] / max(best.shape[1], 1)
@@ -230,7 +231,7 @@ class WebOCR(OrtOCR):
         sure = [True] * len(crops)
         for idx in width_batches([c.shape[1] for c in crops], batch):
             arr, widths = pad_batch([crops[j] for j in idx])
-            p = (await self.script.run(None, {"x": arr, "widths": widths}))[0]
+            p = (await self.script.run(None, {"x": arr, "widths": widths}, self.ro))[0]
             for k, j in enumerate(idx):
                 g = (
                     ("cjk" if p[k] > 0.5 else "base")
@@ -256,7 +257,7 @@ class WebOCR(OrtOCR):
             return (order, None, None)
         f = line_features(boxes[:, :4], wh, texts)[None]
         outs = await self.order.run(
-            None, {"feats": f, "mask": np.ones((1, len(boxes)), bool)}
+            None, {"feats": f, "mask": np.ones((1, len(boxes)), bool)}, self.ro
         )
         if len(outs) >= 3:
             cls, same = (outs[1][0], outs[2][0])
@@ -269,7 +270,7 @@ class WebOCR(OrtOCR):
         """orient.onnx class probabilities for the page (None without the model)."""
         if self.orient is None:
             return None
-        return (await self.orient.run(None, {"x": orient_input(gray)[None, None]}))[0][
+        return (await self.orient.run(None, {"x": orient_input(gray)[None, None]}, self.ro))[0][
             0
         ]
 

@@ -274,7 +274,7 @@ other hardware or a decoder that keeps state on the GPU could change the tradeof
 
 ## Parity verification
 
-The **74 original tests** are copied without modifications into
+The **80 original tests** are copied without modifications into
 [vendor/indra/tests](vendor/indra/tests). `npm test` checks their hashes and those
 of the upstream code, as well as tensor transport, including 64-bit integers,
 scalars, response size limits, inference errors, and timeouts. It also tests
@@ -282,12 +282,15 @@ automatic SemVer decisions and release guards using temporary Git repositories.
 
 The test button runs `pytest` **inside the production WASM worker**:
 
-- 73 original tests pass in WASM.
+- 79 original tests pass in WASM.
 - 1 original test is skipped by its existing `importorskip`: it uses pikepdf to
   *create* an encrypted PDF. Its behavior is also checked using a real encrypted
   PDF generated natively, with missing, incorrect, and correct passwords.
 - 5 additional tests check passwords and PDFium character geometry against native
   results, including rotation, crop boxes, and invisible text.
+- An asynchronous regression check sends 8-, 22-, and 31-pixel line crops through
+  the real browser script classifier to verify minimum-width padding and ONNX
+  run-options compatibility.
 
 In addition, [golden.json](tests/fixtures/golden.json) contains outputs from
 **unmodified native Indra** for 24 cases / 33 pages: PNG, Chinese, Arabic, Hindi,
