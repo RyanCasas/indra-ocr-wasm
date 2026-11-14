@@ -7,7 +7,7 @@ when redistributing the project or prepared assets.
 ## Indra source code
 
 - Project: [datalab-to/indra](https://github.com/datalab-to/indra).
-- Revision: `0e96b93c6810f17cf8352acbb4487cc9e45b66d5` (Indra OCR 1.1.2).
+- Revision: `ca81e18f7403435a3545c8c8ae9c4a1cecdd32a4` (Indra OCR 1.1.2 plus unreleased fixes).
 - Location: `vendor/indra/indra_ocr/` and `vendor/indra/tests/`, copied unchanged.
 - Browser adaptations: `python/web_document.py`, `python/web_pipeline.py`, and
   `python/web_math.py` change inference calls to await asynchronous results.
@@ -31,7 +31,7 @@ licensing. It also governs the model-generated references in
 
 ## Browser runtime
 
-- [Pyodide 314.0.7](https://github.com/pyodide/pyodide/tree/b1e4fcc2488962f6360a97f19b9982d6fdb5d16f):
+- [Pyodide 314.0.8](https://github.com/pyodide/pyodide/tree/f37a18559ae11c5f371beb1c9462a13a663fc461):
   [MPL-2.0](licenses/PYODIDE-LICENSE). Its unmodified source is available at the
   linked revision. The Python, NumPy, OpenCV, Pillow, and pytest distributions
   downloaded for Pyodide retain their own license terms and packaged notices.

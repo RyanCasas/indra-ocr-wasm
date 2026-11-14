@@ -1,9 +1,9 @@
 numpy==2.5.4
 opencv-python-headless==5.0.0.93
 pillow==13.0.0
-onnxruntime==1.31.1
-pypdfium2==5.14.0
+onnxruntime==1.32.0
+pypdfium2==5.15.2
 huggingface-hub==2.4.0
 pytest==9.2.0
-pikepdf==10.17.0
+pikepdf==10.18.1
 reportlab==5.1.0

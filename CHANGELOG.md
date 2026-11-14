@@ -2,6 +2,27 @@
 
 Versions track `@ryancasas/indra-ocr-wasm`, independently of Indra OCR. Dates use UTC.
 
+## Unreleased
+
+### Changed
+
+- Sync unmodified Indra source and tests to `ca81e18f7403435a3545c8c8ae9c4a1cecdd32a4`
+  (1.1.2 plus unreleased fixes), with the revision and SHA-256 manifest updated
+  together. The pinned models are unchanged.
+- Update Pyodide to 314.0.8, Playwright to 1.65.1, native ONNX Runtime to 1.32.0,
+  pypdfium2 to 5.15.2, pikepdf to 10.18.1, and compatible npm transitive dependencies.
+- Match upstream's optional ONNX run-options argument in the asynchronous
+  pipeline, math reader, and browser bridge. CUDA arena configuration remains
+  native-only; browser backend selection is unchanged.
+
+### Fixed
+
+- Pad narrow line batches to at least 32 columns so isolated letters do not
+  fail script classification. Exercise narrow crops using real browser inference
+  alongside all 80 upstream tests and the existing native parity references.
+- Include upstream fixes for partial model caches, UTF-8 model metadata on
+  Windows, and CUDA memory arena release after inference.
+
 ## [1.0.0] - 2026-10-20
 
 ### Breaking changes

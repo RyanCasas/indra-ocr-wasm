@@ -25,7 +25,11 @@ async def convert(path, options):
                       ensure_ascii=False, allow_nan=False)
 
 
-def run_tests():
+async def run_tests():
     import pytest
-    return pytest.main(["/upstream/tests", "/browser-tests", "-ra", "--tb=short",
+    code = pytest.main(["/upstream/tests", "/browser-tests", "-ra", "--tb=short",
                         "-p", "no:cacheprovider"])
+    if not code:
+        from browser_inference import check_narrow_crops
+        await check_narrow_crops(_converter.ocr)
+    return code

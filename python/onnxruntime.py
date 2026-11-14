@@ -11,6 +11,23 @@ class SessionOptions:
     pass
 
 
+class RunOptions:
+    """Configuration surface for upstream helpers and their tests.
+
+    CUDA arena settings have no effect on the browser's WASM/WebGPU sessions.
+    """
+    def __init__(self):
+        self._config = {}
+
+    def add_run_config_entry(self, key, value):
+        self._config[key] = value
+
+    def get_run_config_entry(self, key):
+        if key not in self._config:
+            raise RuntimeError(f"Run option is not configured: {key}")
+        return self._config[key]
+
+
 GraphOptimizationLevel = SimpleNamespace(ORT_ENABLE_ALL=99)
 
 
@@ -26,7 +43,7 @@ class InferenceSession:
     def get_outputs(self):
         return [SimpleNamespace(name=n) for n in output_names.get(self.name).to_py()]
 
-    async def run(self, output_names, feed):
+    async def run(self, output_names, feed, run_options=None):
         # Transfer raw contiguous bytes, including int64 and bool. Never round
         # integers through JSON/JavaScript Number (which only has 53 bits).
         wire = {}
